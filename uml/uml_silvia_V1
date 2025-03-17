@@ -13,6 +13,7 @@ class User {
   + login()
   + logout()
   + uploadInvoice(invoice: Invoice)
+  + viewCurrentReimbursment(): List<Invoice>
   + viewReimbursementHistory(): List<Invoice>
   + editInvoice(invoiceId: int, newDetails: Invoice)
   + deleteInvoice(invoiceId: int)
@@ -21,7 +22,7 @@ class User {
 
 ' Admin erbt von User
 class Admin {
-  + viewAllReimbursements(): List<Invoice>
+  + viewAllReimbursements(): List<Invoice> 'hier fehlt noch das Filtern und suchen
   + updateReimbursementRates(newRate: Map<String, float>)
   + manageUsers(action: String, user: User)
   + exportReimbursements(format: String)
@@ -36,7 +37,8 @@ class Invoice {
   + amount: float
   + category: InvoiceCategory
   + status: InvoiceStatus
-  + user: Employee
+  + user: User
+  + file: File
   --
   + uploadImage(image: File)
   + calculateReimbursement(): float
