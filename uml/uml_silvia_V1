@@ -80,4 +80,7 @@ class AnomalyDetection {
 
 ' Admin überwacht Anomalien
 Admin --> AnomalyDetection : monitors
+
+'TODO: OCR muss noch hinzugefügt werden
+
 @enduml
