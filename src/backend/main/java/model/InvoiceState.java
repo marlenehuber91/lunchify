@@ -1,4 +1,4 @@
-package lunchify;
+package model;
 
 public enum InvoiceState {
     PENDING,       // Rechnung wurde hochgeladen, aber noch nicht verarbeitet

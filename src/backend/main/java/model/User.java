@@ -1,4 +1,4 @@
-package lunchify;
+package model;
 import java.util.List;
 
 

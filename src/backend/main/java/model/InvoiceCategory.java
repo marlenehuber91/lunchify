@@ -1,4 +1,4 @@
-package lunchify;
+package model;
 
 //AI generated (Copilot)
 
