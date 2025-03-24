@@ -18,19 +18,19 @@
       </Rectangle>
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="175.0" layoutY="124.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@images/Invoice.png" />
+            <Image url="@../images/invoice.png" />
          </image>
       </ImageView>
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="440.0" layoutY="110.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="505.0" layoutY="124.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@images/calendar.png" />
+            <Image url="@../images/calendar.png" />
          </image>
       </ImageView>
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="760.0" layoutY="110.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="825.0" layoutY="124.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@images/archiv.png" />
+            <Image url="@../images/archiv.png" />
          </image>
       </ImageView>
       <Text layoutX="127.0" layoutY="247.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rechnung einreichen">
@@ -51,7 +51,7 @@
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="110.0" layoutY="310.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="175.0" layoutY="324.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@images/statistic.png" />
+            <Image url="@../images/statistic.png" />
          </image>
       </ImageView>
       <Text layoutX="185.0" layoutY="447.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Statistik">
@@ -62,7 +62,7 @@
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="440.0" layoutY="310.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="505.0" layoutY="324.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@images/magnifiying_glass.png" />
+            <Image url="@../images/magnifiying_glass.png" />
          </image>
       </ImageView>
       <Text layoutX="524.0" layoutY="447.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Suche">
@@ -73,7 +73,7 @@
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="760.0" layoutY="310.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="825.0" layoutY="324.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@images/export.png" />
+            <Image url="@../images/export.png" />
          </image>
       </ImageView>
       <Text layoutX="842.0" layoutY="447.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Export">
@@ -84,7 +84,7 @@
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="110.0" layoutY="510.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="175.0" layoutY="524.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@images/user.png" />
+            <Image url="@../images/user.png" />
          </image>
       </ImageView>
       <Text layoutX="132.0" layoutY="642.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Benutzerverwaltung">
@@ -95,7 +95,7 @@
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="440.0" layoutY="510.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="505.0" layoutY="524.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@images/warning.png" />
+            <Image url="@../images/warning.png" />
          </image>
       </ImageView>
       <Text layoutX="503.0" layoutY="642.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Anomalien">
@@ -106,7 +106,7 @@
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="760.0" layoutY="510.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="825.0" layoutY="524.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@images/accept.png" />
+            <Image url="@../images/accept.png" />
          </image>
       </ImageView>
       <Text layoutX="785.0" layoutY="642.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rechnungsfreigabe">
@@ -116,7 +116,7 @@
       </Text>
       <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="1120.0" layoutY="650.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@images/logo.png" />
+            <Image url="@../images/logo.png" />
          </image>
       </ImageView>
    </children>
