@@ -1,4 +1,4 @@
-package lunchify;
+package lunchify.bll;
 
 public enum InvoiceState {
     PENDING,       // Rechnung wurde hochgeladen, aber noch nicht verarbeitet

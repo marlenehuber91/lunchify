@@ -1,4 +1,4 @@
-package lunchify;
+package lunchify.bll;
 import java.io.File;
 import java.util.Date;
 
