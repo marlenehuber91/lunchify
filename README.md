@@ -2,9 +2,11 @@
 [Prototyping.pptx](https://github.com/user-attachments/files/19247546/Prototyping.pptx)
 
 
-SupaBase:
+### Verbindung SupaBase:
 Verbunden via GitHub mit Silvia
-pw: !!LunchTeam4
-ProjectID: tlvtutujpyclacwydynx
-Project: Lunchify
+- **Passwort:** !!LunchTeam4
+- **ProjectID:** tlvtutujpyclacwydynx
+- **Project:** Lunchify
+
+### Verbindungslink
 postgresql://postgres:!!LunchTeam4@db.tlvtutujpyclacwydynx.supabase.co:5432/postgres
