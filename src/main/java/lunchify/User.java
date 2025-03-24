@@ -1,6 +1,6 @@
 package lunchify;
 import java.util.List;
-import java.util.Map;
+
 
 public class User {
     private int id;
@@ -8,9 +8,9 @@ public class User {
     private String email;
     private String password;
     private UserRole role;
-    private UserStatus state;
+    private UserState state;
 
-    public User(int id, String name, String email, String password, UserRole role, UserStatus state) {
+    public User(int id, String name, String email, String password, UserRole role, UserState state) {
         this.id = id;
         this.name = name;
         this.email = email;

@@ -1,5 +1,5 @@
 package lunchify;
 
-public enum UserStatus {
+public enum UserState {
     ACTIVE, INACTIVE;
 }
