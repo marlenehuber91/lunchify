@@ -10,3 +10,5 @@ Verbunden via GitHub mit Silvia
 
 ### Verbindungslink
 postgresql://postgres:!!LunchTeam4@db.tlvtutujpyclacwydynx.supabase.co:5432/postgres
+
+
