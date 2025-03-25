@@ -1,4 +1,4 @@
-package lunchify.bll;
+package backend.model;
 import java.util.List;
 
 
@@ -22,6 +22,7 @@ public class User {
     public void login() {
         // Login-Logik hier
     }
+
 
     //TODO optional implementation if neccessary
     public void logout() {
