@@ -1,4 +1,4 @@
-package model;
+package backend.model;
 import java.util.Date;
 
 public class Reimbursement {

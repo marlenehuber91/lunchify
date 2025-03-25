@@ -1,4 +1,4 @@
-package model;
+package backend.model;
 
 public enum UserRole {
     USER, ADMIN;

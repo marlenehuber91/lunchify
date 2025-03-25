@@ -1,4 +1,4 @@
-package model;
+package frontend.bll;
 
 public enum InvoiceState {
     PENDING,       // Rechnung wurde hochgeladen, aber noch nicht verarbeitet

@@ -1,4 +1,4 @@
-package lunchify.controller;
+package frontend.controller;
 
 public class MainController {
 

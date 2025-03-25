@@ -1,5 +1,4 @@
-package lunchify.bll;
-
+package backend.model;
 import java.util.List;
 import java.util.Map;
 
