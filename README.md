@@ -65,6 +65,3 @@ ADD CONSTRAINT fk_reimbursement_invoice FOREIGN KEY (invoice_id) REFERENCES Invo
 
 ALTER TABLE Invoices
 ADD CONSTRAINT fk_invoice_user FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE;
-
-ALTER TABLE Admins
-ADD CONSTRAINT fk_admin_user FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE;
