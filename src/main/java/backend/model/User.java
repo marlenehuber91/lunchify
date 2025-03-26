@@ -3,15 +3,14 @@ import java.util.List;
 
 
 public class User {
-    private int id;
+    private int id; //created automatically by database
     private String name;
     private String email;
     private String password;
     private UserRole role;
     private UserState state;
 
-    public User(int id, String name, String email, String password, UserRole role, UserState state) {
-        this.id = id;
+    public User(String name, String email, String password, UserRole role, UserState state) {
         this.name = name;
         this.email = email;
         this.password = password;
