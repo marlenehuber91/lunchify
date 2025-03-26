@@ -4,8 +4,8 @@ import java.util.Map;
 
 public class Admin extends User {
 
-    public Admin(int id, String name, String email, String password, UserRole role, UserState state) {
-        super(id, name, email, password, role, state);
+    public Admin(String name, String email, String password, UserRole role, UserState state) {
+        super(name, email, password, role, state);
     }
 
     public List<Invoice> viewAllReimbursements() {

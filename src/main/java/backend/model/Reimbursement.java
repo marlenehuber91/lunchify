@@ -2,13 +2,12 @@ package backend.model;
 import java.util.Date;
 
 public class Reimbursement {
-    private int id;
+    private int id; //created automatically by database
     private Invoice invoice;
     private float approvedAmount;
     private Date processedDate;
 
-    public Reimbursement(int id, Invoice invoice, float approvedAmount, Date processedDate) {
-        this.id = id;
+    public Reimbursement(Invoice invoice, float approvedAmount, Date processedDate) {
         this.invoice = invoice;
         this.approvedAmount = approvedAmount;
         this.processedDate = processedDate;

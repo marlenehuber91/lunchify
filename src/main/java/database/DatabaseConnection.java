@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-// AI Generated
+// AI Generated - a few changes made by the team
 
 public class DatabaseConnection {
     private static final String URL = "jdbc:postgresql://postgres:[YOUR-PASSWORD]@db.tlvtutujpyclacwydynx.supabase.co:5432/postgres";
