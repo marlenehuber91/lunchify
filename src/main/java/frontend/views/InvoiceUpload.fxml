@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.TextArea?>
@@ -25,7 +26,7 @@
       </ImageView>
       <Accordion layoutX="109.0" layoutY="341.0" />
       <Accordion layoutX="128.0" layoutY="428.0" />
-      <DatePicker layoutX="109.0" layoutY="336.0" prefHeight="54.0" prefWidth="250.0" promptText="Datum" />
+      <DatePicker fx:id="datePicker" layoutX="109.0" layoutY="336.0" prefHeight="54.0" prefWidth="250.0" promptText="Datum" />
       <ImageView fitHeight="90.0" fitWidth="60.0" layoutX="70.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/arrow.png" />
@@ -37,29 +38,23 @@
             <Font size="41.0" />
          </font>
       </Text>
-      <TextArea layoutX="1015.0" layoutY="40.0" prefHeight="330.0" prefWidth="250.0" promptText="Information" text="&#10;Pro Arbeitstag kann eine Rechnung eingereicht werden.&#10;&#10;maximale Rückerstattung pro Arbeitstag:&#10; &#10; Restaurant: € 3,00&#10;Supermarkt: € 2,50" wrapText="true" AnchorPane.rightAnchor="14.599999999999994">
+      <TextArea layoutX="1015.0" layoutY="40.0" prefHeight="330.0" prefWidth="250.0" promptText="Information" text="Pro Arbeitstag kann eine Rechnung eingereicht werden.&#10;&#10;maximale Rückerstattung pro Arbeitstag:&#10; &#10; Restaurant: € 3,00&#10;Supermarkt: € 2,50" wrapText="true" AnchorPane.rightAnchor="14.599999999999994">
          <font>
             <Font size="22.0" />
          </font>
       </TextArea>
-      <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#bebfbe" height="60.0" layoutX="517.5" layoutY="720.0" stroke="#bebfbe" strokeType="INSIDE" width="258.0" />
-      <Text fill="WHITE" layoutX="554.0" layoutY="758.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rechnung einreichen">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <TextField layoutX="109.0" layoutY="416.0" prefHeight="54.0" prefWidth="252.0" promptText="Rechnungsbetrag" />
+      <TextField fx:id="amountField" layoutX="109.0" layoutY="416.0" prefHeight="54.0" prefWidth="252.0" promptText="Rechnungsbetrag" />
       <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="315.0" layoutY="428.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/pen.png" />
          </image>
       </ImageView>
       <TextField editable="false" layoutX="109.0" layoutY="584.0" prefHeight="54.0" prefWidth="252.0" promptText="Rückerstattungsbetrag" />
-      <ComboBox layoutX="109.0" layoutY="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Kategorie" />
+      <ComboBox fx:id="categoryBox" layoutX="109.0" layoutY="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Kategorie" />
       <StackPane fx:id="uploadPane" layoutX="109.0" layoutY="197.0" onMouseClicked="#openFileChooser" prefHeight="90.0" prefWidth="445.0">
          <children>
-            <Rectangle id="uploadButton" arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="90.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="460.0" />
-            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" translateX="-180.0">
+            <Rectangle fx:id="uploadButton" arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="90.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="460.0" />
+            <ImageView id="cameraImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" translateX="-180.0">
                <image>
                   <Image url="@../images/camera_light.png" />
                </image>
@@ -69,7 +64,7 @@
                   <Font size="32.0" />
                </font>
             </Text>
-            <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" translateX="180.0">
+            <ImageView id="penImage" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" translateX="180.0">
                <image>
                   <Image url="@../images/pen.png" />
                </image>
@@ -78,5 +73,10 @@
       </StackPane>
       <ImageView fx:id="uploadedImageView" fitHeight="434.0" fitWidth="336.0" layoutX="640.0" layoutY="232.0" pickOnBounds="true" preserveRatio="true" />
       <Text fx:id="previewText" layoutX="662.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" " />
+      <Button fx:id="submitButton" layoutX="478.0" layoutY="695.0" mnemonicParsing="false" onMouseClicked="#addInvoice" prefHeight="60.0" prefWidth="258.0" style="-fx-background-color: #bebfbe;" text="Rechnung einreichen" textFill="WHITE">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
