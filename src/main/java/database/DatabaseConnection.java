@@ -7,8 +7,8 @@ import java.sql.SQLException;
 // AI Generated - a few changes made by the team
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:postgresql://postgres:[YOUR-PASSWORD]@db.tlvtutujpyclacwydynx.supabase.co:5432/postgres";
-    private static final String USER = "tlvtutujpyclacwydynx";
+    private static final String URL = "jdbc:postgresql://db.tlvtutujpyclacwydynx.supabase.co:5432/postgres";
+    private static final String USER = "postgres";
     private static final String PASSWORD = "!!LunchTeam4";
 
 
