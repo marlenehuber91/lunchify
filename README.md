@@ -11,6 +11,8 @@ Verbunden via GitHub mit Silvia
 ### Verbindungslink
 postgresql://postgres:!!LunchTeam4@db.tlvtutujpyclacwydynx.supabase.co:5432/postgres
 
+### Figma
+(https://www.figma.com/team_invite/redeem/lGgdMsUEp53sQxzIHljWXv)
 
 ### Database Script
 **Ohne OCR vorerst, das wird zu späterer Zeit noch ergänzt**
