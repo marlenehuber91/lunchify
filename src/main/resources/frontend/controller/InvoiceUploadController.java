@@ -98,6 +98,7 @@ public class InvoiceUploadController {
     }
    
    private void checkFields() {
+	   // TODO: add float/int check for field amount
        boolean isAmountFilled = !amountField.getText().trim().isEmpty();
        boolean isDateSelected = datePicker.getValue() != null;
        boolean isCategorySelected = categoryBox.getValue() != null;
