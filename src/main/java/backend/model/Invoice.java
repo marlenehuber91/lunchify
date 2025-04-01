@@ -14,12 +14,13 @@ public class Invoice {
     private File file;
     
     
-    public Invoice (LocalDate date, float amount, InvoiceCategory category, InvoiceState status,  File file) {
+    public Invoice (LocalDate date, float amount, InvoiceCategory category, InvoiceState status,  File file, User user) {
     	this.date=date;
     	this.amount=amount;
     	this.category=category;
     	this.status=status;
     	this.file=file;
+    	this.user = user;
     }
 
     // Methode zum Hochladen eines Bildes
@@ -36,5 +37,16 @@ public class Invoice {
     
     public float getAmount() {
     	return this.amount;
+    }
+    
+    public LocalDate getDate() {
+    	return this.date;
+    }
+    
+    public String toString() {
+    	return this.user.getName() +", " + this.date + ", " + category;
+    }
+    public InvoiceCategory getCategory() {
+    	return this.category;
     }
 }
