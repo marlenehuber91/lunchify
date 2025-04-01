@@ -22,19 +22,57 @@ public class Invoice {
     	this.file=file;
     }
 
-    // Methode zum Hochladen eines Bildes
-    public void uploadImage(File image) {
-        this.file = image;
-        // Logik zum Hochladen kann hier hinzugefügt werden
+
+    public int getId() {
+        return id;
     }
 
-    // Methode zur Berechnung der Rückerstattung
-    public float calculateReimbursement() {
-        // Beispielberechnung (kann angepasst werden)
-        return this.amount * 0.8f; // 80 % Rückerstattung
+
+    public LocalDate getDate() {
+        return date;
     }
-    
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
     public float getAmount() {
-    	return this.amount;
+        return amount;
+    }
+
+    public void setAmount(float amount) {
+        this.amount = amount;
+    }
+
+    public InvoiceCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(InvoiceCategory category) {
+        this.category = category;
+    }
+
+    public InvoiceState getStatus() {
+        return status;
+    }
+
+    public void setStatus(InvoiceState status) {
+        this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }

@@ -18,35 +18,47 @@ public class User {
         this.state = state;
     }
 
-    public void login() {
-        // Login-Logik hier
+    public int getId() {
+        return id;
     }
 
-
-    //TODO optional implementation if neccessary
-    public void logout() {
-        // Logout-Logik hier
+    public String getName() {
+        return name;
     }
 
-    public void uploadInvoice(Invoice invoice) {
-        // Logik zum Hochladen einer Rechnung
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public List<Invoice> viewCurrentReimbursement() {
-        // Logik zur Anzeige aktueller Erstattungen
-        return null;
+    public String getEmail() {
+        return email;
     }
 
-    public List<Invoice> viewReimbursementHistory() {
-        // Logik zur Anzeige der Erstattungsverlauf
-        return null;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void editInvoice(int invoiceId, Invoice newDetails) {
-        // Logik zur Bearbeitung einer Rechnung
+    public String getPassword() {
+        return password;
     }
 
-    public void deleteInvoice(int invoiceId) {
-        // Logik zum Löschen einer Rechnung
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public UserState getState() {
+        return state;
+    }
+
+    public void setState(UserState state) {
+        this.state = state;
     }
 }

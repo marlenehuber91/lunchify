@@ -19,7 +19,11 @@ public class DatabaseConnection {
             conn = DriverManager.getConnection(URL);
             System.out.println("Verbindung zu Supabase erfolgreich!");
         } catch (SQLException e) {
-            System.out.println("Fehler bei der Verbindung: " + e.getMessage());
+            System.err.println("Fehler bei der Verbindung: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("Fehlercode: " + e.getErrorCode());
+            System.err.println("Stacktrace:");
+            e.printStackTrace();
         }
         return conn;
     }
