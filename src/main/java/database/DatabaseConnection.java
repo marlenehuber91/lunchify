@@ -4,30 +4,24 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-// AI Generated - a few changes made by the team
-
 public class DatabaseConnection {
-        private static final String URL =
-            "jdbc:postgresql://db.tlvtutujpyclacwydynx.supabase.co:5432/postgres?user=postgres&password=!!LunchTeam4";
-    // ";
+    private static final String URL="jdbc:postgresql://localhost:5432/postgres";
+    private static final String USER="postgres";
+    private static final String PASSWORD="!!Lunch4";
 
 
-    //TODO check if code matches needs - is dummy code for now, so we can start working.
+    //TODO check if it works.
+
     public static Connection connect() {
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(URL);
-            System.out.println("Verbindung zu Supabase erfolgreich!");
+            conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("Verbindung zu PostgreSQL erfolgreich!");
         } catch (SQLException e) {
-            System.err.println("Fehler bei der Verbindung: " + e.getMessage());
-            System.err.println("SQLState: " + e.getSQLState());
-            System.err.println("Fehlercode: " + e.getErrorCode());
-            System.err.println("Stacktrace:");
-            e.printStackTrace();
+            System.out.println("Fehler bei der Verbindung: " + e.getMessage());
         }
         return conn;
     }
-
     public static void main(String[] args) {
         connect();
     }

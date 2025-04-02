@@ -1,5 +1,6 @@
 package frontend.controller;
 
+import backend.Exceptions.AuthenticationException;
 import backend.logic.UserService;
 import backend.model.UserRole;
 import javafx.fxml.FXML;
@@ -7,9 +8,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,31 +29,36 @@ public class LoginPageController {
     @FXML
     private Label errorLabel;
     @FXML
-    private Label forgotPassword;
+    private TextFlow messageField;
     @FXML
-    private Label adminInformed;
-
+    private Text message;
+    @FXML
+    private ImageView warning;
 
     @FXML
-    public void initialize() { //Listener = AI generated
+    public void initialize() { //Listener = AI generated + AI idea
+        loginButton.setDisable(true);
+        loginButton.setStyle("-fx-background-color: grey;");
+
         usernameField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (isValidEmail(newValue)) {
                 usernameField.setStyle("");
                 loginButton.setDisable(false);
                 loginButton.setStyle("-fx-background-color: #DEBD94;");
-                errorLabel.setVisible(false);
+                hideErrorElements();
             } else {
                 usernameField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
                 loginButton.setDisable(true);
                 loginButton.setStyle("-fx-background-color: grey;");
-                errorLabel.setText("E-Mail Adresse ungültig");
-                errorLabel.setVisible(true);
+                showErrorElements("E-Mail Adresse ungültig");
             }
         });
     }
 
     @FXML
     private void handleLogin() {
+        hideErrorElements();
+
         String email = usernameField.getText();
         String password = passwordField.getText();
 
@@ -57,8 +66,7 @@ public class LoginPageController {
             usernameField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             loginButton.setDisable(true);
             loginButton.setStyle("-fx-background-color: grey;");
-            errorLabel.setText("E-Mail Adresse ungültig");
-            errorLabel.setVisible(true);
+            showErrorElements("E-Mail Adresse ungültig");
             return;
         } else {
             usernameField.setStyle("");
@@ -66,23 +74,16 @@ public class LoginPageController {
             loginButton.setStyle("-fx-background-color: #DEBD94;");
         }
 
-        UserRole userRole = UserService.authenticate(email, password);
-
-        if (userRole == null) {
-            errorLabel.setText("E-Mail oder Passwort ist nicht korrekt.");
-            errorLabel.setVisible(true);
-            return;
-        }
-
         try {
+            UserRole userRole = UserService.authenticate(email, password);
+
             FXMLLoader loader;
             if (userRole == UserRole.ADMIN) {
-                loader = new FXMLLoader(getClass().getResource("/frontend/view/AdminDashboard.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/frontend/views/AdminDashboard.fxml"));
             } else if (userRole == UserRole.EMPLOYEE) {
-                loader = new FXMLLoader(getClass().getResource("/frontend/view/UserDashboard.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/frontend/views/UserDashboard.fxml"));
             } else {
-                errorLabel.setText("Unbekannte Rolle: Zugriff verweigert.");
-                errorLabel.setVisible(true);
+                showErrorElements("Unbekannte Rolle: Zugriff verweigert.");
                 return;
             }
 
@@ -91,17 +92,35 @@ public class LoginPageController {
             stage.setScene(new Scene(root));
             stage.show();
 
+        } catch (AuthenticationException e) {
+            showErrorElements(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
-            errorLabel.setText("Systemfehler - bitte später probieren");
-            errorLabel.setVisible(true);
+            showErrorElements("Systemfehler - bitte später erneut versuchen.");
         }
     }
 
     @FXML
     private void handleForgotPasswordClick() {
-        forgotPassword.setVisible(false);
-        adminInformed.setVisible(true);
+        errorLabel.setVisible(false);
+        messageField.setVisible(true);
+        message.setVisible(true);
+        message.setText("Der Administrator wurde benachrichtigt.");
+        warning.setVisible(false);
+    }
+
+    private void showErrorElements(String errorMessage) {
+        messageField.setVisible(true);
+        message.setVisible(true);
+        message.setText(errorMessage);
+        warning.setVisible(true);
+    }
+
+    private void hideErrorElements() {
+        errorLabel.setVisible(false);
+        messageField.setVisible(false);
+        message.setVisible(false);
+        warning.setVisible(false);
     }
 
     //AI generated
