@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javafx.scene.control.TextField;
+import backend.logic.InvoiceService;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
 import backend.model.InvoiceState;
@@ -27,8 +28,6 @@ import backend.model.UserRole;
 import backend.model.UserState;
 
 public class InvoiceUploadController {
-
-	private File uploadedFile;
 	
 	@FXML
     private StackPane uploadPane; 
@@ -59,27 +58,29 @@ public class InvoiceUploadController {
     
     private List<Invoice> invoices;
     
-    private User dummyUser;
+    private User user;
+    private File uploadedFile;
+    private InvoiceService invoiceService = new InvoiceService(); 
 
     @FXML
     public void initialize() {
     	//dummy User until User Story Login is done
-    	dummyUser= new User ("dummy", "dummy@lunch.at", "test" , UserRole.ADMIN, UserState.ACTIVE);
+    	user= new User ("dummy", "dummy@lunch.at", "test" , UserRole.ADMIN, UserState.ACTIVE);
     	
-    	invoices = dummyUser.viewCurrentReimbursement();
+    	invoices = user.viewCurrentReimbursement();
     	
         categoryBox.getItems().addAll(InvoiceCategory.values());
         
         submitButton.setDisable(true);
         
         amountField.textProperty().addListener((obs, oldVal, newVal) -> {
-        	boolean isAmountValid = isValidFloat(newVal);
+        	boolean isAmountValid = invoiceService.isValidFloat(newVal);
         	updateLabel(amountLabel, isAmountValid, "Kein gültiger Zahlenwert", "Betrag eingegeben");
         	checkFields();
         });
         
         datePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
-        	boolean isDateValid = (newVal != null) && isWorkday(newVal);
+        	boolean isDateValid = (newVal != null) && invoiceService.isWorkday(newVal);
         	updateLabel(datePickerLabel, isDateValid, "Kein gültiger Arbeitstag!", "Datum eingegeben");
         	checkFields();
         });
@@ -90,6 +91,7 @@ public class InvoiceUploadController {
     
     @FXML
     private void openFileChooser() {
+    	
         Stage stage = (Stage) uploadPane.getScene().getWindow(); 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Bild oder PDF hochladen");
@@ -128,8 +130,8 @@ public class InvoiceUploadController {
    
    private void checkFields() {
 	   String amountText = amountField.getText().trim();
-       boolean isAmountValid = amountText!=null && isValidFloat(amountText);
-       boolean isDateValid = datePicker.getValue() != null && isWorkday(datePicker.getValue());
+	   boolean isAmountValid = invoiceService.isamaountValid(amountText);
+       boolean isDateValid = datePicker.getValue() != null && invoiceService.isWorkday(datePicker.getValue());
        boolean isCategorySelected = categoryBox.getValue() != null;
        boolean isFileUploaded = uploadedFile != null;
        
@@ -145,29 +147,19 @@ public class InvoiceUploadController {
    }
    
    @FXML
-   private void addInvoice() { //TODO: setUser
+   private void addInvoice() { // not finished yet
+	   //TODO: setUser
 	   LocalDate date = datePicker.getValue();  
-       float amount = Float.parseFloat(amountField.getText());
+       //float amount = Float.parseFloat(amountField.getText());
        InvoiceCategory category = categoryBox.getValue();
        //falls Rechnung möglich: uploadInvoice bei User, falls Rechnung nicht möglich --> Alert oder ähnliches
-	   Invoice newInvoice = new Invoice(date,amount, category, InvoiceState.PENDING, uploadedFile, dummyUser);
-	   if (invoices != null && invoiceDateAlreadyUsed(date)) {
+	   if (invoices != null && invoiceService.invoiceDateAlreadyUsed(date, user)) {
 		   showAlert("Ungültiges Datum", "Für das gewählte Datum wurde bereits eine Rechnung eingereicht. Bitte wähle ein anderes Datum.");
 		   submitButton.setDisable(true);
 	   } else {
-		   //TODO: Logik für Insert in die Datenbank //TODO: Nachricht um Rückerstattungsbetrag ergänzen
-		   showAlert("Rechnung eingereicht", "Die Rechnung wurde erfolgreich eingereicht! Kategorie: "+ newInvoice.getCategory());
+		   showAlert("Rechnung eingereicht", "Die Rechnung wurde erfolgreich eingereicht! Kategorie: "+ category);
 	   }
 	   
-   }
-   
-   private boolean isValidFloat(String text) { //created by AI (ChatGPT)
-	   return text.matches("^\\d+(\\.\\d+)?$");
-   }
-   
-   private boolean isWorkday (LocalDate date) {
-	   DayOfWeek dayOfWeek = date.getDayOfWeek();
-	   return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
    }
    
    private void updateLabel(Label label, boolean isValid, String errorText, String successText) {
@@ -180,11 +172,4 @@ public class InvoiceUploadController {
 	   }
    }
    
-   private boolean invoiceDateAlreadyUsed (LocalDate date) {
-	   for (Invoice invoice: invoices) {
-		   if (invoice.getDate().equals(date)) return true;
-	   } 
-	   return false;
-   }
-  
 }

@@ -50,7 +50,7 @@
             <Image url="@../images/pen.png" />
          </image>
       </ImageView>
-      <TextField editable="false" layoutX="109.0" layoutY="584.0" prefHeight="54.0" prefWidth="252.0" promptText="Rückerstattungsbetrag" />
+      <TextField fx:id="reimbursementAmount" editable="false" layoutX="109.0" layoutY="584.0" prefHeight="54.0" prefWidth="252.0" promptText="Rückerstattungsbetrag" />
       <ComboBox fx:id="categoryBox" layoutX="109.0" layoutY="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Kategorie" />
       <StackPane fx:id="uploadPane" layoutX="109.0" layoutY="197.0" onMouseClicked="#openFileChooser" prefHeight="90.0" prefWidth="445.0">
          <children>

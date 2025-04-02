@@ -34,19 +34,24 @@ public class Invoice {
         // Beispielberechnung (kann angepasst werden)
         return this.amount * 0.8f; // 80 % Rückerstattung
     }
-    
-    public float getAmount() {
-    	return this.amount;
-    }
-    
+   
     public LocalDate getDate() {
     	return this.date;
     }
     
-    public String toString() {
-    	return this.user.getName() +", " + this.date + ", " + category;
+     public float getAmount() {
+    	return this.amount;
     }
+     
     public InvoiceCategory getCategory() {
     	return this.category;
     }
+    
+   /* public File getFile() {
+    	return this.file;
+    }
+    
+    public String toString() {
+    	return this.user.getName() +", " + this.date + ", " + category;
+    }*/
 }
