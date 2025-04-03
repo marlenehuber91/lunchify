@@ -1,6 +1,8 @@
 package backend.model;
 import java.util.List;
 
+import backend.logic.InvoiceService;
+
 
 public class User {
     private int id; //created automatically by database
@@ -18,13 +20,14 @@ public class User {
         this.state = state;
     }
 
+    public String getName() {
+    	return this.name;
+    }
+
     public int getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -38,9 +41,6 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
     public void setPassword(String password) {
         this.password = password;
@@ -60,5 +60,22 @@ public class User {
 
     public void setState(UserState state) {
         this.state = state;
+    }
+
+    public void uploadInvoice(Invoice invoice) {
+        // Logik zum Hochladen einer Rechnung
+    }
+
+    public List<Invoice> viewCurrentReimbursement() {
+        // Logik zur Anzeige aktueller Erstattungen
+        return InvoiceService.getInvoices(this);
+    }
+
+    public void editInvoice(int invoiceId, Invoice newDetails) {
+        // Logik zur Bearbeitung einer Rechnung
+    }
+
+    public void deleteInvoice(int invoiceId) {
+        // Logik zum Löschen einer Rechnung
     }
 }

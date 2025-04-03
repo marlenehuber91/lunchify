@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -78,5 +79,7 @@
             <Font size="21.0" />
          </font>
       </Button>
+      <Label fx:id="datePickerLabel" layoutX="109.0" layoutY="390.0" text="Datum eingeben" />
+      <Label fx:id="amountLabel" layoutX="109.0" layoutY="470.0" text="Rechnungsbetrag eingeben" />
    </children>
 </AnchorPane>
