@@ -22,6 +22,9 @@ public class Invoice {
     	this.file=file;
     	this.user = user;
     }
+    public Invoice() {
+    	
+    }
 
     // Methode zum Hochladen eines Bildes
     public void uploadImage(File image) {
@@ -47,11 +50,38 @@ public class Invoice {
     	return this.category;
     }
     
-   /* public File getFile() {
-    	return this.file;
+    public User getUser() {
+    	return this.user;
     }
     
-    public String toString() {
-    	return this.user.getName() +", " + this.date + ", " + category;
-    }*/
+    public InvoiceState getState() {
+    	return this.status;
+    }
+    
+    public File getFile() {
+		return file;
+	}
+    public void setId(int id) {
+    	this.id=id;
+    }
+    
+    public void setAmount(float amount) {
+    	this.amount=amount;
+    }
+    
+    public void setCategory(InvoiceCategory cat) {
+    	this.category=cat;
+    }
+    
+    public void setStatus(InvoiceState status) {
+    	this.status=status;
+    }
+    public void setDate(LocalDate date) {
+    	this.date=date;
+    }
+	
+	public void setFile(File file) {
+		this.file= file;
+	}
+	
 }

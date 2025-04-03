@@ -9,6 +9,9 @@ import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -19,60 +22,23 @@ import java.util.List;
 
 
 public class InvoiceService {
-    
-
-	public static List<Invoice> getInvoices (User user) {//needs to be changed as soon as the database is ready
 	
-	List<Invoice> dummyInvoices = new ArrayList<>();
-	//TODO: Liste mit SELECT aus der Datenbank befüllen
+	public List<Invoice> invoices;
 	
-    dummyInvoices.add(new Invoice(
-        LocalDate.of(2025, 3, 31), // Datum
-        199.99f, // Betrag
-        InvoiceCategory.RESTAURANT, // Kategorie
-        InvoiceState.PENDING, // Status
-        null, // Datei
-        user // Benutzer
-    ));
-
-    dummyInvoices.add(new Invoice(
-        LocalDate.of(2025, 2, 10),
-        75.50f,
-        InvoiceCategory.SUPERMARKET,
-        InvoiceState.PENDING,
-        null,
-        user
-    ));
-
-    dummyInvoices.add(new Invoice(
-        LocalDate.of(2024, 1, 5),
-        500.00f,
-        InvoiceCategory.SUPERMARKET,
-        InvoiceState.APPROVED,
-        null,
-        user
-    ));
-
-    dummyInvoices.add(new Invoice(
-        LocalDate.of(2024, 12, 20),
-        320.75f,
-        InvoiceCategory.RESTAURANT,
-        InvoiceState.PENDING,
-        null,
-        user
-    ));
-    
-    return dummyInvoices;
-    
+	public InvoiceService(User user) {
+		this.invoices=getAllInvoices(user);
 	}
 	
-	public boolean invoiceDateAlreadyUsed (LocalDate date, User user) {
-		List<Invoice> invoices = new ArrayList<>();
-		invoices=getInvoices(user);
+	public InvoiceService () {
 		
+	}
+
+	
+	
+	public boolean invoiceDateAlreadyUsed (LocalDate date, User user) {
 	   for (Invoice invoice: invoices) {
 		   if (invoice.getDate().equals(date)) return true;
-	   } 
+	   }
 	   return false;
    }
 	
@@ -88,4 +54,74 @@ public class InvoiceService {
 	public boolean isamaountValid(String text) {
 		return (text!=null && isValidFloat(text));	
 	}
+	
+	public static List<Invoice> getAllInvoices (User user) {
+		List<Invoice> invoices = new ArrayList<>();
+				
+		String sql = "SELECT id, amount, category, status, date FROM invoices WHERE user_id = ?";
+		try (Connection conn = DatabaseConnection.connect();
+	             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	            stmt.setInt(1, user.getId());
+	            ResultSet rs = stmt.executeQuery();
+
+	            while (rs.next()) {
+	                Invoice invoice = new Invoice();
+	                invoice.setId(rs.getInt("id"));
+	                invoice.setAmount(rs.getFloat("amount"));
+	                invoice.setCategory(InvoiceCategory.valueOf(rs.getString("category")));
+	                invoice.setStatus(InvoiceState.valueOf(rs.getString("status")));
+	                invoice.setDate(rs.getDate("date").toLocalDate());
+	                invoices.add(invoice);
+	            }
+
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+		return invoices;
+	}
+	
+	public List<Invoice> getInvoices (){
+		return this.invoices;
+	}
+	
+	public boolean addInvoice(Invoice invoice) { //created with AI (ChatGPT)
+	    String sql = "INSERT INTO invoices (date, amount, category, status, user_id, file) VALUES (?, ?, ?, ?, ?, ?)";
+
+	    try (Connection conn = DatabaseConnection.connect();
+	    	//FileInputStream fis = new FileInputStream(invoice.getFile());
+	        PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+	    	//stmt.setBinaryStream(2, fis, (int) invoice.getFile().length());
+
+	    	stmt.setDate(1, Date.valueOf(invoice.getDate()));
+	    	stmt.setFloat(2, invoice.getAmount());
+	        stmt.setObject(3, invoice.getCategory(), Types.OTHER);
+	        stmt.setObject(4, invoice.getState(), Types.OTHER);
+	        stmt.setInt(5, invoice.getUser().getId()); // Nutzer-ID setzen
+	        
+	        if (invoice.getFile() != null) { // Falls eine Datei vorhanden ist
+	            try {
+					stmt.setBinaryStream(6, new FileInputStream(invoice.getFile()), (int) invoice.getFile().length());
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        } else {
+	            stmt.setNull(6, Types.BINARY); // Falls keine Datei da ist
+	        }
+
+	        int affectedRows = stmt.executeUpdate(); // SQL ausführen
+	        if (affectedRows > 0) {
+	            ResultSet generatedKeys = stmt.getGeneratedKeys();
+	            if (generatedKeys.next()) {
+	                invoice.setId(generatedKeys.getInt(1)); // Neue ID setzen
+	            }
+	            return true; // Erfolg
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return false; // Falls etwas schiefgeht
+	}
+
 }

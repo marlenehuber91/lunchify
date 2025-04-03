@@ -67,7 +67,8 @@ public class InvoiceUploadController {
     	//dummy User until User Story Login is done
     	user= new User ("dummy", "dummy@lunch.at", "test" , UserRole.ADMIN, UserState.ACTIVE);
     	
-    	invoices = user.viewCurrentReimbursement();
+    	invoiceService = new InvoiceService(user);
+    	invoices=invoiceService.getInvoices();
     	
         categoryBox.getItems().addAll(InvoiceCategory.values());
         
@@ -79,10 +80,22 @@ public class InvoiceUploadController {
         	checkFields();
         });
         
-        datePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
-        	boolean isDateValid = (newVal != null) && invoiceService.isWorkday(newVal);
-        	updateLabel(datePickerLabel, isDateValid, "Kein gültiger Arbeitstag!", "Datum eingegeben");
-        	checkFields();
+        datePicker.setDayCellFactory(picker -> new javafx.scene.control.DateCell() { //created by AI (ChatGPT
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+
+                LocalDate today = LocalDate.now();
+                LocalDate firstDayOfMonth = today.withDayOfMonth(1);
+                LocalDate lastDayOfMonth = today.withDayOfMonth(today.lengthOfMonth());
+
+                boolean isDisabled = date.isBefore(firstDayOfMonth) || date.isAfter(today);
+                
+                setDisable(isDisabled);
+                if (isDisabled) {
+                    setStyle("-fx-background-color: #d3d3d3;");
+                }
+            }
         });
         
         categoryBox.valueProperty().addListener((obs, oldVal, newVal) -> checkFields());
@@ -132,11 +145,11 @@ public class InvoiceUploadController {
 	   String amountText = amountField.getText().trim();
 	   boolean isAmountValid = invoiceService.isamaountValid(amountText);
        boolean isDateValid = datePicker.getValue() != null && invoiceService.isWorkday(datePicker.getValue());
+       //updateLabel(datePickerLabel, isDateValid,"Bitte wähle ein richtiges Datum", "Datum ausgewählt");
        boolean isCategorySelected = categoryBox.getValue() != null;
        boolean isFileUploaded = uploadedFile != null;
        
        boolean allFieldsFilled = isAmountValid && isDateValid && isCategorySelected && isFileUploaded;
-       
        submitButton.setDisable(!allFieldsFilled);
        
        if (allFieldsFilled) {
@@ -150,14 +163,20 @@ public class InvoiceUploadController {
    private void addInvoice() { // not finished yet
 	   //TODO: setUser
 	   LocalDate date = datePicker.getValue();  
-       //float amount = Float.parseFloat(amountField.getText());
        InvoiceCategory category = categoryBox.getValue();
-       //falls Rechnung möglich: uploadInvoice bei User, falls Rechnung nicht möglich --> Alert oder ähnliches
+       float amount = Float.parseFloat(amountField.getText().trim());
+       
 	   if (invoices != null && invoiceService.invoiceDateAlreadyUsed(date, user)) {
 		   showAlert("Ungültiges Datum", "Für das gewählte Datum wurde bereits eine Rechnung eingereicht. Bitte wähle ein anderes Datum.");
 		   submitButton.setDisable(true);
 	   } else {
-		   showAlert("Rechnung eingereicht", "Die Rechnung wurde erfolgreich eingereicht! Kategorie: "+ category);
+		   
+		   if (invoiceService.addInvoice(new Invoice(date, amount, category, InvoiceState.PENDING, uploadedFile, user))) {
+			   showAlert("Rechnung eingereicht", "Die Rechnung wurde erfolgreich eingereicht!" + "\n" +" Kategorie: "+ categoryBox.getValue());
+		   }
+		   else {
+			   showAlert("Fehler", "Die Rechnung konnte nicht eingereicht werden. Versuche es erneut.");
+		   }
 	   }
 	   
    }
