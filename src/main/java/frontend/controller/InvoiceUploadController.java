@@ -85,6 +85,7 @@ public class InvoiceUploadController {
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
 
+                               
                 LocalDate today = LocalDate.now();
                 LocalDate firstDayOfMonth = today.withDayOfMonth(1);
                 LocalDate lastDayOfMonth = today.withDayOfMonth(today.lengthOfMonth());
@@ -96,6 +97,21 @@ public class InvoiceUploadController {
                     setStyle("-fx-background-color: #d3d3d3;");
                 }
             }
+        });
+        
+        datePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
+        	if (newVal == null) {
+                updateLabel(datePickerLabel, false, "Kein Datum ausgewählt!", "");
+            } else if (newVal.isBefore(LocalDate.now().withDayOfMonth(1))) {
+                updateLabel(datePickerLabel, false, "Datum zu früh!", "");
+            } else if (newVal.isAfter(LocalDate.now())) {
+                updateLabel(datePickerLabel, false, "Kein Datum in der Zukunft!", "");
+            } else if (!invoiceService.isWorkday(newVal)) {
+                updateLabel(datePickerLabel, false, "Kein gültiger Arbeitstag!", "");
+            } else {
+                updateLabel(datePickerLabel, true, "", "Datum eingegeben");
+            }
+            checkFields();
         });
         
         categoryBox.valueProperty().addListener((obs, oldVal, newVal) -> checkFields());
@@ -143,13 +159,13 @@ public class InvoiceUploadController {
    
    private void checkFields() {
 	   String amountText = amountField.getText().trim();
+	   LocalDate date= datePicker.getValue();
+	   boolean isValidDate = isDateValid(date);
 	   boolean isAmountValid = invoiceService.isamaountValid(amountText);
-       boolean isDateValid = datePicker.getValue() != null && invoiceService.isWorkday(datePicker.getValue());
-       //updateLabel(datePickerLabel, isDateValid,"Bitte wähle ein richtiges Datum", "Datum ausgewählt");
        boolean isCategorySelected = categoryBox.getValue() != null;
        boolean isFileUploaded = uploadedFile != null;
        
-       boolean allFieldsFilled = isAmountValid && isDateValid && isCategorySelected && isFileUploaded;
+       boolean allFieldsFilled = isAmountValid && isValidDate && isCategorySelected && isFileUploaded;
        submitButton.setDisable(!allFieldsFilled);
        
        if (allFieldsFilled) {
@@ -160,8 +176,7 @@ public class InvoiceUploadController {
    }
    
    @FXML
-   private void addInvoice() { // not finished yet
-	   //TODO: setUser
+   private void addInvoice() { 
 	   LocalDate date = datePicker.getValue();  
        InvoiceCategory category = categoryBox.getValue();
        float amount = Float.parseFloat(amountField.getText().trim());
@@ -189,6 +204,14 @@ public class InvoiceUploadController {
 		   label.setText(successText);
 		   label.setStyle("-fx-text-fill: green");
 	   }
+   }
+   
+   public File getFile() {
+	   return this.uploadedFile;
+   }
+   
+   private boolean isDateValid(LocalDate date) {
+	   return (date!=null && !date.isBefore(LocalDate.now().withDayOfMonth(1)) && !date.isAfter(LocalDate.now()) && invoiceService.isWorkday(date));
    }
    
 }

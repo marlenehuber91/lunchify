@@ -42,7 +42,21 @@ public class InvoiceService {
 	   return false;
    }
 	
-	public boolean isWorkday (LocalDate date) {
+	public boolean isValidDate(LocalDate date) {
+		  // Das heutige Datum
+        LocalDate today = LocalDate.now();
+
+        // Überprüfen, ob das Datum im gleichen Monat und Jahr wie heute ist
+        boolean isSameMonth = date.getMonth() == today.getMonth() && date.getYear() == today.getYear();
+
+        // Überprüfen, ob das Datum nicht in der Zukunft liegt
+        boolean isNotInFuture = !date.isAfter(today);
+
+        // Beide Bedingungen müssen erfüllt sein
+        return isSameMonth && isNotInFuture && isWorkday(date);
+    }
+
+	public static boolean isWorkday (LocalDate date) {
 		DayOfWeek dayOfWeek = date.getDayOfWeek();
 		return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
 	}
