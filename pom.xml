@@ -4,8 +4,8 @@
 		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>at.jku.se</groupId>
-	<artifactId>Lunchify</artifactId>
-	<version>0.0.1.beta</version>
+	<artifactId>lunchify</artifactId>
+	<version>0.0.1</version>
 
 	<properties>
 		<maven.compiler.target>21</maven.compiler.target>
@@ -64,7 +64,7 @@
 			<plugin>
 				<groupId>org.openjfx</groupId>
 				<artifactId>javafx-maven-plugin</artifactId>
-				<version>0.0.5</version>
+				<version>0.0.8</version>
 				<configuration>
 					<mainClass>frontend.Main</mainClass>
 				</configuration>
