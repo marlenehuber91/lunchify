@@ -1,11 +1,8 @@
 package frontend.controller;
 
+import backend.model.*;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -18,17 +15,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
-import javafx.scene.control.TextField;
-import backend.model.Invoice;
-import backend.model.InvoiceCategory;
-import backend.model.InvoiceState;
-import backend.model.User;
-import backend.model.UserRole;
-import backend.model.UserState;
-
 public class InvoiceUploadController {
 
-	private File uploadedFile;
+	File uploadedFile;
 	
 	@FXML
     private StackPane uploadPane; 
@@ -53,21 +42,21 @@ public class InvoiceUploadController {
 
     @FXML
     private DatePicker datePicker;
-    
+
     @FXML
     private Label amountLabel, datePickerLabel, imageUploadLabel;
-    
+
     private List<Invoice> invoices;
-    
+
     private User dummyUser;
 
     @FXML
     public void initialize() {
     	//dummy User until User Story Login is done
     	dummyUser= new User ("dummy", "dummy@lunch.at", "test" , UserRole.ADMIN, UserState.ACTIVE);
-    	
+
     	invoices = dummyUser.viewCurrentReimbursement();
-    	
+
         categoryBox.getItems().addAll(InvoiceCategory.values());
         
         submitButton.setDisable(true);
@@ -77,13 +66,13 @@ public class InvoiceUploadController {
         	updateLabel(amountLabel, isAmountValid, "Kein gültiger Zahlenwert", "Betrag eingegeben");
         	checkFields();
         });
-        
+
         datePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
         	boolean isDateValid = (newVal != null) && isWorkday(newVal);
         	updateLabel(datePickerLabel, isDateValid, "Kein gültiger Arbeitstag!", "Datum eingegeben");
         	checkFields();
         });
-        
+
         categoryBox.valueProperty().addListener((obs, oldVal, newVal) -> checkFields());
     }
     
@@ -136,12 +125,14 @@ public class InvoiceUploadController {
        boolean allFieldsFilled = isAmountValid && isDateValid && isCategorySelected && isFileUploaded;
        
        submitButton.setDisable(!allFieldsFilled);
-       
+
        if (allFieldsFilled) {
            submitButton.setStyle("-fx-background-color: #42b35b; -fx-text-fill: white;"); // Grün
        } else {
     	   submitButton.setStyle("");
        }
+       
+      // submitButton.setDisable(!(isAmountFilled && isDateSelected && isCategorySelected && isFileUploaded));
    }
    
    @FXML
@@ -160,16 +151,16 @@ public class InvoiceUploadController {
 	   }
 	   
    }
-   
+
    private boolean isValidFloat(String text) { //created by AI (ChatGPT)
 	   return text.matches("^\\d+(\\.\\d+)?$");
    }
-   
+
    private boolean isWorkday (LocalDate date) {
 	   DayOfWeek dayOfWeek = date.getDayOfWeek();
 	   return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
    }
-   
+
    private void updateLabel(Label label, boolean isValid, String errorText, String successText) {
 	   if (!isValid) {
 		   label.setText(errorText);
@@ -179,12 +170,12 @@ public class InvoiceUploadController {
 		   label.setStyle("-fx-text-fill: green");
 	   }
    }
-   
+
    private boolean invoiceDateAlreadyUsed (LocalDate date) {
 	   for (Invoice invoice: invoices) {
 		   if (invoice.getDate().equals(date)) return true;
-	   } 
+	   }
 	   return false;
    }
-  
+
 }
