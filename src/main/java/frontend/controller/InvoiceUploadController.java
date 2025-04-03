@@ -1,10 +1,8 @@
 package frontend.controller;
 
+import backend.model.*;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -13,12 +11,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
 import java.sql.Date;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-
-import javafx.scene.control.TextField;
-import backend.model.Invoice;
-import backend.model.InvoiceCategory;
-import backend.model.InvoiceState;
+import java.util.List;
 
 public class InvoiceUploadController {
 
@@ -137,7 +132,7 @@ public class InvoiceUploadController {
     	   submitButton.setStyle("");
        }
        
-       submitButton.setDisable(!(isAmountFilled && isDateSelected && isCategorySelected && isFileUploaded));
+      // submitButton.setDisable(!(isAmountFilled && isDateSelected && isCategorySelected && isFileUploaded));
    }
    
    @FXML

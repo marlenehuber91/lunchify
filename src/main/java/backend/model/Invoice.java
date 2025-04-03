@@ -29,10 +29,6 @@ public class Invoice {
     }
 
 
-    public LocalDate getDate() {
-        return date;
-    }
-
     public void setDate(LocalDate date) {
         this.date = date;
     }
@@ -45,9 +41,6 @@ public class Invoice {
         this.amount = amount;
     }
 
-    public InvoiceCategory getCategory() {
-        return category;
-    }
 
     public void setCategory(InvoiceCategory category) {
         this.category = category;
