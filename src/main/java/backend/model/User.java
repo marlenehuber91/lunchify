@@ -26,19 +26,47 @@ public class User {
         this.state = state;
         this.id=1;
     }
-    
+
     public String getName() {
     	return this.name;
     }
 
-    public void login() {
-        // Login-Logik hier
+    public int getId() {
+        return id;
     }
 
 
-    //TODO optional implementation if neccessary
-    public void logout() {
-        // Logout-Logik hier
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public UserState getState() {
+        return state;
+    }
+
+    public void setState(UserState state) {
+        this.state = state;
     }
 
     public void uploadInvoice(Invoice invoice) {
@@ -47,11 +75,6 @@ public class User {
 
     public List<Invoice> viewCurrentReimbursement() {
         // Logik zur Anzeige aktueller Erstattungen
-        return null;
-    }
-
-    public List<Invoice> viewReimbursementHistory() {
-        // Logik zur Anzeige der Erstattungsverlauf
         return null;
     }
 

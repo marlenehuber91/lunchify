@@ -9,7 +9,6 @@ public class DatabaseConnection {
     private static final String USER="postgres";
     private static final String PASSWORD="!!Lunch4";
 
-
     //TODO check if it works.
 
     public static Connection connect() {
@@ -26,4 +25,3 @@ public class DatabaseConnection {
         connect();
     }
 }
-

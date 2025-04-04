@@ -1,16 +1,18 @@
 package backend.logic;
+
+import backend.Exceptions.AuthenticationException;
+import backend.model.User;
+import backend.model.UserRole;
+import backend.model.UserState;
 import database.DatabaseConnection;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
 
-//TODO not finished - still working on it
-
-
 public class UserService {
-    // Methode zur Benutzerüberprüfung
-    public static boolean authenticate(String email, String password) {
-        String query = "SELECT * FROM users WHERE email = ?";
+
+    public static UserRole authenticate(String email, String password) throws AuthenticationException {
+        String query = "SELECT password, role, state FROM users WHERE email = ?";
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -18,36 +20,54 @@ public class UserService {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                // Passwort-Hash aus der DB holen
-                String storedPasswordHash = rs.getString("password_hash");
-                // Passwort prüfen
-                if (BCrypt.checkpw(password, storedPasswordHash)) {
-                    String role = rs.getString("role");
-                    System.out.println("Login erfolgreich! Rolle: " + role);
-                    return true;
+                String state = rs.getString("state");
+                if (state == null || state.isEmpty()) {
+                    throw new AuthenticationException("Benutzerstatus fehlt in der Datenbank.");
                 }
+
+                UserState userState;
+                try {
+                    userState = UserState.valueOf(state.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new AuthenticationException("Ungültiger Benutzerstatus: " + state, e);
+                }
+
+                if (userState == UserState.SUSPENDED) {
+                    throw new AuthenticationException("Ihr Konto wurde gesperrt.");
+                }
+                if (userState == UserState.INACTIVE) {
+                    throw new AuthenticationException("Ihr Konto ist inaktiv.");
+                }
+
+                String storedPasswordHash = rs.getString("password");
+                if (storedPasswordHash == null || storedPasswordHash.isEmpty()) {
+                    throw new AuthenticationException("Passwort-Hash fehlt in der Datenbank.");
+                }
+
+                if (!BCrypt.checkpw(password, storedPasswordHash)) {
+                    throw new AuthenticationException("Passwort ist nicht korrekt.");
+                }
+
+                String role = rs.getString("role");
+                if (role == null || role.isEmpty()) {
+                    throw new AuthenticationException("Benutzerrolle fehlt in der Datenbank.");
+                }
+
+                UserRole userRole;
+                try {
+                    userRole = UserRole.valueOf(role.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new AuthenticationException("Ungültige Benutzerrolle: " + role, e);
+                }
+
+                return userRole;
+
+            } else {
+                throw new AuthenticationException("E-Mail-Adresse wurde nicht gefunden.");
             }
-            return false; // Benutzer oder falsches Passwort
+
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    // Beispielmethode zum Hinzufügen eines Benutzers (nur einmalig beim Erstellen)
-    public static void addUser(String email, String password, String role) {
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-        String query = "INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)";
-
-        try (Connection conn = DatabaseConnection.connect();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setString(1, email);
-            stmt.setString(2, hashedPassword);
-            stmt.setString(3, role);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            throw new AuthenticationException("Datenbankfehler bei der Authentifizierung: " + e.getMessage(), e);
         }
     }
 }

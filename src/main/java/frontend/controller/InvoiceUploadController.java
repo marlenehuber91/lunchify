@@ -1,11 +1,8 @@
 package frontend.controller;
 
+import backend.model.*;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -29,7 +26,7 @@ import backend.model.UserState;
 
 public class InvoiceUploadController {
 	
-	@FXML
+	  @FXML
     private StackPane uploadPane; 
 	
     @FXML
@@ -52,29 +49,31 @@ public class InvoiceUploadController {
 
     @FXML
     private DatePicker datePicker;
-    
+
     @FXML
     private Label amountLabel, datePickerLabel, imageUploadLabel;
-    
+
     private List<Invoice> invoices;
     
     private User user;
     private File uploadedFile;
     private InvoiceService invoiceService = new InvoiceService(); 
 
+
     @FXML
     public void initialize() {
-    	//dummy User until User Story Login is done
+
     	user= new User ("dummy", "dummy@lunch.at", "test" , UserRole.ADMIN, UserState.ACTIVE);
     	
     	invoiceService = new InvoiceService(user);
     	invoices=invoiceService.getInvoices();
-    	
-        categoryBox.getItems().addAll(InvoiceCategory.values());
+
+      categoryBox.getItems().addAll(InvoiceCategory.values());
         
-        submitButton.setDisable(true);
+      submitButton.setDisable(true);
         
-        amountField.textProperty().addListener((obs, oldVal, newVal) -> {
+        
+       amountField.textProperty().addListener((obs, oldVal, newVal) -> {
         	boolean isAmountValid = invoiceService.isValidFloat(newVal);
         	updateLabel(amountLabel, isAmountValid, "Kein gültiger Zahlenwert", "Betrag eingegeben");
         	checkFields();
@@ -113,7 +112,7 @@ public class InvoiceUploadController {
             }
             checkFields();
         });
-        
+
         categoryBox.valueProperty().addListener((obs, oldVal, newVal) -> checkFields());
     }
     
@@ -167,12 +166,14 @@ public class InvoiceUploadController {
        
        boolean allFieldsFilled = isAmountValid && isValidDate && isCategorySelected && isFileUploaded;
        submitButton.setDisable(!allFieldsFilled);
-       
+
        if (allFieldsFilled) {
            submitButton.setStyle("-fx-background-color: #42b35b; -fx-text-fill: white;"); // Grün
        } else {
     	   submitButton.setStyle("");
        }
+       
+      // submitButton.setDisable(!(isAmountFilled && isDateSelected && isCategorySelected && isFileUploaded));
    }
    
    @FXML
@@ -195,7 +196,7 @@ public class InvoiceUploadController {
 	   }
 	   
    }
-   
+  
    private void updateLabel(Label label, boolean isValid, String errorText, String successText) {
 	   if (!isValid) {
 		   label.setText(errorText);
@@ -213,5 +214,4 @@ public class InvoiceUploadController {
    private boolean isDateValid(LocalDate date) {
 	   return (date!=null && !date.isBefore(LocalDate.now().withDayOfMonth(1)) && !date.isAfter(LocalDate.now()) && invoiceService.isWorkday(date));
    }
-   
 }
