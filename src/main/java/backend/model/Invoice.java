@@ -78,9 +78,11 @@ public class Invoice {
     public void setStatus(InvoiceState status) {
     	this.status=status;
     }
-    public void setDate(LocalDate date) {
+
+    //TODO für Johanna: von Marlene auskommentiert, damit der Push geht
+    /*public void setDate(LocalDate date) {
     	this.date=date;
-    }
+    }*/
 	
 	public void setFile(File file) {
 		this.file= file;
