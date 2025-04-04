@@ -85,8 +85,4 @@ public class User {
     public void deleteInvoice(int invoiceId) {
         // Logik zum Löschen einer Rechnung
     }
-    
-    public int getId() {
-    	return this.id;
-    }
 }

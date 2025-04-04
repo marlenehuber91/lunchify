@@ -26,18 +26,8 @@ public class Invoice {
     	
     }
 
-
     public int getId() {
         return id;
-    }
-
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-   
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public LocalDate getDate() {
@@ -63,6 +53,7 @@ public class Invoice {
     public File getFile() {
 		return file;
 	}
+    
     public void setId(int id) {
     	this.id=id;
     }
@@ -75,9 +66,14 @@ public class Invoice {
     	this.category=cat;
     }
     
+    public void setUser(User user) {
+        this.user = user;
+    }
+    
     public void setStatus(InvoiceState status) {
     	this.status=status;
     }
+    
     public void setDate(LocalDate date) {
     	this.date=date;
     }
@@ -85,5 +81,4 @@ public class Invoice {
 	public void setFile(File file) {
 		this.file= file;
 	}
-	
 }
