@@ -30,7 +30,6 @@ public class User {
     public String getName() {
     	return this.name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -79,9 +78,5 @@ public class User {
 
     public void deleteInvoice(int invoiceId) {
         // Logik zum Löschen einer Rechnung
-    }
-    
-    public int getId() {
-    	return this.id;
     }
 }
