@@ -10,7 +10,7 @@ public class Main extends Application{
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
-			AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("views/AdminDashboard.fxml"));
+			AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("/frontend/views/LoginPage.fxml"));
 			Scene scene = new Scene(root, 1280, 832);
 			primaryStage.setScene(scene);
 			primaryStage.show();
