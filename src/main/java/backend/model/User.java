@@ -1,7 +1,13 @@
 package backend.model;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import backend.logic.InvoiceService;
+import database.DatabaseConnection;
 
 
 public class User {
@@ -18,6 +24,7 @@ public class User {
         this.password = password;
         this.role = role;
         this.state = state;
+        this.id=1;
     }
 
     public String getName() {
@@ -68,7 +75,7 @@ public class User {
 
     public List<Invoice> viewCurrentReimbursement() {
         // Logik zur Anzeige aktueller Erstattungen
-        return InvoiceService.getInvoices(this);
+        return null;
     }
 
     public void editInvoice(int invoiceId, Invoice newDetails) {
@@ -77,5 +84,9 @@ public class User {
 
     public void deleteInvoice(int invoiceId) {
         // Logik zum Löschen einer Rechnung
+    }
+    
+    public int getId() {
+    	return this.id;
     }
 }

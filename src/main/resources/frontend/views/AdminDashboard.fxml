@@ -119,6 +119,6 @@
             <Image url="@../images/logo.png" />
          </image>
       </ImageView>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="160.0" layoutX="110.0" layoutY="110.0" onMouseClicked="#onklickOpenInvoiceSubmissionWindow" stroke="#ffffff00" strokeType="INSIDE" width="220.0" />
+      <Rectangle fx:id="openInvoiceUploadButton" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="160.0" layoutX="110.0" layoutY="110.0" onMouseClicked="#onklickOpenInvoiceSubmissionWindow" stroke="#ffffff00" strokeType="INSIDE" width="220.0" />
    </children>
 </AnchorPane>

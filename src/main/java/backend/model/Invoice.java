@@ -22,6 +22,9 @@ public class Invoice {
     	this.file=file;
     	this.user = user;
     }
+    public Invoice() {
+    	
+    }
 
 
     public int getId() {
@@ -32,52 +35,55 @@ public class Invoice {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-
-    public float getAmount() {
-        return amount;
-    }
-
-    public void setAmount(float amount) {
-        this.amount = amount;
-    }
-
-
-    public void setCategory(InvoiceCategory category) {
-        this.category = category;
-    }
-
-    public InvoiceState getStatus() {
-        return status;
-    }
-
-    public void setStatus(InvoiceState status) {
-        this.status = status;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
+   
     public void setUser(User user) {
         this.user = user;
     }
 
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-    
     public LocalDate getDate() {
     	return this.date;
     }
     
-    public String toString() {
-    	return this.user.getName() +", " + this.date + ", " + category;
+     public float getAmount() {
+    	return this.amount;
     }
+     
     public InvoiceCategory getCategory() {
     	return this.category;
     }
+    
+    public User getUser() {
+    	return this.user;
+    }
+    
+    public InvoiceState getState() {
+    	return this.status;
+    }
+    
+    public File getFile() {
+		return file;
+	}
+    public void setId(int id) {
+    	this.id=id;
+    }
+    
+    public void setAmount(float amount) {
+    	this.amount=amount;
+    }
+    
+    public void setCategory(InvoiceCategory cat) {
+    	this.category=cat;
+    }
+    
+    public void setStatus(InvoiceState status) {
+    	this.status=status;
+    }
+    public void setDate(LocalDate date) {
+    	this.date=date;
+    }
+	
+	public void setFile(File file) {
+		this.file= file;
+	}
+	
 }

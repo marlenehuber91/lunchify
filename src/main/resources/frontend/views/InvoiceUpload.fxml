@@ -39,7 +39,7 @@
             <Font size="41.0" />
          </font>
       </Text>
-      <TextArea layoutX="1015.0" layoutY="40.0" prefHeight="330.0" prefWidth="250.0" promptText="Information" text="Pro Arbeitstag kann eine Rechnung eingereicht werden.&#10;&#10;maximale Rückerstattung pro Arbeitstag:&#10; &#10; Restaurant: € 3,00&#10;Supermarkt: € 2,50" wrapText="true" AnchorPane.rightAnchor="14.599999999999994">
+      <TextArea editable="false" layoutX="1015.0" layoutY="40.0" prefHeight="330.0" prefWidth="250.0" promptText="Information" text="Pro Arbeitstag kann eine Rechnung eingereicht werden.&#10;&#10;maximale Rückerstattung pro Arbeitstag:&#10; &#10; Restaurant: € 3,00&#10;Supermarkt: € 2,50" wrapText="true" AnchorPane.rightAnchor="14.599999999999994">
          <font>
             <Font size="22.0" />
          </font>
@@ -50,11 +50,11 @@
             <Image url="@../images/pen.png" />
          </image>
       </ImageView>
-      <TextField editable="false" layoutX="109.0" layoutY="584.0" prefHeight="54.0" prefWidth="252.0" promptText="Rückerstattungsbetrag" />
+      <TextField fx:id="reimbursementAmount" editable="false" layoutX="109.0" layoutY="584.0" prefHeight="54.0" prefWidth="252.0" promptText="Rückerstattungsbetrag" />
       <ComboBox fx:id="categoryBox" layoutX="109.0" layoutY="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Kategorie" />
       <StackPane fx:id="uploadPane" layoutX="109.0" layoutY="197.0" onMouseClicked="#openFileChooser" prefHeight="90.0" prefWidth="445.0">
          <children>
-            <Rectangle fx:id="uploadButton" arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="90.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="460.0" />
+            <Rectangle fx:id="fileUploadButton" arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="90.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="460.0" />
             <ImageView id="cameraImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" translateX="-180.0">
                <image>
                   <Image url="@../images/camera_light.png" />
@@ -74,7 +74,7 @@
       </StackPane>
       <ImageView fx:id="uploadedImageView" fitHeight="434.0" fitWidth="336.0" layoutX="640.0" layoutY="232.0" pickOnBounds="true" preserveRatio="true" />
       <Text fx:id="previewText" layoutX="662.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" " />
-      <Button fx:id="submitButton" layoutX="478.0" layoutY="695.0" mnemonicParsing="false" onMouseClicked="#addInvoice" prefHeight="60.0" prefWidth="258.0" style="-fx-background-color: #bebfbe;" text="Rechnung einreichen" textFill="WHITE">
+      <Button fx:id="submitButton" layoutX="478.0" layoutY="695.0" mnemonicParsing="false" onMouseClicked="#addInvoice" prefHeight="60.0" prefWidth="258.0" style="-fx-background-color: #42b35b;" text="Rechnung einreichen" textFill="WHITE">
          <font>
             <Font size="21.0" />
          </font>
