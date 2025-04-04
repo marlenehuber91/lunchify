@@ -10,7 +10,13 @@ public class Main extends Application{
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
-			AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("/frontend/views/LoginPage.fxml"));
+			AnchorPane root;
+			if (!isOnTestMode()) {
+				root = (AnchorPane)FXMLLoader.load(getClass().getResource("/frontend/views/LoginPage.fxml"));
+			}
+			else {
+				root = (AnchorPane)FXMLLoader.load(getClass().getResource("/frontend/views/AdminDashboard.fxml"));
+			}
 			Scene scene = new Scene(root, 1280, 832);
 			primaryStage.setScene(scene);
 			primaryStage.show();
@@ -21,6 +27,10 @@ public class Main extends Application{
 	
 	public static void main(String[] args) {
 		launch(args);
+	}
+	
+	boolean isOnTestMode() {
+		return false;
 	}
 
 }

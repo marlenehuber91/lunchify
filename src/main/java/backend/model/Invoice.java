@@ -30,11 +30,6 @@ public class Invoice {
     public int getId() {
         return id;
     }
-
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
    
     public void setUser(User user) {
         this.user = user;
@@ -78,6 +73,7 @@ public class Invoice {
     public void setStatus(InvoiceState status) {
     	this.status=status;
     }
+    
     public void setDate(LocalDate date) {
     	this.date=date;
     }

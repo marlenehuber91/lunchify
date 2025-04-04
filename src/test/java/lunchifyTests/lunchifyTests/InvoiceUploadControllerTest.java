@@ -89,7 +89,7 @@ public class InvoiceUploadControllerTest extends ApplicationTest {
 	void testInvoiceAlreadySubmittedForDay() {
 	    // Ein spezifisches Datum und einen Benutzer festlegen
 	    LocalDate testDate = LocalDate.of(2025, 4, 1); // Beispiel-Datum
-	    User testUser = new User("testUser", "test@domain.com", "password", UserRole.USER, UserState.ACTIVE);
+	    User testUser = new User("testUser", "test@domain.com", "password", UserRole.EMPLOYEE, UserState.ACTIVE);
 
 	    // Simuliere den Zustand, in dem bereits eine Rechnung für das Datum existiert
 	    InvoiceService invoiceService = new InvoiceService(testUser);
