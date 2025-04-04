@@ -31,9 +31,10 @@ public class User {
     	return this.name;
     }
 
-    public int getId() {
-        return id;
-    }
+    //TODO FÜR JOHANNA: Von Marlene auskommentiert, damit der push klappt
+   // public int getId() {
+     //   return id;
+    //}
 
 
     public void setName(String name) {
