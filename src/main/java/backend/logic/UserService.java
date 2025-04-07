@@ -6,13 +6,14 @@ import backend.model.UserRole;
 import backend.model.UserState;
 import database.DatabaseConnection;
 import org.mindrot.jbcrypt.BCrypt;
+import javax.servlet.http.HttpSession;
 
 import java.sql.*;
 
 public class UserService {
 
-    public static UserRole authenticate(String email, String password) throws AuthenticationException {
-        String query = "SELECT password, role, state FROM users WHERE email = ?";
+    public static User authenticate(String email, String password) throws AuthenticationException {
+        String query = "SELECT id, name, password, role, state FROM users WHERE email = ?";
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -41,7 +42,7 @@ public class UserService {
 
                 String storedPasswordHash = rs.getString("password");
                 if (storedPasswordHash == null || storedPasswordHash.isEmpty()) {
-                    throw new AuthenticationException("Passwort-Hash fehlt in der Datenbank.");
+                    throw new AuthenticationException("Passwort fehlt in der Datenbank.");
                 }
 
                 if (!BCrypt.checkpw(password, storedPasswordHash)) {
@@ -60,7 +61,13 @@ public class UserService {
                     throw new AuthenticationException("Ungültige Benutzerrolle: " + role, e);
                 }
 
-                return userRole;
+                int userId = rs.getInt("id");
+                String name = rs.getString("name");
+
+                User currentUser = new User(userId, name, email, userRole, userState);
+                SessionManager.setCurrentUser(currentUser);
+
+                return currentUser;
 
             } else {
                 throw new AuthenticationException("E-Mail-Adresse wurde nicht gefunden.");

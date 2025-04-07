@@ -1,5 +1,7 @@
 package frontend.controller;
 
+import backend.logic.SessionManager;
+import backend.model.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -9,12 +11,13 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
+import java.sql.Date;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
 import javafx.scene.control.TextField;
 import backend.logic.InvoiceService;
-import backend.logic.ReimbursementService;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
 import backend.model.InvoiceState;
@@ -23,203 +26,211 @@ import backend.model.UserRole;
 import backend.model.UserState;
 
 public class InvoiceUploadController {
+	
+    @FXML
+    private StackPane uploadPane;
+    @FXML
+    private ImageView uploadedImageView;
+    @FXML
+    private Text uploadText;
+    @FXML
+    private Text previewText;
+    @FXML
+    private Button submitButton;
+    @FXML
+    private ComboBox<InvoiceCategory> categoryBox;
+    @FXML
+    private TextField amountField;
+    @FXML
+    private DatePicker datePicker;
+    @FXML
+    private Label amountLabel, datePickerLabel, imageUploadLabel;
 
-	@FXML
-	private StackPane uploadPane;
+    private List<Invoice> invoices;
+    
+    private User user;
+    private File uploadedFile;
+    private InvoiceService invoiceService = new InvoiceService(); 
 
-	@FXML
-	private ImageView uploadedImageView;
 
-	@FXML
-	private Text uploadText;
+    @FXML
+    public void initialize() {
 
-	@FXML
-	private Text previewText;
+        //TODO > changes made by Marlene - check and accept or reject
+    	user = SessionManager.getCurrentUser();
+    	
+    	invoiceService = new InvoiceService(user);
+    	invoices=invoiceService.getInvoices();
 
-	@FXML
-	private Button submitButton;
+        categoryBox.getItems().addAll(InvoiceCategory.values());
+        
+        submitButton.setDisable(true);
+        
+        
+        amountField.textProperty().addListener((obs, oldVal, newVal) -> {
+            boolean isAmountValid = invoiceService.isValidFloat(newVal);
+        	updateLabel(amountLabel, isAmountValid, "Kein gültiger Zahlenwert", "Betrag eingegeben");
+        	checkFields();
+        });
+        
+        datePicker.setDayCellFactory(picker -> new javafx.scene.control.DateCell() { //created by AI (ChatGPT
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
 
-	@FXML
-	private ComboBox<InvoiceCategory> categoryBox;
+                               
+                LocalDate today = LocalDate.now();
+                LocalDate firstDayOfMonth = today.withDayOfMonth(1);
+                LocalDate lastDayOfMonth = today.withDayOfMonth(today.lengthOfMonth());
 
-	@FXML
-	private TextField amountField;
+                boolean isDisabled = date.isBefore(firstDayOfMonth) || date.isAfter(today);
+                
+                setDisable(isDisabled);
+                if (isDisabled) {
+                    setStyle("-fx-background-color: #d3d3d3;");
+                }
+            }
+        });
+        
+        datePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
+        	if (newVal == null) {
+                updateLabel(datePickerLabel, false, "Kein Datum ausgewählt!", "");
+            } else if (newVal.isBefore(LocalDate.now().withDayOfMonth(1))) {
+                updateLabel(datePickerLabel, false, "Datum zu früh!", "");
+            } else if (newVal.isAfter(LocalDate.now())) {
+                updateLabel(datePickerLabel, false, "Kein Datum in der Zukunft!", "");
+            } else if (!invoiceService.isWorkday(newVal)) {
+                updateLabel(datePickerLabel, false, "Kein gültiger Arbeitstag!", "");
+            } else {
+                updateLabel(datePickerLabel, true, "", "Datum eingegeben");
+            }
+            checkFields();
+        });
 
-	@FXML
-	private DatePicker datePicker;
+        categoryBox.valueProperty().addListener((obs, oldVal, newVal) -> checkFields());
+    }
+    
+    
+    @FXML
+    private void openFileChooser() {
+    	
+        Stage stage = (Stage) uploadPane.getScene().getWindow(); 
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Bild oder PDF hochladen");
 
-	@FXML
-	private Label amountLabel, datePickerLabel, imageUploadLabel;
+        fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("Bilddateien und PDF", "*.jpg", "*.jpeg", "*.png", "*.pdf"));
+         
+        File file = fileChooser.showOpenDialog(stage);
 
-	@FXML
-	private TextField reimbursementAmountField;
+        if (file != null) {
+            String filePath = file.getAbsolutePath();
+            System.out.println("Datei ausgewählt: " + filePath);
+            
+            if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg") || filePath.endsWith(".png")) {
+                uploadedImageView.setImage(new Image(file.toURI().toString()));
+                uploadedFile = file;
+                previewText.setText("Vorschau");
+            } else {
+            	uploadedFile = file;
+                showAlert("Datei hochgeladen", "Die Datei wurde erfolgreich ausgewählt:\n" + filePath);
+            }
+            uploadText.setText("Foto hochgeladen");
+        } else {
+            showAlert("Keine Datei", "Es wurde keine Datei ausgewählt.");
+        }
+        
+    }
 
-	private List<Invoice> invoices;
+   private void showAlert(String title, String content) {
+       	Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+   
+   private void checkFields() {
+	   String amountText = amountField.getText().trim();
+	   LocalDate date= datePicker.getValue();
+	   boolean isValidDate = isDateValid(date);
+	   boolean isAmountValid = invoiceService.isamaountValid(amountText);
+       boolean isCategorySelected = categoryBox.getValue() != null;
+       boolean isFileUploaded = uploadedFile != null;
+       
+       boolean allFieldsFilled = isAmountValid && isValidDate && isCategorySelected && isFileUploaded;
+       submitButton.setDisable(!allFieldsFilled);
 
-	private User user;
-	private File uploadedFile;
-	private InvoiceService invoiceService;
-	private ReimbursementService reimbursementService;
+       if (allFieldsFilled) {
+           submitButton.setStyle("-fx-background-color: #42b35b; -fx-text-fill: white;"); // Grün
+       } else {
+    	   submitButton.setStyle("");
+       }
+       
+      // submitButton.setDisable(!(isAmountFilled && isDateSelected && isCategorySelected && isFileUploaded));
+   }
 
-	@FXML
-	public void initialize() {
+    @FXML
+    private void addInvoice() {
+        LocalDate date = datePicker.getValue();
+        InvoiceCategory category = categoryBox.getValue();
+        float amount = Float.parseFloat(amountField.getText().trim());
 
-		user = new User("dummy", "dummy@lunch.at", "test", UserRole.ADMIN, UserState.ACTIVE);
 
-		invoiceService = new InvoiceService(user);
-		reimbursementService = new ReimbursementService(user);
-		invoices = invoiceService.getInvoices();
+        //TODO Johanna - review changes and commit or reject
+        if (invoices != null && invoiceService.invoiceDateAlreadyUsed(date, user)) {
+            showAlert("Ungültiges Datum", "Für das gewählte Datum wurde bereits eine Rechnung eingereicht. Bitte wähle ein anderes Datum.");
+            submitButton.setDisable(true);
+        } else {
+            Invoice invoice = new Invoice();
+            invoice.setDate(date);
+            invoice.setAmount(amount);
+            invoice.setCategory(category);
+            invoice.setStatus(InvoiceState.PENDING);
+            invoice.setUser(user);
+            invoice.setFile(uploadedFile);
 
-		categoryBox.getItems().addAll(InvoiceCategory.values());
+            boolean success = invoiceService.addInvoice(invoice);
+            if (success) {
+                invoices.add(invoice);
+                showAlert("Erfolg", "Rechnung wurde erfolgreich hinzugefügt!");
+                resetForm();
+            } else {
+                showAlert("Fehler", "Beim Speichern der Rechnung ist ein Fehler aufgetreten.");
+            }
+       }
+    }
 
-		submitButton.setDisable(true);
 
-		amountField.textProperty().addListener((obs, oldVal, newVal) -> {
-			boolean isAmountValid = invoiceService.isValidFloat(newVal);
-			updateLabel(amountLabel, isAmountValid, "Kein gültiger Zahlenwert", "Betrag eingegeben");
-			if (isAmountValid) {
-				checkFields();
-			}
-		});
+  
+   private void updateLabel(Label label, boolean isValid, String errorText, String successText) {
+	   if (!isValid) {
+		   label.setText(errorText);
+		   label.setStyle("-fx-text-fill: red;");
+	   } else {
+		   label.setText(successText);
+		   label.setStyle("-fx-text-fill: green");
+	   }
+   }
+   
+   public File getFile() {
+	   return this.uploadedFile;
+   }
+   
+   private boolean isDateValid(LocalDate date) {
+	   return (date!=null && !date.isBefore(LocalDate.now().withDayOfMonth(1)) && !date.isAfter(LocalDate.now()) && invoiceService.isWorkday(date));
+   }
 
-		datePicker.setDayCellFactory(picker -> new javafx.scene.control.DateCell() { // created by AI (ChatGPT
-			@Override
-			public void updateItem(LocalDate date, boolean empty) {
-				super.updateItem(date, empty);
-
-				LocalDate today = LocalDate.now();
-				LocalDate firstDayOfMonth = today.withDayOfMonth(1);
-				LocalDate lastDayOfMonth = today.withDayOfMonth(today.lengthOfMonth());
-
-				boolean isDisabled = date.isBefore(firstDayOfMonth) || date.isAfter(today);
-
-				setDisable(isDisabled);
-				if (isDisabled) {
-					setStyle("-fx-background-color: #d3d3d3;");
-				}
-			}
-		});
-
-		datePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
-			if (newVal == null) {
-				updateLabel(datePickerLabel, false, "Kein Datum ausgewählt!", "");
-			} else if (newVal.isBefore(LocalDate.now().withDayOfMonth(1))) {
-				updateLabel(datePickerLabel, false, "Datum zu früh!", "");
-			} else if (newVal.isAfter(LocalDate.now())) {
-				updateLabel(datePickerLabel, false, "Datum darf nicht in der Zukunft liegen!", "");
-			} else if (!invoiceService.isWorkday(newVal)) {
-				updateLabel(datePickerLabel, false, "Kein gültiger Arbeitstag!", "");
-			} else {
-				updateLabel(datePickerLabel, true, "", "Datum eingegeben");
-			}
-			checkFields();
-		});
-
-		categoryBox.valueProperty().addListener((obs, oldVal, newVal) -> checkFields());
-	}
-
-	@FXML
-	private void openFileChooser() {
-
-		Stage stage = (Stage) uploadPane.getScene().getWindow();
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Bild oder PDF hochladen");
-
-		fileChooser.getExtensionFilters()
-				.addAll(new FileChooser.ExtensionFilter("Bilddateien und PDF", "*.jpg", "*.jpeg", "*.png", "*.pdf"));
-
-		File file = fileChooser.showOpenDialog(stage);
-
-		if (file != null) {
-			String filePath = file.getAbsolutePath();
-			System.out.println("Datei ausgewählt: " + filePath);
-
-			if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg") || filePath.endsWith(".png")) {
-				uploadedImageView.setImage(new Image(file.toURI().toString()));
-				uploadedFile = file;
-				previewText.setText("Vorschau");
-			} else {
-				uploadedFile = file;
-				showAlert("Datei hochgeladen", "Die Datei wurde erfolgreich ausgewählt:\n" + filePath);
-			}
-			uploadText.setText("Foto hochgeladen");
-		} else {
-			showAlert("Keine Datei", "Es wurde keine Datei ausgewählt.");
-		}
-
-	}
-
-	private void showAlert(String title, String content) {
-		Alert alert = new Alert(Alert.AlertType.INFORMATION);
-		alert.setTitle(title);
-		alert.setHeaderText(null);
-		alert.setContentText(content);
-		alert.showAndWait();
-	}
-
-	private void checkFields() {
-		String amountText = amountField.getText().trim();
-		LocalDate date = datePicker.getValue();
-		InvoiceCategory category = categoryBox.getValue();
-		boolean isValidDate = invoiceService.isValidDate(date);
-		boolean isAmountValid = invoiceService.isamaountValid(amountText);
-		boolean isCategorySelected = category != null;
-		boolean isFileUploaded = uploadedFile != null;
-
-		boolean allFieldsFilled = isAmountValid && isValidDate && isCategorySelected && isFileUploaded;
-		submitButton.setDisable(!allFieldsFilled);
-
-		if (isCategorySelected && isAmountValid) {
-			float invoiceAmount = Float.parseFloat(amountText);
-			float limit = reimbursementService.getLimit(category);
-			float reimbursementAmount = category.calculateReimbursement(invoiceAmount, limit);
-			reimbursementAmountField.setText(String.valueOf(reimbursementAmount));
-			reimbursementService.setReimbursementAmount(reimbursementAmount);
-		}
-
-		if (allFieldsFilled) {
-			submitButton.setStyle("-fx-background-color: #42b35b; -fx-text-fill: white;"); // Grün
-		} else {
-			submitButton.setStyle("");
-		}
-	}
-
-	@FXML
-	private void addInvoice() {
-		LocalDate date = datePicker.getValue();
-		InvoiceCategory category = categoryBox.getValue();
-		float amount = Float.parseFloat(amountField.getText().trim());
-		float reimburesementAmount = reimbursementService.getReimbursementAmount();
-
-		if (invoices != null && invoiceService.invoiceDateAlreadyUsed(date, user)) {
-			showAlert("Ungültiges Datum",
-					"Für das gewählte Datum wurde bereits eine Rechnung eingereicht. Bitte wähle ein anderes Datum.");
-			submitButton.setDisable(true);
-		} else {
-
-			if (invoiceService
-					.addInvoice(new Invoice(date, amount, category, InvoiceState.PENDING, uploadedFile, user))) {
-				showAlert("Rechnung eingereicht", "Die Rechnung wurde erfolgreich eingereicht!" + "\n" + " Kategorie: "
-						+ categoryBox.getValue() + " Rückerstattungsbetrag: " + reimburesementAmount);
-			} else {
-				showAlert("Fehler", "Die Rechnung konnte nicht eingereicht werden. Versuche es erneut.");
-			}
-		}
-
-	}
-
-	private void updateLabel(Label label, boolean isValid, String errorText, String successText) {
-		if (!isValid) {
-			label.setText(errorText);
-			label.setStyle("-fx-text-fill: red;");
-		} else {
-			label.setText(successText);
-			label.setStyle("-fx-text-fill: green");
-		}
-	}
-
-	public File getFile() {
-		return this.uploadedFile;
-	}
+    private void resetForm() {
+        datePicker.setValue(null);
+        categoryBox.getSelectionModel().clearSelection();
+        amountField.clear();
+        uploadedFile = null;
+        uploadedImageView.setImage(null);
+        previewText.setText("");
+        uploadText.setText("Kein Foto ausgewählt");
+        submitButton.setDisable(true);
+        submitButton.setStyle("");
+    }
 
 }
