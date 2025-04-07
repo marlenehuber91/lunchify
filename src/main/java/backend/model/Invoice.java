@@ -12,18 +12,19 @@ public class Invoice {
     private InvoiceState status;
     private User user;
     private File file;
-    
-    
-    public Invoice (LocalDate date, float amount, InvoiceCategory category, InvoiceState status,  File file, User user) {
-    	this.date=date;
-    	this.amount=amount;
-    	this.category=category;
-    	this.status=status;
-    	this.file=file;
-    	this.user = user;
+
+
+    public Invoice(LocalDate date, float amount, InvoiceCategory category, InvoiceState status, File file, User user) {
+        this.date = date;
+        this.amount = amount;
+        this.category = category;
+        this.status = status;
+        this.file = file;
+        this.user = user;
     }
+
     public Invoice() {
-    	
+
     }
 
     public int getId() {
@@ -31,7 +32,7 @@ public class Invoice {
     }
 
     public LocalDate getDate() {
-    	return this.date;
+        return this.date;
     }
 
     public void setDate(LocalDate date) {
@@ -39,46 +40,46 @@ public class Invoice {
     }
 
     public float getAmount() {
-    	return this.amount;
+        return this.amount;
     }
-     
+
     public InvoiceCategory getCategory() {
-    	return this.category;
+        return this.category;
     }
-    
+
     public User getUser() {
-    	return this.user;
+        return this.user;
     }
-    
+
     public InvoiceState getState() {
-    	return this.status;
+        return this.status;
     }
-    
+
     public File getFile() {
-		return file;
-	}
-    
+        return file;
+    }
+
     public void setId(int id) {
-    	this.id=id;
+        this.id = id;
     }
-    
+
     public void setAmount(float amount) {
-    	this.amount=amount;
+        this.amount = amount;
     }
-    
+
     public void setCategory(InvoiceCategory cat) {
-    	this.category=cat;
+        this.category = cat;
     }
-    
+
     public void setUser(User user) {
         this.user = user;
     }
-    
+
     public void setStatus(InvoiceState status) {
-    	this.status=status;
+        this.status = status;
     }
-	
-	public void setFile(File file) {
-		this.file= file;
-	}
+
+    public void setFile(File file) {
+        this.file = file;
+    }
 }

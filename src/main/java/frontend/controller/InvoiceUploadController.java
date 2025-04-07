@@ -169,35 +169,35 @@ public class InvoiceUploadController {
        
       // submitButton.setDisable(!(isAmountFilled && isDateSelected && isCategorySelected && isFileUploaded));
    }
-   
-   @FXML
-   private void addInvoice() { 
-	   LocalDate date = datePicker.getValue();  
-       InvoiceCategory category = categoryBox.getValue();
-       float amount = Float.parseFloat(amountField.getText().trim());
+
+    @FXML
+    private void addInvoice() {
+        LocalDate date = datePicker.getValue();
+        InvoiceCategory category = categoryBox.getValue();
+        float amount = Float.parseFloat(amountField.getText().trim());
 
 
-       //TODO Johanna - review changes and commit or reject
-	   if (invoices != null && invoiceService.invoiceDateAlreadyUsed(date, user)) {
-		   showAlert("Ungültiges Datum", "Für das gewählte Datum wurde bereits eine Rechnung eingereicht. Bitte wähle ein anderes Datum.");
-		   submitButton.setDisable(true);
-	   } else {
-           Invoice invoice = new Invoice();
-           invoice.setDate(date);
-           invoice.setAmount(amount);
-           invoice.setCategory(category);
-           invoice.setStatus(InvoiceState.PENDING);
-           invoice.setUser(user);
-           invoice.setFile(uploadedFile);
+        //TODO Johanna - review changes and commit or reject
+        if (invoices != null && invoiceService.invoiceDateAlreadyUsed(date, user)) {
+            showAlert("Ungültiges Datum", "Für das gewählte Datum wurde bereits eine Rechnung eingereicht. Bitte wähle ein anderes Datum.");
+            submitButton.setDisable(true);
+        } else {
+            Invoice invoice = new Invoice();
+            invoice.setDate(date);
+            invoice.setAmount(amount);
+            invoice.setCategory(category);
+            invoice.setStatus(InvoiceState.PENDING);
+            invoice.setUser(user);
+            invoice.setFile(uploadedFile);
 
-           boolean success = invoiceService.addInvoice(invoice);
-           if (success) {
-               invoices.add(invoice);
-               showAlert("Erfolg", "Rechnung wurde erfolgreich hinzugefügt!");
-               resetForm();
-           } else {
-               showAlert("Fehler", "Beim Speichern der Rechnung ist ein Fehler aufgetreten.");
-           }
+            boolean success = invoiceService.addInvoice(invoice);
+            if (success) {
+                invoices.add(invoice);
+                showAlert("Erfolg", "Rechnung wurde erfolgreich hinzugefügt!");
+                resetForm();
+            } else {
+                showAlert("Fehler", "Beim Speichern der Rechnung ist ein Fehler aufgetreten.");
+            }
        }
     }
 
