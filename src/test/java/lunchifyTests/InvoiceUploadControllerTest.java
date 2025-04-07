@@ -1,6 +1,6 @@
-package lunchifyTests.lunchifyTests;
+package lunchifyTests;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.control.LabeledMatchers.hasText;
@@ -86,8 +86,7 @@ public class InvoiceUploadControllerTest extends ApplicationTest {
         verifyThat("#datePickerLabel", hasText("Datum eingeben")); // Label-Überprüfung
 	}
 
-	//TODO für Johanna: Von Marlene auskommentiert, damit der Push geht
-	/*@Test
+	@Test
 	void testInvoiceAlreadySubmittedForDay() {
 	    // Ein spezifisches Datum und einen Benutzer festlegen
 	    LocalDate testDate = LocalDate.of(2025, 4, 1); // Beispiel-Datum
@@ -100,7 +99,7 @@ public class InvoiceUploadControllerTest extends ApplicationTest {
 	    // Überprüfen, ob die Methode `invoiceDateAlreadyUsed` true zurückgibt
 	    boolean isAlreadySubmitted = invoiceService.invoiceDateAlreadyUsed(testDate, testUser);
 	    assertTrue(isAlreadySubmitted, "Es sollte erkannt werden, dass bereits eine Rechnung für dieses Datum existiert.");
-	}*/
+	}
 }
 
 
