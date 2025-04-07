@@ -20,9 +20,19 @@ import backend.model.UserRole;
 import backend.model.UserState;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assumptions;
+
+import java.awt.GraphicsEnvironment;
 
 public class InvoiceUploadControllerTest extends ApplicationTest {
-
+	
+    @BeforeEach
+    public void setup() {
+    	// skip tests in CI
+        Assumptions.assumeTrue(!GraphicsEnvironment.isHeadless());
+    }
+	
 	@Override
 	public void start(Stage stage) {
 		try {
