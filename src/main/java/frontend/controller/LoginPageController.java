@@ -1,5 +1,6 @@
 package frontend.controller;
 
+import backend.model.User;
 import backend.Exceptions.AuthenticationException;
 import backend.logic.UserService;
 import backend.model.UserRole;
@@ -75,12 +76,12 @@ public class LoginPageController {
         }
 
         try {
-            UserRole userRole = UserService.authenticate(email, password);
+            User user = UserService.authenticate(email, password);
 
             FXMLLoader loader;
-            if (userRole == UserRole.ADMIN) {
+            if (user.getRole() == UserRole.ADMIN) {
                 loader = new FXMLLoader(getClass().getResource("/frontend/views/AdminDashboard.fxml"));
-            } else if (userRole == UserRole.EMPLOYEE) {
+            } else if (user.getRole() == UserRole.EMPLOYEE) {
                 loader = new FXMLLoader(getClass().getResource("/frontend/views/UserDashboard.fxml"));
             } else {
                 showErrorElements("Unbekannte Rolle: Zugriff verweigert.");

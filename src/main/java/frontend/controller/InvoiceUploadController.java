@@ -1,5 +1,6 @@
 package frontend.controller;
 
+import backend.logic.SessionManager;
 import backend.model.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -26,30 +27,22 @@ import backend.model.UserState;
 
 public class InvoiceUploadController {
 	
-	  @FXML
-    private StackPane uploadPane; 
-	
     @FXML
-    private ImageView uploadedImageView; 
-
+    private StackPane uploadPane;
+    @FXML
+    private ImageView uploadedImageView;
     @FXML
     private Text uploadText;
-    
     @FXML
     private Text previewText;
-    
     @FXML
     private Button submitButton;
-    
     @FXML
     private ComboBox<InvoiceCategory> categoryBox;
-    
     @FXML
     private TextField amountField;
-
     @FXML
     private DatePicker datePicker;
-
     @FXML
     private Label amountLabel, datePickerLabel, imageUploadLabel;
 
@@ -63,18 +56,19 @@ public class InvoiceUploadController {
     @FXML
     public void initialize() {
 
-    	user= new User ("dummy", "dummy@lunch.at", "test" , UserRole.ADMIN, UserState.ACTIVE);
+        //TODO > changes made by Marlene - check and accept or reject
+    	user = SessionManager.getCurrentUser();
     	
     	invoiceService = new InvoiceService(user);
     	invoices=invoiceService.getInvoices();
 
-      categoryBox.getItems().addAll(InvoiceCategory.values());
+        categoryBox.getItems().addAll(InvoiceCategory.values());
         
-      submitButton.setDisable(true);
+        submitButton.setDisable(true);
         
         
-       amountField.textProperty().addListener((obs, oldVal, newVal) -> {
-        	boolean isAmountValid = invoiceService.isValidFloat(newVal);
+        amountField.textProperty().addListener((obs, oldVal, newVal) -> {
+            boolean isAmountValid = invoiceService.isValidFloat(newVal);
         	updateLabel(amountLabel, isAmountValid, "Kein gültiger Zahlenwert", "Betrag eingegeben");
         	checkFields();
         });
@@ -181,21 +175,33 @@ public class InvoiceUploadController {
 	   LocalDate date = datePicker.getValue();  
        InvoiceCategory category = categoryBox.getValue();
        float amount = Float.parseFloat(amountField.getText().trim());
-       
+
+
+       //TODO Johanna - review changes and commit or reject
 	   if (invoices != null && invoiceService.invoiceDateAlreadyUsed(date, user)) {
 		   showAlert("Ungültiges Datum", "Für das gewählte Datum wurde bereits eine Rechnung eingereicht. Bitte wähle ein anderes Datum.");
 		   submitButton.setDisable(true);
 	   } else {
-		   
-		   if (invoiceService.addInvoice(new Invoice(date, amount, category, InvoiceState.PENDING, uploadedFile, user))) {
-			   showAlert("Rechnung eingereicht", "Die Rechnung wurde erfolgreich eingereicht!" + "\n" +" Kategorie: "+ categoryBox.getValue());
-		   }
-		   else {
-			   showAlert("Fehler", "Die Rechnung konnte nicht eingereicht werden. Versuche es erneut.");
-		   }
-	   }
-	   
-   }
+           Invoice invoice = new Invoice();
+           invoice.setDate(date);
+           invoice.setAmount(amount);
+           invoice.setCategory(category);
+           invoice.setStatus(InvoiceState.PENDING);
+           invoice.setUser(user);
+           invoice.setFile(uploadedFile);
+
+           boolean success = invoiceService.addInvoice(invoice);
+           if (success) {
+               invoices.add(invoice);
+               showAlert("Erfolg", "Rechnung wurde erfolgreich hinzugefügt!");
+               resetForm();
+           } else {
+               showAlert("Fehler", "Beim Speichern der Rechnung ist ein Fehler aufgetreten.");
+           }
+       }
+    }
+
+
   
    private void updateLabel(Label label, boolean isValid, String errorText, String successText) {
 	   if (!isValid) {
@@ -214,4 +220,17 @@ public class InvoiceUploadController {
    private boolean isDateValid(LocalDate date) {
 	   return (date!=null && !date.isBefore(LocalDate.now().withDayOfMonth(1)) && !date.isAfter(LocalDate.now()) && invoiceService.isWorkday(date));
    }
+
+    private void resetForm() {
+        datePicker.setValue(null);
+        categoryBox.getSelectionModel().clearSelection();
+        amountField.clear();
+        uploadedFile = null;
+        uploadedImageView.setImage(null);
+        previewText.setText("");
+        uploadText.setText("Kein Foto ausgewählt");
+        submitButton.setDisable(true);
+        submitButton.setStyle("");
+    }
+
 }

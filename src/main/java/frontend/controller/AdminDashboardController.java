@@ -1,14 +1,33 @@
 package frontend.controller;
 import java.io.IOException;
 
+import backend.logic.SessionManager;
+import backend.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class AdminDashboardController {
+
+    //TODO Johanna: changes made by Marlene, review and accept or reject
+    @FXML
+    private Text userNameText;
+
+    @FXML
+    void initialize() {
+
+        User user = SessionManager.getCurrentUser();
+        if (user != null) {
+            String username = user.getName();
+            userNameText.setText("Hallo, " + username + "!");
+        } else {
+            userNameText.setText("Nicht eingeloggt");
+        }
+    }
 
     @FXML
     void onklickOpenInvoiceSubmissionWindow(MouseEvent event) { //created by AI

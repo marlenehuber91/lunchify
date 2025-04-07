@@ -33,8 +33,12 @@ public class Invoice {
     public LocalDate getDate() {
     	return this.date;
     }
-    
-     public float getAmount() {
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public float getAmount() {
     	return this.amount;
     }
      

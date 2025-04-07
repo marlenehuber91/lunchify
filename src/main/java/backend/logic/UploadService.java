@@ -1,4 +1,6 @@
 package backend.logic;
+import backend.model.User;
+
 import java.io.File;
 
 
@@ -13,5 +15,10 @@ public class UploadService {
     public String processInvoiceImage(File imageFile) {
         return ocrService.extractText(imageFile);
     }
+
+
 }
+
+
+
 

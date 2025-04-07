@@ -11,7 +11,7 @@ import database.DatabaseConnection;
 
 
 public class User {
-    private int id; //created automatically by database
+    private int id;
     private String name;
     private String email;
     private String password;
@@ -24,11 +24,23 @@ public class User {
         this.password = password;
         this.role = role;
         this.state = state;
-        this.id=1;
+    }
+    //never use to add new user to database! only for local user copy
+    public User(int id, String name, String email, UserRole role, UserState state) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.state = state;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
-    	return this.name;
+        return this.name;
     }
     public void setName(String name) {
         this.name = name;
