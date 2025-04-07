@@ -1,6 +1,8 @@
 package lunchifyTests;
 
-import static org.junit.Assert.assertEquals;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.control.LabeledMatchers.hasText;
