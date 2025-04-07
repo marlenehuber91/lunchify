@@ -31,6 +31,17 @@ jobs:
           distribution: 'temurin'
           architecture: x64
 
+      # install xvfb to simulate JavaFX related tests
+      - name: Install xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+
+      # allow GUI tests to work
+      - name: Start virtual display
+        run: |
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+
       # Maven test, build and package compiled code in its distributable format, such as a JAR.
       - name: Maven package
         run: mvn package
