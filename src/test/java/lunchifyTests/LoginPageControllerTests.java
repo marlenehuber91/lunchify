@@ -1,23 +1,20 @@
 package lunchifyTests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.util.NodeQueryUtils.isVisible;
+
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
+import org.testfx.matcher.base.NodeMatchers;
+
 import frontend.Main;
 import javafx.scene.Node;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.matcher.control.LabeledMatchers.hasText;
-import static org.testfx.util.NodeQueryUtils.isVisible;
-
-
-import org.junit.jupiter.api.Test;
-import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.matcher.base.NodeMatchers;
-import org.testfx.util.WaitForAsyncUtils;
-
-import java.util.stream.Collectors;
 
 public class LoginPageControllerTests extends ApplicationTest {
     @Override
@@ -120,9 +117,3 @@ public class LoginPageControllerTests extends ApplicationTest {
         verifyThat("#adminDashboard", isVisible());
     }
 }
-
-
-
-
-
-

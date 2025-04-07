@@ -1,14 +1,17 @@
 package backend.logic;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.mindrot.jbcrypt.BCrypt;
+
 import backend.Exceptions.AuthenticationException;
 import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
 import database.DatabaseConnection;
-import org.mindrot.jbcrypt.BCrypt;
-import javax.servlet.http.HttpSession;
-
-import java.sql.*;
 
 public class UserService {
 

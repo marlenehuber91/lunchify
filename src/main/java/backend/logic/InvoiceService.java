@@ -1,22 +1,23 @@
 package backend.logic;
-import database.DatabaseConnection;
-import org.mindrot.jbcrypt.BCrypt;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
 import backend.model.InvoiceState;
 import backend.model.User;
-import backend.model.UserRole;
-import backend.model.UserState;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.*;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import database.DatabaseConnection;
 
 //TODO not finished - still working on it
 

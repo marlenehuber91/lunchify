@@ -19,8 +19,7 @@ public class AdminDashboardController {
 
     @FXML
     void initialize() {
-
-        User user = SessionManager.getCurrentUser();
+    	User user = SessionManager.getCurrentUser();
         if (user != null) {
             String username = user.getName();
             userNameText.setText("Hallo, " + username + "!");
@@ -45,5 +44,4 @@ public class AdminDashboardController {
             e.printStackTrace();
         }
     }
-
 }

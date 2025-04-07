@@ -1,29 +1,29 @@
 package frontend.controller;
 
+import java.io.File;
+import java.time.LocalDate;
+import java.util.List;
+
+import backend.logic.InvoiceService;
+import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
-import backend.model.*;
+import backend.model.Invoice;
+import backend.model.InvoiceCategory;
+import backend.model.InvoiceState;
+import backend.model.User;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import java.io.File;
-import java.sql.Date;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.List;
-
-import javafx.scene.control.TextField;
-import backend.logic.InvoiceService;
-import backend.model.Invoice;
-import backend.model.InvoiceCategory;
-import backend.model.InvoiceState;
-import backend.model.User;
-import backend.model.UserRole;
-import backend.model.UserState;
 
 public class InvoiceUploadController {
 	
@@ -40,7 +40,7 @@ public class InvoiceUploadController {
     @FXML
     private ComboBox<InvoiceCategory> categoryBox;
     @FXML
-    private TextField amountField;
+    private TextField amountField, reimbursementAmountField;
     @FXML
     private DatePicker datePicker;
     @FXML
@@ -51,16 +51,17 @@ public class InvoiceUploadController {
     private User user;
     private File uploadedFile;
     private InvoiceService invoiceService = new InvoiceService(); 
-
+    private ReimbursementService reimbursementService;
 
     @FXML
     public void initialize() {
-
-        //TODO > changes made by Marlene - check and accept or reject
-    	user = SessionManager.getCurrentUser();
+    	if(user == null) {
+        	user = SessionManager.getCurrentUser();
+    	}
     	
     	invoiceService = new InvoiceService(user);
     	invoices=invoiceService.getInvoices();
+    	reimbursementService = new ReimbursementService(user);
 
         categoryBox.getItems().addAll(InvoiceCategory.values());
         
@@ -158,26 +159,23 @@ public class InvoiceUploadController {
        boolean isCategorySelected = categoryBox.getValue() != null;
        boolean isFileUploaded = uploadedFile != null;
        
+       if (isCategorySelected && isAmountValid) {
+    	   setReimbursementAmount(amountText);
+		}
+       
        boolean allFieldsFilled = isAmountValid && isValidDate && isCategorySelected && isFileUploaded;
        submitButton.setDisable(!allFieldsFilled);
-
-       if (allFieldsFilled) {
-           submitButton.setStyle("-fx-background-color: #42b35b; -fx-text-fill: white;"); // Grün
-       } else {
-    	   submitButton.setStyle("");
-       }
        
-      // submitButton.setDisable(!(isAmountFilled && isDateSelected && isCategorySelected && isFileUploaded));
-   }
+     }
 
     @FXML
     private void addInvoice() {
         LocalDate date = datePicker.getValue();
         InvoiceCategory category = categoryBox.getValue();
         float amount = Float.parseFloat(amountField.getText().trim());
+        
 
 
-        //TODO Johanna - review changes and commit or reject
         if (invoices != null && invoiceService.invoiceDateAlreadyUsed(date, user)) {
             showAlert("Ungültiges Datum", "Für das gewählte Datum wurde bereits eine Rechnung eingereicht. Bitte wähle ein anderes Datum.");
             submitButton.setDisable(true);
@@ -220,6 +218,7 @@ public class InvoiceUploadController {
    private boolean isDateValid(LocalDate date) {
 	   return (date!=null && !date.isBefore(LocalDate.now().withDayOfMonth(1)) && !date.isAfter(LocalDate.now()) && invoiceService.isWorkday(date));
    }
+   
 
     private void resetForm() {
         datePicker.setValue(null);
@@ -231,6 +230,17 @@ public class InvoiceUploadController {
         uploadText.setText("Kein Foto ausgewählt");
         submitButton.setDisable(true);
         submitButton.setStyle("");
+        amountLabel.setStyle("");
+        datePickerLabel.setStyle("");
+        if (imageUploadLabel!=null) imageUploadLabel.setStyle("");
+        reimbursementAmountField.setText("");
     }
-
+    
+    private void setReimbursementAmount (String amountText) {
+    	float invoiceAmount = Float.parseFloat(amountText);
+		float limit = reimbursementService.getLimit(categoryBox.getValue());
+		float reimbursementAmount = categoryBox.getValue().calculateReimbursement(invoiceAmount, limit);
+		reimbursementAmountField.setText(String.valueOf(reimbursementAmount));
+		reimbursementService.setReimbursementAmount(reimbursementAmount);
+    }
 }

@@ -1,8 +1,9 @@
 package backend.logic;
 
+import java.io.File;
+
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-import java.io.File;
 
 public class OCRService {
 
