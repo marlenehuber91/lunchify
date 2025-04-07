@@ -26,10 +26,6 @@ public class Invoice {
     	
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public int getId() {
         return id;
     }

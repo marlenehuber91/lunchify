@@ -31,9 +31,6 @@ public class User {
     	return this.id;
     }
 
-    public int getId() {
-        return id;
-    }
 
     public String getName() {
     	return this.name;
