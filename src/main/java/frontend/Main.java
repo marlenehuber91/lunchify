@@ -17,6 +17,7 @@ public class Main extends Application{
 			else {
 				root = (AnchorPane)FXMLLoader.load(getClass().getResource("/frontend/views/AdminDashboard.fxml"));
 			}
+			
 			Scene scene = new Scene(root, 1280, 832);
 			primaryStage.setScene(scene);
 			primaryStage.show();
@@ -30,7 +31,7 @@ public class Main extends Application{
 	}
 	
 	boolean isOnTestMode() {
-		return false;
+		return true;
 	}
 
 }

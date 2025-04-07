@@ -32,8 +32,6 @@ public class InvoiceService {
 	public InvoiceService () {
 		
 	}
-
-	
 	
 	public boolean invoiceDateAlreadyUsed (LocalDate date, User user) {
 	   for (Invoice invoice: invoices) {
@@ -43,6 +41,9 @@ public class InvoiceService {
    }
 	
 	public boolean isValidDate(LocalDate date) {
+		if(date == null) {
+			return false;
+		}
 		  // Das heutige Datum
         LocalDate today = LocalDate.now();
 

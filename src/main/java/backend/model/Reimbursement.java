@@ -6,7 +6,12 @@ public class Reimbursement {
     private Invoice invoice;
     private float approvedAmount;
     private Date processedDate;
-
+    
+    
+    public Reimbursement() {
+    	
+    }
+    
     public Reimbursement(Invoice invoice, float approvedAmount, Date processedDate) {
         this.invoice = invoice;
         this.approvedAmount = approvedAmount;
