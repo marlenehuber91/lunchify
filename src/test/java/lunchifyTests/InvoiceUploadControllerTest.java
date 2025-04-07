@@ -1,5 +1,6 @@
-package lunchifyTests.lunchifyTests;
+package lunchifyTests;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.control.LabeledMatchers.hasText;
@@ -26,13 +27,13 @@ import org.junit.jupiter.api.Assumptions;
 import java.awt.GraphicsEnvironment;
 
 public class InvoiceUploadControllerTest extends ApplicationTest {
-	
+
     @BeforeEach
     public void setup() {
     	// skip tests in CI
         Assumptions.assumeTrue(!GraphicsEnvironment.isHeadless());
     }
-	
+
 	@Override
 	public void start(Stage stage) {
 		try {
@@ -110,4 +111,8 @@ public class InvoiceUploadControllerTest extends ApplicationTest {
 		assertTrue(isAlreadySubmitted,
 				"Es sollte erkannt werden, dass bereits eine Rechnung für dieses Datum existiert.");
 	}
+
 }
+
+
+
