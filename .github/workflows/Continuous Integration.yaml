@@ -30,7 +30,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           architecture: x64
-
+          
       # Maven test, build and package compiled code in its distributable format, such as a JAR.
       - name: Maven package
         run: mvn package

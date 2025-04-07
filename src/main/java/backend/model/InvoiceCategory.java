@@ -1,20 +1,20 @@
 package backend.model;
 
-//AI generated (Copilot)
+//AI generated (Copilot) --> changed by the team
 
 public enum InvoiceCategory {
-    RESTAURANT {
-        @Override
-        public float calculateReimbursement(float amount) {
-            return (amount > 3.0f) ? 3.0f : amount;
-        }
-    },
-    SUPERMARKET {
-        @Override
-        public float calculateReimbursement(float amount) {
-            return (amount > 2.5f) ? 2.5f : amount;
-        }
-    };
-
-    public abstract float calculateReimbursement(float amount);
+	RESTAURANT {
+	    @Override
+	    public float calculateReimbursement(float amount, float limit) {
+	        return (amount > limit) ? limit : amount;
+	    }
+	},
+	SUPERMARKET {
+	    @Override
+	    public float calculateReimbursement(float amount, float limit) {
+	        return (amount > limit) ? limit : amount;
+	    }
+	};
+	
+	public abstract float calculateReimbursement(float amount, float limit);
 }

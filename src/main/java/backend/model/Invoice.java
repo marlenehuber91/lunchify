@@ -81,4 +81,8 @@ public class Invoice {
 	public void setFile(File file) {
 		this.file= file;
 	}
+	
+	public void setDate(LocalDate date) {
+		this.date=date; 
+	}
 }
