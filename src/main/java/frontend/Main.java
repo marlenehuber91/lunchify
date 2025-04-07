@@ -31,7 +31,7 @@ public class Main extends Application{
 	}
 	
 	boolean isOnTestMode() {
-		return true;
+		return false;
 	}
 
 }
