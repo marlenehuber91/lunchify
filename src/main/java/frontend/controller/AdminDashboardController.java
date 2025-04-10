@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.Node;
 
 public class AdminDashboardController {
 
@@ -34,9 +35,11 @@ public class AdminDashboardController {
             // Lade die Upload.fxml Datei
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/InvoiceUpload.fxml"));
             Parent root = fxmlLoader.load();
+            
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
             // Neue Szene erstellen
-            Stage stage = new Stage();
+            
             stage.setTitle("Upload Window");
             stage.setScene(new Scene(root));
             stage.show();
