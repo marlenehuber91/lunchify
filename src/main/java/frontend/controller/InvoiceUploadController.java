@@ -10,7 +10,7 @@ import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
-import backend.model.InvoiceState;
+import backend.model.ReimbursementState;
 import backend.model.User;
 import backend.model.UserRole;
 import javafx.fxml.FXML;
@@ -191,14 +191,13 @@ public class InvoiceUploadController {
             invoice.setDate(date);
             invoice.setAmount(amount);
             invoice.setCategory(category);
-            invoice.setStatus(InvoiceState.PENDING);
             invoice.setUser(user);
             invoice.setFile(uploadedFile);
 
             boolean success = invoiceService.addInvoice(invoice);
             if (success) {
                 invoices.add(invoice);
-                showAlert("Erfolg", "Rechnung wurde erfolgreich hinzugefügt!");
+                showAlert("Erfolg", "Rechnung wurde erfolgreich hinzugefügt!" + "\n"  + " Kategorie: " + category + "; Rechnungsbetrag: " + reimbursementService.getReimbursementAmount());
                 resetForm();
             } else {
                 showAlert("Fehler", "Beim Speichern der Rechnung ist ein Fehler aufgetreten.");
