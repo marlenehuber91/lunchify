@@ -194,7 +194,7 @@ public class InvoiceUploadController {
             invoice.setUser(user);
             invoice.setFile(uploadedFile);
 
-            boolean success = invoiceService.addInvoice(invoice);
+            boolean success = invoiceService.addInvoice(invoice) && reimbursementService.addReimbursement(invoice, reimbursementService.getReimbursementAmount());
             if (success) {
                 invoices.add(invoice);
                 showAlert("Erfolg", "Rechnung wurde erfolgreich hinzugefügt!" + "\n"  + " Kategorie: " + category + "; Rechnungsbetrag: " + reimbursementService.getReimbursementAmount());
