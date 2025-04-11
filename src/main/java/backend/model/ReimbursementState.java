@@ -1,6 +1,6 @@
 package backend.model;
 
-public enum InvoiceState {
+public enum ReimbursementState {
     PENDING,       // Rechnung wurde hochgeladen, aber noch nicht verarbeitet
     APPROVED,      // Rechnung wurde geprüft und genehmigt
     REJECTED;     // Rechnung wurde abgelehnt
