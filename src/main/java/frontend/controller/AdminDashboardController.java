@@ -47,4 +47,21 @@ public class AdminDashboardController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    public void onClickOpenModifyReimbursementWindow(MouseEvent mouseEvent) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/ModifyReimbursement.fxml"));
+            Parent root = fxmlLoader.load();
+
+            Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+
+            stage.setTitle("Modify Reimbursement");
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

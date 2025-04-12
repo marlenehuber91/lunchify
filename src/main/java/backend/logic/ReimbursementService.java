@@ -1,15 +1,12 @@
 package backend.logic;
 
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
@@ -19,8 +16,8 @@ import database.DatabaseConnection;
 public class ReimbursementService {
 	private User user;
 	private float reimbursementAmount;
-	private float supermarketLimit=2.5f;
-    private float restaurantLimit = 3.0f;
+	private static float supermarketLimit = 2.5f;
+    private static float restaurantLimit = 3.0f;
     
     public ReimbursementService() {
     	
@@ -40,10 +37,13 @@ public class ReimbursementService {
     	}
     	else return supermarketLimit;
     }
+
     
     public void setReimbursementAmount(float amount) {
     	this.reimbursementAmount=amount;
     }
+
+	//TODO: @Johanna - wozu dient diese Methode?
     public void setLimit(InvoiceCategory category, float amount) {
     	if(category== InvoiceCategory.RESTAURANT) {
     		this.restaurantLimit=amount;
@@ -77,4 +77,24 @@ public class ReimbursementService {
     	    }
     	    return false; // Falls etwas schiefgeht
     }
+	public boolean isValidFloat(String text) { //created by AI (ChatGPT)
+		return text.matches("^\\d+(\\.\\d+)?$");
+	}
+
+	public boolean isAmountValid(String text) {
+		return (text!=null && isValidFloat(text));
+	}
+
+
+	public boolean modifyLimits(InvoiceCategory category, float newLimit) {
+		if (newLimit < 0) throw new IllegalArgumentException("Limits dürfen nicht negativ sein.");
+		else {
+			if (category == InvoiceCategory.RESTAURANT) {
+				restaurantLimit = newLimit;
+			} else {
+				supermarketLimit = newLimit;
+			}
+			return true;
+		}
+	}
 }
