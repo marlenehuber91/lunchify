@@ -1,3 +1,3 @@
-### WELCOME to Lunchify
+# WELCOME to Lunchify
 
-### Getting Started
+## Getting Started
