@@ -1,5 +1,6 @@
 package frontend.controller;
 
+import java.awt.*;
 import java.io.IOException;
 
 import backend.Exceptions.AuthenticationException;
@@ -15,9 +16,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import javafx.scene.shape.Rectangle;
+import javafx.fxml.FXML;
 
 public class LoginPageController {
 
@@ -35,9 +39,19 @@ public class LoginPageController {
     private Text message;
     @FXML
     private ImageView warning;
+    @FXML
+    private Rectangle greenBg;
+    @FXML
+    private AnchorPane loginPage;
 
     @FXML
     public void initialize() { //Listener = AI generated + AI idea
+        greenBg.heightProperty().bind(loginPage.heightProperty().multiply(0.6));
+
+        // Dynamische Breite des Rectangles (volle Breite des AnchorPane)
+        greenBg.widthProperty().bind(loginPage.widthProperty());
+
+
         loginButton.setDisable(true);
         loginButton.setStyle("-fx-background-color: grey;");
 
