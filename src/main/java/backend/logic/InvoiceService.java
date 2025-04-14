@@ -19,7 +19,6 @@ import backend.model.InvoiceState;
 import backend.model.User;
 import database.DatabaseConnection;
 
-//TODO not finished - still working on it
 
 
 public class InvoiceService {
@@ -102,7 +101,7 @@ public class InvoiceService {
 	}
 	
 	public boolean addInvoice(Invoice invoice) { //created with AI (ChatGPT)
-	    String sql = "INSERT INTO invoices (date, amount, category, status, user_id, file) VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO invoices (date, amount, category, status, user_id, file) VALUES (?, ?, ?, ?, ?, ?)";
 
 	    try (Connection conn = DatabaseConnection.connect();
 	    	//FileInputStream fis = new FileInputStream(invoice.getFile());
@@ -139,5 +138,7 @@ public class InvoiceService {
 	    }
 	    return false; // Falls etwas schiefgeht
 	}
+
+
 
 }
