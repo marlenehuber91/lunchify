@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-import backend.logic.InvoiceService;
-import backend.logic.ReimbursementService;
-import backend.logic.SessionManager;
+import backend.logic.*;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
 import backend.model.ReimbursementState;
@@ -59,6 +57,7 @@ public class InvoiceUploadController {
     private File uploadedFile;
     private InvoiceService invoiceService = new InvoiceService(); 
     private ReimbursementService reimbursementService;
+    private OCRService ocrService = new OCRService(); // Ergänzen
 
     @FXML
     public void initialize() {
@@ -143,10 +142,28 @@ public class InvoiceUploadController {
             	uploadedFile = file;
                 showAlert("Datei hochgeladen", "Die Datei wurde erfolgreich ausgewählt:\n" + filePath);
             }
+
+            try {
+                OCRService ocrService = new OCRService();
+                Invoice extractedInvoice = ocrService.extractData(file);
+
+                if (extractedInvoice != null) {
+                    amountField.setText(String.valueOf(extractedInvoice.getAmount()));
+                    datePicker.setValue(extractedInvoice.getDate());
+                    categoryBox.setValue(extractedInvoice.getCategory());
+                }
+
+            } catch (Exception e) {
+                showAlert("Fehler", "Die Datei konnte nicht analysiert werden.");
+                e.printStackTrace();
+            }
+
             uploadText.setText("Foto hochgeladen");
+
         } else {
             showAlert("Keine Datei", "Es wurde keine Datei ausgewählt.");
         }
+
         
     }
 
