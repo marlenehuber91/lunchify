@@ -12,6 +12,10 @@
 		<maven.compiler.source>21</maven.compiler.source>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		
+		<!-- Java Fx -->
+		<javafx.version>21</javafx.version>
+        <javafx.platform>win</javafx.platform>
 	</properties>
 
 	<!-- Maven Plugins -->
@@ -26,6 +30,7 @@
 					<target>21</target>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -58,6 +63,19 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-surefire-plugin</artifactId>
+			  <version>3.2.5</version>
+			  <configuration>
+			    <argLine>
+			      --add-modules javafx.controls,javafx.fxml
+			      --module-path ${java.home}/lib --module-path ${project.basedir}/target/lib
+			      -Djava.awt.headless=true
+			    </argLine>
+			    <testFailureIgnore>false</testFailureIgnore>
+			  </configuration>
+			</plugin>
 
 			<!-- JavaFX Plugins -->
 			<plugin>
@@ -66,6 +84,12 @@
 				<version>0.0.8</version>
 				<configuration>
 					<mainClass>frontend.Main</mainClass>
+					<options>
+						<option>--module-path</option>
+						<option>${javafx.module.path}</option>
+						<option>--add-modules</option>
+						<option>javafx.controls,javafx.fxml</option>
+					</options>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -101,18 +125,24 @@
 		<!--javafx  -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>21</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
-			<version>21</version>
+			<version>${javafx.version}</version>
+			<classifier>${javafx.platform}</classifier>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
-			<version>21</version>
+			<version>${javafx.version}</version>
+			<classifier>${javafx.platform}</classifier>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>${javafx.version}</version>
+			<classifier>${javafx.platform}</classifier>
+			<scope>runtime</scope>
 		</dependency>
 
 
@@ -176,10 +206,5 @@
 			<artifactId>junit</artifactId>
 			<version>4.13.2</version>
 		</dependency>
-		<dependency>
-	        <groupId>org.openjfx</groupId>
-	        <artifactId>javafx-controls</artifactId>
-	        <version>17.0.2</version>
-	    </dependency>
 	</dependencies>
 </project>
