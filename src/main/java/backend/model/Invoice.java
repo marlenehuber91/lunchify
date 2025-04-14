@@ -8,16 +8,14 @@ public class Invoice {
     private LocalDate date;
     private float amount;
     private InvoiceCategory category;
-    private InvoiceState status;
     private User user;
     private File file;
 
 
-    public Invoice(LocalDate date, float amount, InvoiceCategory category, InvoiceState status, File file, User user) {
+    public Invoice(LocalDate date, float amount, InvoiceCategory category, ReimbursementState status, File file, User user) {
         this.date = date;
         this.amount = amount;
         this.category = category;
-        this.status = status;
         this.file = file;
         this.user = user;
     }
@@ -50,10 +48,6 @@ public class Invoice {
         return this.user;
     }
 
-    public InvoiceState getState() {
-        return this.status;
-    }
-
     public File getFile() {
         return file;
     }
@@ -73,11 +67,7 @@ public class Invoice {
     public void setUser(User user) {
         this.user = user;
     }
-
-    public void setStatus(InvoiceState status) {
-        this.status = status;
-    }
-
+    
     public void setFile(File file) {
         this.file = file;
     }

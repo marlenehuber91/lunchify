@@ -5,4 +5,3 @@
 ### Figma
 (https://www.figma.com/team_invite/redeem/lGgdMsUEp53sQxzIHljWXv)
 
-

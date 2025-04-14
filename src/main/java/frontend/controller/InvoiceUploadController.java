@@ -1,6 +1,7 @@
 package frontend.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -9,9 +10,14 @@ import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
-import backend.model.InvoiceState;
+import backend.model.ReimbursementState;
 import backend.model.User;
+import backend.model.UserRole;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -20,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -184,14 +191,13 @@ public class InvoiceUploadController {
             invoice.setDate(date);
             invoice.setAmount(amount);
             invoice.setCategory(category);
-            invoice.setStatus(InvoiceState.PENDING);
             invoice.setUser(user);
             invoice.setFile(uploadedFile);
 
-            boolean success = invoiceService.addInvoice(invoice);
+            boolean success = invoiceService.addInvoice(invoice) && reimbursementService.addReimbursement(invoice, reimbursementService.getReimbursementAmount());
             if (success) {
                 invoices.add(invoice);
-                showAlert("Erfolg", "Rechnung wurde erfolgreich hinzugefügt!");
+                showAlert("Erfolg", "Rechnung wurde erfolgreich hinzugefügt!" + "\n"  + " Kategorie: " + category + "; Rechnungsbetrag: " + reimbursementService.getReimbursementAmount());
                 resetForm();
             } else {
                 showAlert("Fehler", "Beim Speichern der Rechnung ist ein Fehler aufgetreten.");
@@ -242,5 +248,28 @@ public class InvoiceUploadController {
 		float reimbursementAmount = categoryBox.getValue().calculateReimbursement(invoiceAmount, limit);
 		reimbursementAmountField.setText(String.valueOf(reimbursementAmount));
 		reimbursementService.setReimbursementAmount(reimbursementAmount);
+    }
+    
+    @FXML
+    private void handleBackToDashboard(MouseEvent event) {
+    	String role;
+    	if (user.getRole() == UserRole.ADMIN) role = "AdminDashboard";
+    	else role="UserDashboard";
+    	
+    	try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/" + role + ".fxml"));
+            Parent root = fxmlLoader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            
+            if (stage != null) {
+                stage.setScene(new Scene(root));
+                stage.setTitle("Dashboard");
+                stage.show();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

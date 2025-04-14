@@ -5,7 +5,7 @@ DROP TABLE SystemConfiguration;
 DROP TABLE Reimbursements;
 DROP TABLE Invoices;
 DROP TABLE Users;
-DROP TYPE InvoiceState;
+DROP TYPE ReimbursementState;
 DROP TYPE InvoiceCategory;
 DROP TYPE UserState;
 DROP TYPE UserRole;
@@ -22,7 +22,7 @@ role UserRole NOT NULL DEFAULT 'EMPLOYEE',
 state UserState NOT NULL DEFAULT 'ACTIVE'
 );
 
-CREATE TYPE InvoiceState AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
+CREATE TYPE ReimbursementState AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'FLAGGED');
 CREATE TYPE InvoiceCategory AS ENUM ('RESTAURANT', 'SUPERMARKET');
 
 CREATE TABLE Invoices (
@@ -30,7 +30,6 @@ id SERIAL PRIMARY KEY,
 date DATE NOT NULL,
 amount FLOAT NOT NULL,
 category InvoiceCategory NOT NULL,
-status InvoiceState NOT NULL DEFAULT 'PENDING',
 user_id INT NOT NULL,
 file BYTEA,
 FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
@@ -41,6 +40,7 @@ id SERIAL PRIMARY KEY,
 invoice_id INT UNIQUE NOT NULL,
 approved_amount FLOAT NOT NULL,
 processed_date DATE NOT NULL,
+status ReimbursementState NOT NULL DEFAULT 'PENDING',
 FOREIGN KEY (invoice_id) REFERENCES Invoices(id) ON DELETE CASCADE
 );
 
