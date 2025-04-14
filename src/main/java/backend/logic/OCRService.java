@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -57,32 +58,92 @@ public class OCRService {
         return invoice;
     }
 
-    private Invoice parseInvoiceFromText(String text) { //AI generated (ChatGPT)
+    private Invoice parseInvoiceFromText(String text) { //Amount detection coded with AI assistance (not AI only)
         Invoice invoice = new Invoice();
 
-        Pattern amountPattern = Pattern.compile(
-                "(?:EUR\\s*|€\\s*|)(\\d+[.,]\\d{2})(?:\\s*EUR|\\s*€)?",
-                Pattern.CASE_INSENSITIVE
-        );
+        //TODO remove debugging line
+        System.out.println("---- OCR TEXT BEGIN ----");
+        System.out.println(text);
+        System.out.println("---- OCR TEXT END ----");
 
-        Matcher amountMatcher = amountPattern.matcher(text);
-        if (amountMatcher.find()) {
-            String amountString = amountMatcher.group(1).replace(",", ".");
-            invoice.setAmount((float) Double.parseDouble(amountString));
+        String[] lines = text.split("\\r?\\n");
+        Float amount = null;
+
+        // 1. Schritt: Suche nach "bezahlt"
+        for (String line : lines) {
+            String lower = line.toLowerCase();
+            if (lower.contains("bezahlt") && !line.matches(".*\\d{2}\\.\\d{2}\\.\\d{4}.*")) {
+                amount = extractAmountFromLine(line);
+                if (amount != null) break; // Falls gefunden, abbrechen
+            }
         }
 
-        // Beispiel: Datum erkennen (z.B. "01.04.2025")
+        // 2. Schritt: Falls "bezahlt" nicht gefunden wurde, nimm "summe"
+        if (amount == null) {
+            for (String line : lines) {
+                String lower = line.toLowerCase();
+                if (lower.contains("summe") && !line.matches(".*\\d{2}\\.\\d{2}\\.\\d{4}.*")) {
+                    amount = extractAmountFromLine(line);
+                }
+            }
+        }
+
+        // 3. Schritt: Fallback – höchsten Betrag im gesamten Text nehmen
+        if (amount == null) {
+            float maxAmount = 0f;
+            Pattern fallbackPattern = Pattern.compile("(\\d+[.,]\\d{2})");
+            for (String line : lines) {
+                if (line.matches(".*\\d{2}\\.\\d{2}\\.\\d{4}.*")) continue; // Datumszeile überspringen
+                Matcher matcher = fallbackPattern.matcher(line);
+                while (matcher.find()) {
+                    try {
+                        float val = Float.parseFloat(matcher.group(1).replace(",", "."));
+                        if (val > maxAmount) maxAmount = val;
+                    } catch (NumberFormatException e) {
+                        // Ignorieren
+                    }
+                }
+            }
+            if (maxAmount > 0f) amount = maxAmount;
+        }
+
+        if (amount != null) {
+            invoice.setAmount(amount);
+        }
+
         Pattern datePattern = Pattern.compile("(\\d{2}\\.\\d{2}\\.\\d{4})");
         Matcher dateMatcher = datePattern.matcher(text);
         if (dateMatcher.find()) {
             String dateString = dateMatcher.group(1);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            invoice.setDate(LocalDate.parse(dateString, formatter));
+            try {
+                LocalDate parsedDate = LocalDate.parse(dateString, formatter);
+                invoice.setDate(parsedDate);
+            } catch (DateTimeParseException e) {
+                System.err.println("Warnung: Ungültiges Datum erkannt: " + dateString);
+            }
         }
 
         InvoiceCategory category = categoryAnalyzer.getCategory(text);
         invoice.setCategory(category);
         if (invoice.getCategory() == InvoiceCategory.UNDETECTABLE) invoice.setFlag(true);
+
         return invoice;
     }
+
+    private Float extractAmountFromLine(String line) {
+        Pattern pattern = Pattern.compile("(\\d+[.,]\\d{2})");
+        Matcher matcher = pattern.matcher(line);
+        Float lastValue = null;
+        while (matcher.find()) {
+            try {
+                lastValue = Float.parseFloat(matcher.group(1).replace(",", "."));
+            } catch (NumberFormatException e) {
+                // Ignorieren
+            }
+        }
+        return lastValue;
+    }
+
+
 }

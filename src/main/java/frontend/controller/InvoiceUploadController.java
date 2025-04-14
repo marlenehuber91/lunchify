@@ -57,50 +57,57 @@ public class InvoiceUploadController {
     private File uploadedFile;
     private InvoiceService invoiceService = new InvoiceService(); 
     private ReimbursementService reimbursementService;
-    private OCRService ocrService = new OCRService(); // Ergänzen
+    private Invoice extractedInvoice;
 
     @FXML
     public void initialize() {
-    	if(user == null) {
-        	user = SessionManager.getCurrentUser();
-    	}
-    	
-    	invoiceService = new InvoiceService(user);
-    	invoices=invoiceService.getInvoices();
-    	reimbursementService = new ReimbursementService(user);
+        if (user == null) {
+            user = SessionManager.getCurrentUser();
+        }
+
+        invoiceService = new InvoiceService(user);
+        invoices = invoiceService.getInvoices();
+        reimbursementService = new ReimbursementService(user);
 
         categoryBox.getItems().addAll(InvoiceCategory.values());
-        
+
         submitButton.setDisable(true);
-        
-        
+
+
         amountField.textProperty().addListener((obs, oldVal, newVal) -> {
             boolean isAmountValid = invoiceService.isValidFloat(newVal);
-        	updateLabel(amountLabel, isAmountValid, "Kein gültiger Zahlenwert", "Betrag eingegeben");
-        	checkFields();
+            updateLabel(amountLabel, isAmountValid, "Kein gültiger Zahlenwert", "Betrag eingegeben");
+
+            checkFields();
         });
-        
-        datePicker.setDayCellFactory(picker -> new javafx.scene.control.DateCell() { //created by AI (ChatGPT
+
+
+        categoryBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            checkFields();
+        });
+
+
+        datePicker.setDayCellFactory(picker -> new javafx.scene.control.DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
 
-                               
                 LocalDate today = LocalDate.now();
                 LocalDate firstDayOfMonth = today.withDayOfMonth(1);
                 LocalDate lastDayOfMonth = today.withDayOfMonth(today.lengthOfMonth());
 
                 boolean isDisabled = date.isBefore(firstDayOfMonth) || date.isAfter(today);
-                
+
                 setDisable(isDisabled);
                 if (isDisabled) {
                     setStyle("-fx-background-color: #d3d3d3;");
                 }
             }
         });
-        
+
         datePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
-        	if (newVal == null) {
+
+            if (newVal == null) {
                 updateLabel(datePickerLabel, false, "Kein Datum ausgewählt!", "");
             } else if (newVal.isBefore(LocalDate.now().withDayOfMonth(1))) {
                 updateLabel(datePickerLabel, false, "Datum zu früh!", "");
@@ -111,13 +118,13 @@ public class InvoiceUploadController {
             } else {
                 updateLabel(datePickerLabel, true, "", "Datum eingegeben");
             }
+
             checkFields();
         });
-
-        categoryBox.valueProperty().addListener((obs, oldVal, newVal) -> checkFields());
     }
-    
-    
+
+
+
     @FXML
     private void openFileChooser() {
     	
@@ -145,13 +152,14 @@ public class InvoiceUploadController {
 
             try {
                 OCRService ocrService = new OCRService();
-                Invoice extractedInvoice = ocrService.extractData(file);
+                extractedInvoice = ocrService.extractData(file);
 
                 if (extractedInvoice != null) {
                     amountField.setText(String.valueOf(extractedInvoice.getAmount()));
                     datePicker.setValue(extractedInvoice.getDate());
                     categoryBox.setValue(extractedInvoice.getCategory());
                 }
+                extractedInvoice.setFlag(false); //intitially false, only true if user alters amount manually
 
             } catch (Exception e) {
                 showAlert("Fehler", "Die Datei konnte nicht analysiert werden.");
