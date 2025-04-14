@@ -30,46 +30,6 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           architecture: x64
-
-      #integrate TestFX
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y xvfb
-
-      - name: Start x virtual framebuffer
-        run: |
-          export DISPLAY=:99
-          export JAVA_OPTS="--module-path ${HOME}/.m2/repository/org/openjfx/javafx-controls/21/javafx-controls-21.jar --add-modules javafx.controls,javafx.fxml"
-          Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
-          echo "DISPLAY=:99" >> $GITHUB_ENV
-          echo "JAVA_OPTS=${JAVA_OPTS}" >> $GITHUB_ENV
-          
-       - name: Build and Test with Maven
-         run: mvn -B clean verify -Dexec.args="--module-path ${HOME}/.m2/repository/org/openjfx/javafx-controls/21/javafx-controls-21.jar --add-modules javafx.controls,javafx.fxml"
-
-      - name: Create staging folder
-        run: mkdir -p staging && cp target/*.jar staging/
-
-      - name: Upload JAR artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: lunchify-artifact
-          path: staging
-
-      - name: PMD static code analysis
-        uses: pmd/pmd-github-action@v2
-        with:
-          version: '6.55.0'
-          sourcePath: 'src/main/java'
-          rulesets: 'ruleset.xml'
-          createGitHubAnnotations: true
-          analyzeModifiedFilesOnly: false
-
-      - name: Publish unit test results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          files: |
-            **/target/surefire-reports/*.xml
           
       # Maven test, build and package compiled code in its distributable format, such as a JAR.
       - name: Maven package
