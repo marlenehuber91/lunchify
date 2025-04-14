@@ -38,10 +38,13 @@ jobs:
       - name: Start x virtual framebuffer
         run: |
           export DISPLAY=:99
+          export JAVA_OPTS="--module-path ${HOME}/.m2/repository/org/openjfx/javafx-controls/21/javafx-controls-21.jar --add-modules javafx.controls,javafx.fxml"
           Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
+          echo "JAVA_OPTS=${JAVA_OPTS}" >> $GITHUB_ENV
+          
        - name: Build and Test with Maven
-        run: mvn -B clean verify
+         run: mvn -B clean verify -Dexec.args="--module-path ${HOME}/.m2/repository/org/openjfx/javafx-controls/21/javafx-controls-21.jar --add-modules javafx.controls,javafx.fxml"
 
       - name: Create staging folder
         run: mkdir -p staging && cp target/*.jar staging/
