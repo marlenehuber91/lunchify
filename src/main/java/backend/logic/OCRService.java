@@ -35,6 +35,7 @@ public class OCRService {
         tesseract.setLanguage("deu+eng");
     }
 
+
     public String extractText(File imageFile) {
         try {
             BufferedImage image = ImageIO.read(imageFile);
