@@ -32,6 +32,8 @@ amount FLOAT NOT NULL,
 category InvoiceCategory NOT NULL,
 user_id INT NOT NULL,
 file BYTEA,
+flag BOOLEAN,
+text TEXT,
 FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
