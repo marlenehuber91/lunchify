@@ -14,6 +14,7 @@ public class Invoice {
     private String text;
 
 
+
     public Invoice(LocalDate date, float amount, InvoiceCategory category, ReimbursementState status,
                    File file, User user) {
         this.date = date;
