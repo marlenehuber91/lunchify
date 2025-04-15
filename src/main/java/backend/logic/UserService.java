@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import backend.interfaces.ConnectionProvider;
 import org.mindrot.jbcrypt.BCrypt;
 
 import backend.Exceptions.AuthenticationException;
@@ -14,6 +15,14 @@ import backend.model.UserState;
 import database.DatabaseConnection;
 
 public class UserService {
+
+    //for test mock - AI generated
+    private static ConnectionProvider connectionProvider = DatabaseConnection::connect;
+
+    public static void setConnectionProvider(ConnectionProvider provider) {
+        connectionProvider = provider;
+    }
+
 
     public static User authenticate(String email, String password) throws AuthenticationException {
         String query = "SELECT id, name, password, role, state FROM users WHERE email = ?";
