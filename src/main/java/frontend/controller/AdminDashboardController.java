@@ -64,4 +64,20 @@ public class AdminDashboardController {
             e.printStackTrace();
         }
     }
+    
+    @FXML
+    void openCurrentReimbursement(MouseEvent event) {
+    	try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/currReimbursements.fxml"));
+            Parent root = fxmlLoader.load();
+            
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            stage.setTitle("Current Reimbursements");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

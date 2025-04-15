@@ -44,7 +44,7 @@ public class InvoiceServiceTest {
     // === Date Validierung ===
     @Test
     public void testIsValidDate_withValidDate() {
-        LocalDate validDate = LocalDate.now().minusDays(3);
+        LocalDate validDate = LocalDate.now().minusDays(1); //muss je nach Tag an dem getestet wird angepasst werden
         assertTrue(invoiceService.isValidDate(validDate));
     }
 
