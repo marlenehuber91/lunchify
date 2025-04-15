@@ -7,6 +7,7 @@ import backend.Exceptions.AuthenticationException;
 import backend.logic.UserService;
 import backend.model.User;
 import backend.model.UserRole;
+import database.DatabaseConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -46,6 +47,7 @@ public class LoginPageController {
 
     @FXML
     public void initialize() { //Listener = AI generated + AI idea
+        UserService.setConnectionProvider(DatabaseConnection::connect);
         greenBg.heightProperty().bind(loginPage.heightProperty().multiply(0.6));
 
         // Dynamische Breite des Rectangles (volle Breite des AnchorPane)
