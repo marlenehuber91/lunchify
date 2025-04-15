@@ -101,7 +101,7 @@ public class InvoiceService {
 	}
 	
 	public boolean addInvoice(Invoice invoice) { //created with AI (ChatGPT)
-	    String sql = "INSERT INTO invoices (date, amount, category, user_id, file) VALUES (?, ?, ?, ?, ?)";
+	    String sql = "INSERT INTO invoices (date, amount, category, user_id, file, flagged) VALUES (?, ?, ?, ?, ?, ?)";
 
 	    try (Connection conn = DatabaseConnection.connect();
 	    	//FileInputStream fis = new FileInputStream(invoice.getFile());
@@ -112,6 +112,7 @@ public class InvoiceService {
 	    	stmt.setFloat(2, invoice.getAmount());
 	        stmt.setObject(3, invoice.getCategory(), Types.OTHER);
 	        stmt.setInt(4, invoice.getUser().getId()); // Nutzer-ID setzen
+			stmt.setBoolean(6, invoice.isFlagged());
 	        
 	        if (invoice.getFile() != null) { // Falls eine Datei vorhanden ist
 	            try {
@@ -122,9 +123,9 @@ public class InvoiceService {
 				}
 	        } else {
 	            stmt.setNull(5, Types.BINARY); // Falls keine Datei da ist
-	        }
+			}
 
-	        int affectedRows = stmt.executeUpdate(); // SQL ausführen
+			int affectedRows = stmt.executeUpdate(); // SQL ausführen
 	        if (affectedRows > 0) {
 	            ResultSet generatedKeys = stmt.getGeneratedKeys();
 	            if (generatedKeys.next()) {
