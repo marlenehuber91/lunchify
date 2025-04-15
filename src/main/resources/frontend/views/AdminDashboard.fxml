@@ -28,12 +28,6 @@
             <Image url="@../images/invoice.png" />
          </image>
       </ImageView>
-      <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="440.0" layoutY="110.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
-      <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="505.0" layoutY="124.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/calendar.png" />
-         </image>
-      </ImageView>
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="760.0" layoutY="110.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="825.0" layoutY="124.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -41,11 +35,6 @@
          </image>
       </ImageView>
       <Text layoutX="127.0" layoutY="247.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rechnung einreichen">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <Text layoutX="458.0" layoutY="248.0" strokeType="OUTSIDE" strokeWidth="0.0" text="aktuelle Rechnungen">
          <font>
             <Font size="20.0" />
          </font>
@@ -128,5 +117,17 @@
       </ImageView>
       <Rectangle fx:id="openInvoiceUploadButton" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="160.0" layoutX="110.0" layoutY="110.0" onMouseClicked="#onklickOpenInvoiceSubmissionWindow" stroke="#ffffff00" strokeType="INSIDE" width="220.0" />
       <Rectangle fx:id="openModifyReimbursmentAmountButton" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="160.0" layoutX="110.0" layoutY="510.0" onMouseClicked="#onClickOpenModifyReimbursementWindow" stroke="#ffffff00" strokeType="INSIDE" width="220.0" />
+      <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="440.0" layoutY="110.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
+      <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="505.0" layoutY="124.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/calendar.png" />
+         </image>
+      </ImageView>
+      <Text layoutX="458.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="aktuelle Rechnungen">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Rectangle fx:id="openCurrReimbursements" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="160.0" layoutX="440.0" layoutY="112.0" onMouseClicked="#openCurrentReimbursement" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="220.0" />
    </children>
 </AnchorPane>
