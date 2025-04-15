@@ -5,19 +5,29 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import backend.interfaces.ConnectionProvider;
 import org.mindrot.jbcrypt.BCrypt;
 
 import backend.Exceptions.AuthenticationException;
 import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
-import database.DatabaseConnection;
 
 public class UserService {
 
+    private static ConnectionProvider connectionProvider;
+
+    public static void setConnectionProvider(ConnectionProvider provider) {
+        connectionProvider = provider;
+    }
+
     public static User authenticate(String email, String password) throws AuthenticationException {
+        if (connectionProvider == null) {
+            throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
+        }
+
         String query = "SELECT id, name, password, role, state FROM users WHERE email = ?";
-        try (Connection conn = DatabaseConnection.connect();
+        try (Connection conn = connectionProvider.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, email);
