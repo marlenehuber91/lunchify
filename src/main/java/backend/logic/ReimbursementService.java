@@ -23,10 +23,13 @@ public class ReimbursementService {
 	private float restaurantLimit = 3.0f;
 
 	public ReimbursementService() {
-
+		if (!loadLimitsFromDatabase())
+ 			System.out.println("ReimbursementService loading failed");
 	}
 
 	public ReimbursementService(User user) {
+		if (!loadLimitsFromDatabase())
+ 			System.out.println("ReimbursementService loading failed");
 		this.user = user;
 	}
 
@@ -89,14 +92,63 @@ public class ReimbursementService {
 		if (newLimit < 0)
 			throw new IllegalArgumentException("Limits dürfen nicht negativ sein.");
 		else {
-			if (category == InvoiceCategory.RESTAURANT) {
-				restaurantLimit = newLimit;
-			} else {
-				supermarketLimit = newLimit;
-			}
-			return true;
+			try {
+ 				String sql = "UPDATE reimbursementAmount SET amount = ? WHERE category = ?::invoicecategory";
+ 				DatabaseConnection conn = new DatabaseConnection();
+ 				conn.connect();
+ 				PreparedStatement stmt = conn.connect().prepareStatement(sql);
+ 				stmt.setFloat(1, newLimit);
+ 				stmt.setString(2, category.name());
+ 
+ 				int rowsUpdated = stmt.executeUpdate();
+ 
+ 				// Update cached value
+ 				if (rowsUpdated > 0) {
+ 					if (category == InvoiceCategory.SUPERMARKET) {
+ 						supermarketLimit = newLimit;
+ 					} else if (category == InvoiceCategory.RESTAURANT) {
+ 						restaurantLimit = newLimit;
+ 					}
+ 					setReimbursementAmount(newLimit);
+ 					return true;
+ 				}
+ 				return false;
+ 			} catch (Exception e) {
+ 				throw new RuntimeException(e);
+ 			}
 		}
 	}
+	
+	private boolean loadLimitsFromDatabase() {
+ 		try {
+ 			DatabaseConnection conn = new DatabaseConnection();
+ 			conn.connect();
+ 
+ 			String query = "SELECT amount FROM reimbursementAmount WHERE category = ?::invoicecategory";
+ 			PreparedStatement stmt = conn.connect().prepareStatement(query);
+ 
+ 			// Load supermarket limit
+ 			stmt.setString(1, InvoiceCategory.SUPERMARKET.name());
+ 			ResultSet rs1 = stmt.executeQuery();
+ 			if (rs1.next()) {
+ 				supermarketLimit = rs1.getFloat("amount");
+ 			}
+ 
+ 			// Load restaurant limit
+ 			stmt.setString(1, InvoiceCategory.RESTAURANT.name());
+ 			ResultSet rs2 = stmt.executeQuery();
+ 			if (rs2.next()) {
+ 				restaurantLimit = rs2.getFloat("amount");
+ 			}
+ 
+ 			rs1.close();
+ 			rs2.close();
+ 			stmt.close();
+ 			return true;
+ 		} catch (Exception e) {
+ 			throw new RuntimeException(e);
+ 		}
+ 	}
 
 	public List<Reimbursement> getReimbursements(String condition) {
 		List<Reimbursement> reimbursements = new ArrayList<>();
