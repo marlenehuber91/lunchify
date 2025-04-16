@@ -22,4 +22,12 @@ public enum ReimbursementState {
                 return "Unbekannter Status.";
         }
     }
+    
+    public static ReimbursementState getState (String state) {
+    	if (state.equals("genehmigt")) return ReimbursementState.APPROVED;
+    	if (state.equals("offen")) return ReimbursementState.PENDING;
+    	if (state.equals("abgelehnt")) return ReimbursementState.REJECTED;
+    	if (state.equals("zur Kontrolle")) return ReimbursementState.FLAGGED;
+    	else return null;
+    }
 }

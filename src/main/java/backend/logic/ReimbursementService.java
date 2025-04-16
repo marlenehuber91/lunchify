@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
 import backend.model.Reimbursement;
@@ -198,6 +197,32 @@ public class ReimbursementService {
 	public List<Reimbursement> getAllReimbursements() {
 		return getReimbursements("i.user_id = ?;");
 	}
+	
+	public List<Reimbursement> getFilteredReimbursements(String selectedMonth, String selectedYear, String selectedCategory, String selectedStatus) {
+		StringBuilder condition = new StringBuilder("i.user_id = ? ");
+		// Monat filtern
+	    if (selectedMonth != null && !selectedMonth.isEmpty()) {
+	        condition.append(" AND EXTRACT(MONTH FROM i.date) = ").append(convertMonthToNumber(selectedMonth));
+	    }
+	    
+	    // Jahr filtern
+	    if (selectedYear != null && !selectedYear.isEmpty()) {
+	        condition.append(" AND EXTRACT(YEAR FROM i.date) = ").append(selectedYear);
+	    }
+
+	    // Kategorie filtern
+	    if (selectedCategory != null && !selectedCategory.isEmpty()) {
+	        condition.append(" AND i.category = '").append(selectedCategory).append("'");
+	    }
+
+	    // Status filtern
+	    if (selectedStatus != null && !selectedStatus.isEmpty()) {
+	        condition.append(" AND r.status = '").append(selectedStatus).append("'");
+	    }
+
+	    // Übergibt die Filter-Bedingungen an getReimbursements
+	    return getReimbursements(condition.toString());
+	}
 
 	public int getUserId() {
 		return this.user.getId();
@@ -206,9 +231,39 @@ public class ReimbursementService {
 	public float getTotalReimbursement(List<Reimbursement> reimb) { 
 		float total = 0;
 		for (Reimbursement reimbursement: reimb) {
+			if (reimbursement.getStatus() != ReimbursementState.REJECTED)
 			total += reimbursement.getApprovedAmount();
 		}
 		
 		return total;
+	}
+	//Overload
+	public float getTotalReimbursement(List<Reimbursement> reimb, ReimbursementState state) { 
+		float total = 0;
+		for (Reimbursement reimbursement: reimb) {
+			if (reimbursement.getStatus() == state)
+			total += reimbursement.getApprovedAmount();
 		}
+		
+		return total;
+	}
+	
+	public String convertMonthToNumber(String month) {
+	    switch (month.toLowerCase()) {
+	        case "jänner": return "1";
+	        case "februar": return "2";
+	        case "märz": return "3";
+	        case "april": return "4";
+	        case "mai": return "5";
+	        case "juni": return "6";
+	        case "juli": return "7";
+	        case "august": return "8";
+	        case "september": return "9";
+	        case "oktober": return "10";
+	        case "november": return "11";
+	        case "dezember": return "12";
+	        case "alle": return null;
+	        default: throw new IllegalArgumentException("Ungültiger Monat: " + month);
+	    }
+	}
 }
