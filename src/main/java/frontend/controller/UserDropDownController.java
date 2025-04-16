@@ -19,24 +19,31 @@ public class UserDropDownController {
     @FXML
     private MenuButton userDropDown;
 
+    @FXML
+    private void initialize() {
+        userImageView.setOnMouseClicked(event -> {
+            userDropDown.show();
+        });
+    }
 
     @FXML
-    private void openUserDropDown(MouseEvent event) {
+    public void openUserDropDown(MouseEvent event) {
         userDropDown.show();
     }
 
     @FXML
-    private void changePassword(ActionEvent event) {
+    public void changePassword(ActionEvent event) {
         //TODO implemnent logic
+
     }
 
     @FXML
-    private void changeRole(ActionEvent event) {
+    public void changeRole(ActionEvent event) {
         //TODO implement logic
     }
 
     @FXML
-    private void handleLogout(ActionEvent event) {
+    public void handleLogout(ActionEvent event) {
         SessionManager.logout();
 
         try {
