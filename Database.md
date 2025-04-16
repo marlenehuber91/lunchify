@@ -5,6 +5,7 @@ DROP TABLE SystemConfiguration;
 DROP TABLE Reimbursements;
 DROP TABLE Invoices;
 DROP TABLE Users;
+DROP TABLE ReimbursementAmount;
 DROP TYPE ReimbursementState;
 DROP TYPE InvoiceCategory;
 DROP TYPE UserState;
@@ -23,7 +24,7 @@ state UserState NOT NULL DEFAULT 'ACTIVE'
 );
 
 CREATE TYPE ReimbursementState AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'FLAGGED');
-CREATE TYPE InvoiceCategory AS ENUM ('RESTAURANT', 'SUPERMARKET');
+CREATE TYPE InvoiceCategory AS ENUM ('RESTAURANT', 'SUPERMARKET', 'UNDETACTABLE');
 
 CREATE TABLE Invoices (
 id SERIAL PRIMARY KEY,
@@ -32,7 +33,7 @@ amount FLOAT NOT NULL,
 category InvoiceCategory NOT NULL,
 user_id INT NOT NULL,
 file BYTEA,
-flag BOOLEAN,
+flagged BOOLEAN,
 text TEXT,
 FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
@@ -44,11 +45,6 @@ approved_amount FLOAT NOT NULL,
 processed_date DATE NOT NULL,
 status ReimbursementState NOT NULL DEFAULT 'PENDING',
 FOREIGN KEY (invoice_id) REFERENCES Invoices(id) ON DELETE CASCADE
-);
-
-CREATE TABLE SystemConfiguration (
-id SERIAL PRIMARY KEY,
-reimbursement_rates JSONB NOT NULL
 );
 
 CREATE TABLE AnomalyDetection (

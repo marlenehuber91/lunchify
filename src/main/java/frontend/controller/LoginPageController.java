@@ -70,6 +70,8 @@ public class LoginPageController {
                 showErrorElements("E-Mail Adresse ungültig");
             }
         });
+        passwordField.setOnAction(event -> handleLogin());
+
     }
 
     @FXML

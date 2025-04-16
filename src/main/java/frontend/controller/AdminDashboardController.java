@@ -3,10 +3,12 @@ import java.io.IOException;
 
 import backend.logic.SessionManager;
 import backend.model.User;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -14,9 +16,13 @@ import javafx.scene.Node;
 
 public class AdminDashboardController {
 
-    //TODO Johanna: changes made by Marlene, review and accept or reject
     @FXML
     private Text userNameText;
+    @FXML
+    private UserDropDownController dropDown;
+    @FXML
+    private MenuButton userDropDown;
+
 
     @FXML
     void initialize() {
@@ -96,4 +102,5 @@ public class AdminDashboardController {
             e.printStackTrace();
         }
     }
+
 }

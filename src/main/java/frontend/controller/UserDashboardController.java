@@ -27,6 +27,7 @@ public class UserDashboardController {
     public void openInvoiceSubmissionWindow(MouseEvent event) {
         adminController.onklickOpenInvoiceSubmissionWindow(event);
     }
+
     
     public void openCurrentReimbursement(MouseEvent event) {
     	adminController.openCurrentReimbursement(event);
@@ -35,4 +36,13 @@ public class UserDashboardController {
     public void openReimbursementHistory(MouseEvent event) {
     	adminController.openReimbursementHistory(event);
     }
-}
+
+    @FXML
+    public void onClickOpenModifyReimbursementWindow(MouseEvent mouseEvent) {
+        adminController.onClickOpenModifyReimbursementWindow(mouseEvent);
+    }
+
+    @FXML
+    void openCurrentReimbursement(MouseEvent event) {
+        adminController.openCurrentReimbursement(event);
+    }

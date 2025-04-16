@@ -43,6 +43,8 @@ public class ModifyReimbursementController {
 
     	reimbursementService = new ReimbursementService();
 
+
+        //TODO: Category box shows UNDETECTABLE - how to fix that?
         categoryBox.getItems().addAll(InvoiceCategory.values());
         
         saveButton.setDisable(true);
@@ -97,6 +99,7 @@ public class ModifyReimbursementController {
                     showAlert("Fehler", "Beim Speichern des neuen Betrages ist ein Fehler aufgetreten.");
                 }
             }
+
         }
 
 
