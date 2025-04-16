@@ -5,6 +5,7 @@ DROP TABLE SystemConfiguration;
 DROP TABLE Reimbursements;
 DROP TABLE Invoices;
 DROP TABLE Users;
+DROP TABLE ReimbursementAmount;
 DROP TYPE ReimbursementState;
 DROP TYPE InvoiceCategory;
 DROP TYPE UserState;
@@ -44,11 +45,6 @@ approved_amount FLOAT NOT NULL,
 processed_date DATE NOT NULL,
 status ReimbursementState NOT NULL DEFAULT 'PENDING',
 FOREIGN KEY (invoice_id) REFERENCES Invoices(id) ON DELETE CASCADE
-);
-
-CREATE TABLE SystemConfiguration (
-id SERIAL PRIMARY KEY,
-reimbursement_rates JSONB NOT NULL
 );
 
 CREATE TABLE AnomalyDetection (
