@@ -36,13 +36,13 @@
         </ImageView>
         <Label layoutX="572.0" layoutY="435.0" prefHeight="17.0" prefWidth="131.0" text="E-Mail Adresse" />
         <TextField fx:id="usernameField" layoutX="569.0" layoutY="466.0" prefHeight="55.0" prefWidth="271.0" />
+        <PasswordField fx:id="passwordField" layoutX="572.0" layoutY="571.0" prefHeight="55.0" prefWidth="271.0" />
         <Label layoutX="572.0" layoutY="539.0" prefHeight="17.0" prefWidth="124.0" text="Passwort" />
-        <Button fx:id="loginButton" layoutX="603.0" layoutY="660.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="55.0" prefWidth="209.0" style="-fx-background-color: #DEBD94;" text="ANMELDEN" textAlignment="CENTER">
+        <Button fx:id="loginButton" layoutX="603.0" layoutY="660.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="55.0" prefWidth="209.0" style="-fx-background-color: #DEBD94;" text="ANMELDEN" textAlignment="CENTER" focusTraversable="true">
             <font>
                 <Font name="System Bold" size="22.0" />
             </font>
         </Button>
-        <PasswordField fx:id="passwordField" layoutX="572.0" layoutY="571.0" prefHeight="55.0" prefWidth="271.0" />
         <Label fx:id="errorLabel" layoutX="653.0" layoutY="736.0" prefHeight="55.0" prefWidth="115.0" text="Login fehlgeschlagen" textFill="#e8300b" visible="false">
             <font>
                 <Font size="12.0" />
