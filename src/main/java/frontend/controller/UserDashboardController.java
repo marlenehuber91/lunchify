@@ -46,3 +46,4 @@ public class UserDashboardController {
     void openCurrentReimbursement(MouseEvent event) {
         adminController.openCurrentReimbursement(event);
     }
+}
