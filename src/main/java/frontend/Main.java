@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 	//set true for testing
-	private boolean isOnTestMode = false; 
+	private boolean isOnTestMode = false;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -38,16 +38,13 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 	private void setTestUserSession() {
-		User testUser = new User("dummyName", "martin.lechner@lunch.at", "martin123", UserRole.ADMIN, UserState.ACTIVE);
-		try {
-			SessionManager.setCurrentUser(UserService.authenticate(testUser.getEmail(), testUser.getPassword()));
-		} catch (AuthenticationException e) {
-			e.printStackTrace();
-		}
+		User testUser = new User("TestUser", "test@lunch.at", "test", UserRole.ADMIN, UserState.ACTIVE);
+		SessionManager.setCurrentUser(testUser);
 	}
-	
+
+
 	public void setTestMode(boolean testMode) {
 		isOnTestMode = testMode;
 	}
