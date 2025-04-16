@@ -19,7 +19,7 @@ public class AdminDashboardController {
     @FXML
     private Text userNameText;
     @FXML
-    private UserDropDownController dropDown = new UserDropDownController();
+    private UserDropDownController dropDown;
     @FXML
     private MenuButton userDropDown;
 
@@ -85,31 +85,6 @@ public class AdminDashboardController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @FXML
-    public void changePassword(ActionEvent event) {
-        if (dropDown != null) {
-            dropDown.changePassword(event);
-        }
-    }
-    @FXML
-    public void changeRole(ActionEvent event) {
-        if (dropDown != null) {
-            dropDown.changeRole(event);
-        }
-    }
-
-    @FXML
-    public void handleLogout(ActionEvent event) {
-        if (dropDown != null) {
-            dropDown.handleLogout(event);
-        }
-    }
-
-    @FXML
-    public void openUserDropDown(MouseEvent event) {
-        dropDown.openUserDropDown(event);
     }
 
 }
