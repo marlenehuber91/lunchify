@@ -33,7 +33,7 @@
                 <Image url="@../images/calendar.png" />
             </image>
         </ImageView>
-        <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="760.0" layoutY="110.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
+        <Rectangle fx:id="ReimbursementHistoryButton" arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="760.0" layoutY="110.0" onMouseClicked="#openReimbursementHistory" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
         <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="825.0" layoutY="124.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@../images/archiv.png" />
@@ -61,6 +61,7 @@
             </image>
         </ImageView>
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="160.0" layoutX="110.0" layoutY="110.0" onMouseClicked="#openInvoiceSubmissionWindow" stroke="#ffffff00" strokeType="INSIDE" width="220.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="160.0" layoutX="440.0" layoutY="110.0" onMouseClicked="#openCurrentReimbursement" stroke="#ffffff00" strokeType="INSIDE" width="220.0" />
+      <Rectangle fx:id="openCurrReimbursements" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="160.0" layoutX="440.0" layoutY="110.0" onMouseClicked="#openCurrentReimbursement" stroke="#ffffff00" strokeType="INSIDE" width="220.0" />
+      <Rectangle fx:id="ReimbursementHistoryButton" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="160.0" layoutX="760.0" layoutY="110.0" onMouseClicked="#openReimbursementHistory" stroke="#ffffff00" strokeType="INSIDE" width="220.0" />
     </children>
 </AnchorPane>

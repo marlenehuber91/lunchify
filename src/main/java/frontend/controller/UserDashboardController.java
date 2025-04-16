@@ -27,4 +27,12 @@ public class UserDashboardController {
     public void openInvoiceSubmissionWindow(MouseEvent event) {
         adminController.onklickOpenInvoiceSubmissionWindow(event);
     }
+    
+    public void openCurrentReimbursement(MouseEvent event) {
+    	adminController.openCurrentReimbursement(event);
+    }
+    
+    public void openReimbursementHistory(MouseEvent event) {
+    	adminController.openReimbursementHistory(event);
+    }
 }
