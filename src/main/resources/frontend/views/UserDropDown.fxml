@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" layoutX="1026.0" layoutY="23.0" prefHeight="420.0" prefWidth="236.0" fx:controller="frontend.controller.UserDropDownController">
+    <children>
+        <MenuButton fx:id="userDropDown" layoutX="87.0" layoutY="22.0" mnemonicParsing="false" prefHeight="82.0" prefWidth="38.0" style="-fx-background-color: #feead1;" visible="false">
+            <items>
+                <MenuItem fx:id="changePassword" mnemonicParsing="false" onAction="#changePassword" text="Passwort ändern" />
+                <MenuItem fx:id="changeRoleButton" mnemonicParsing="false" onAction="#changeRole" text="Rolle wechseln " />
+                <MenuItem fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" text="Logout" />
+            </items>
+        </MenuButton>
+        <ImageView fx:id="userImageView" accessibleRole="COMBO_BOX" fitHeight="72.0" fitWidth="69.0" layoutX="92.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../images/userAvatar.png" />
+            </image>
+        </ImageView>
+    </children>
+</AnchorPane>
