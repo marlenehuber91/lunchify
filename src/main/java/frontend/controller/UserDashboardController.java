@@ -41,9 +41,4 @@ public class UserDashboardController {
     public void onClickOpenModifyReimbursementWindow(MouseEvent mouseEvent) {
         adminController.onClickOpenModifyReimbursementWindow(mouseEvent);
     }
-
-    @FXML
-    void openCurrentReimbursement(MouseEvent event) {
-        adminController.openCurrentReimbursement(event);
-    }
 }
