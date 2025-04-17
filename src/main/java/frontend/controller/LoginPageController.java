@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.IOException;
 
 import backend.Exceptions.AuthenticationException;
+import backend.logic.ReimbursementService;
 import backend.logic.UserService;
 import backend.model.User;
 import backend.model.UserRole;
