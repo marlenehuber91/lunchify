@@ -8,8 +8,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.MenuButton?>
 <AnchorPane fx:id="adminDashboard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controller.AdminDashboardController">
    <children>
       <!-- Benutzername Anzeige von Marlene hinzugefügt-->
@@ -19,7 +17,7 @@
          </font>
       </Text>
       <fx:include source="UserDropDown.fxml" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#42b35b" height="350.0" layoutY="482.0" stroke="#42b35b" strokeType="INSIDE" width="1800.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#42b35b" height="350.0" layoutY="482.0" stroke="#42b35b" strokeType="INSIDE" width="1908.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="110.0" layoutY="110.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0">
          <rotationAxis>
             <Point3D />
@@ -118,7 +116,12 @@
          </image>
       </ImageView>
       <Rectangle fx:id="openInvoiceUploadButton" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="160.0" layoutX="110.0" layoutY="110.0" onMouseClicked="#onklickOpenInvoiceSubmissionWindow" stroke="#ffffff00" strokeType="INSIDE" width="220.0" />
-      <Rectangle fx:id="openModifyReimbursmentAmountButton" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="160.0" layoutX="110.0" layoutY="510.0" onMouseClicked="#onClickOpenModifyReimbursementWindow" stroke="#ffffff00" strokeType="INSIDE" width="220.0" />
+      <Rectangle fx:id="openModifyReimbursmentAmountButton" arcHeight="5.0" arcWidth="5.0" fill="#ff0707" height="30.0" layoutX="28.0" layoutY="785.0" onMouseClicked="#onClickOpenModifyReimbursementWindow" stroke="#ffffff00" strokeType="INSIDE" width="69.0" />
+      <Text layoutX="28.0" layoutY="778.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rückerstattungsbetrag ändern">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="440.0" layoutY="110.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="505.0" layoutY="124.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -132,5 +135,6 @@
       </Text>
       <Rectangle fx:id="openCurrReimbursements" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="160.0" layoutX="440.0" layoutY="112.0" onMouseClicked="#openCurrentReimbursement" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="220.0" />
       <Rectangle fx:id="reimbursementHistoryButton" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="160.0" layoutX="760.0" layoutY="110.0" onMouseClicked="#openReimbursementHistory" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="220.0" />
+      <Rectangle fx:id="modifyUsersButton" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="160.0" layoutX="110.0" layoutY="510.0" onMouseClicked="#openModifyUsers" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="220.0" />
    </children>
 </AnchorPane>
