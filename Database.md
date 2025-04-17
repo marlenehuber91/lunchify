@@ -1,7 +1,4 @@
-```sql
-
 DROP TABLE AnomalyDetection;
-DROP TABLE SystemConfiguration;
 DROP TABLE Reimbursements;
 DROP TABLE Invoices;
 DROP TABLE Users;
@@ -77,4 +74,5 @@ INSERT INTO users (name, email, password, role, state) VALUES ('a (testAdmin)', 
 INSERT INTO ReimbursementAmount (category, amount)
 VALUES
 ('SUPERMARKET', 2.5),
-('RESTAURANT', 3);
+('RESTAURANT', 3),
+('UNDETACTABLE', 2.5);
