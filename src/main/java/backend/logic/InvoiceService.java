@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import backend.interfaces.ConnectionProvider;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
 import backend.model.ReimbursementState;
@@ -23,15 +24,25 @@ import database.DatabaseConnection;
 
 
 public class InvoiceService {
-	
+	private static ConnectionProvider connectionProvider;
+	private User user;
 	public List<Invoice> invoices;
 	
-	public InvoiceService(User user) {
-		this.invoices=getAllInvoices(user);
+	public static void setConnectionProvider(ConnectionProvider provider) {
+	        connectionProvider = provider;
 	}
 	
+	public InvoiceService(User user) {
+        this.user = user;
+        if (connectionProvider != null) {
+            this.invoices = getAllInvoices(user);
+        } else {
+            this.invoices = new ArrayList<>();
+        }
+    }
+	
 	public InvoiceService () {
-		
+		this.invoices = new ArrayList<>();
 	}
 	
 	public boolean invoiceDateAlreadyUsed (LocalDate date, User user) {
@@ -75,7 +86,7 @@ public class InvoiceService {
 		List<Invoice> invoices = new ArrayList<>();
 				
 		String sql = "SELECT id, amount, category, date FROM invoices WHERE user_id = ?";
-		try (Connection conn = DatabaseConnection.connect();
+		try (Connection conn = connectionProvider.getConnection();
 	             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 	            stmt.setInt(1, user.getId());
@@ -103,7 +114,7 @@ public class InvoiceService {
 	public boolean addInvoice(Invoice invoice) { //created with AI (ChatGPT)
 	    String sql = "INSERT INTO invoices (date, amount, category, user_id, file, flagged) VALUES (?, ?, ?, ?, ?, ?)";
 
-	    try (Connection conn = DatabaseConnection.connect();
+	    try (Connection conn = connectionProvider.getConnection();
 	    	//FileInputStream fis = new FileInputStream(invoice.getFile());
 	        PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 	    	//stmt.setBinaryStream(2, fis, (int) invoice.getFile().length());

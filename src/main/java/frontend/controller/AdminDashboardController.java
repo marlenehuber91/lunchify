@@ -1,8 +1,11 @@
 package frontend.controller;
 import java.io.IOException;
 
+import backend.logic.InvoiceService;
+import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
 import backend.model.User;
+import database.DatabaseConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +29,8 @@ public class AdminDashboardController {
 
     @FXML
     void initialize() {
+    	ReimbursementService.setConnectionProvider(DatabaseConnection::connect);
+    	InvoiceService.setConnectionProvider(DatabaseConnection::connect);
     	User user = SessionManager.getCurrentUser();
         if (user != null) {
             String username = user.getName();
