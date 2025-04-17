@@ -1,7 +1,4 @@
-```sql
-
 DROP TABLE AnomalyDetection;
-DROP TABLE SystemConfiguration;
 DROP TABLE Reimbursements;
 DROP TABLE Invoices;
 DROP TABLE Users;
@@ -24,7 +21,7 @@ state UserState NOT NULL DEFAULT 'ACTIVE'
 );
 
 CREATE TYPE ReimbursementState AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'FLAGGED');
-CREATE TYPE InvoiceCategory AS ENUM ('RESTAURANT', 'SUPERMARKET', 'UNDETACTABLE');
+CREATE TYPE InvoiceCategory AS ENUM ('RESTAURANT', 'SUPERMARKET', 'UNDETECTABLE');
 
 CREATE TABLE Invoices (
 id SERIAL PRIMARY KEY,
@@ -77,4 +74,5 @@ INSERT INTO users (name, email, password, role, state) VALUES ('a (testAdmin)', 
 INSERT INTO ReimbursementAmount (category, amount)
 VALUES
 ('SUPERMARKET', 2.5),
-('RESTAURANT', 3);
+('RESTAURANT', 3),
+('UNDETECTABLE', 2.5);
