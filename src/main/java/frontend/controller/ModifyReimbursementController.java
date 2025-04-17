@@ -43,8 +43,6 @@ public class ModifyReimbursementController {
 
     	reimbursementService = new ReimbursementService();
 
-
-        //TODO: Category box shows UNDETECTABLE - how to fix that?
         categoryBox.getItems().addAll(InvoiceCategory.values());
         
         saveButton.setDisable(true);
