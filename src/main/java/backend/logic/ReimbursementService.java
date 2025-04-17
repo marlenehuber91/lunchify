@@ -20,6 +20,7 @@ public class ReimbursementService {
 	private float reimbursementAmount;
 	private float supermarketLimit = 2.5f;
 	private float restaurantLimit = 3.0f;
+	private float undetectableLimit = 2.5f;
 
 	public ReimbursementService() {
 		if (!loadLimitsFromDatabase())
@@ -39,8 +40,11 @@ public class ReimbursementService {
 	public float getLimit(InvoiceCategory category) {
 		if (category == InvoiceCategory.RESTAURANT) {
 			return restaurantLimit;
-		} else
+		} else if (category == InvoiceCategory.SUPERMARKET) {
 			return supermarketLimit;
+		} else {
+			return undetectableLimit;
+		}
 	}
 
 	public void setReimbursementAmount(float amount) {
@@ -72,12 +76,6 @@ public class ReimbursementService {
 	    	    return false; // Falls etwas schiefgeht
 	    }
 
-	public void setLimit(InvoiceCategory category, float amount) {
-		if (category == InvoiceCategory.RESTAURANT) {
-			this.restaurantLimit = amount;
-		} else
-			this.supermarketLimit = amount;
-	}
 
 	public boolean isValidFloat(String text) { // created by AI (ChatGPT)
 		return text.matches("^\\d+(\\.\\d+)?$");
@@ -89,7 +87,7 @@ public class ReimbursementService {
 
 	public boolean modifyLimits(InvoiceCategory category, float newLimit) {
 		if (newLimit < 0)
-			throw new IllegalArgumentException("Limits dürfen nicht negativ sein.");
+			throw new IllegalArgumentException("Limit should be a positive number.");
 		else {
 			try {
  				String sql = "UPDATE reimbursementAmount SET amount = ? WHERE category = ?::invoicecategory";
@@ -102,22 +100,31 @@ public class ReimbursementService {
  				int rowsUpdated = stmt.executeUpdate();
  
  				// Update cached value
- 				if (rowsUpdated > 0) {
- 					if (category == InvoiceCategory.SUPERMARKET) {
- 						supermarketLimit = newLimit;
- 					} else if (category == InvoiceCategory.RESTAURANT) {
- 						restaurantLimit = newLimit;
- 					}
- 					setReimbursementAmount(newLimit);
- 					return true;
- 				}
+				if (rowsUpdated > 0) {
+					switch (category) {
+						case SUPERMARKET:
+							supermarketLimit = newLimit;
+							break;
+						case RESTAURANT:
+							restaurantLimit = newLimit;
+							break;
+						case UNDETECTABLE:
+							undetectableLimit = newLimit;
+							break;
+						default:
+							break;
+					}
+					setReimbursementAmount(newLimit);
+					return true;
+				}
  				return false;
  			} catch (Exception e) {
  				throw new RuntimeException(e);
  			}
 		}
 	}
-	
+
+	//created with help from AI
 	private boolean loadLimitsFromDatabase() {
  		try {
  			DatabaseConnection conn = new DatabaseConnection();
@@ -128,20 +135,27 @@ public class ReimbursementService {
  
  			// Load supermarket limit
  			stmt.setString(1, InvoiceCategory.SUPERMARKET.name());
- 			ResultSet rs1 = stmt.executeQuery();
- 			if (rs1.next()) {
- 				supermarketLimit = rs1.getFloat("amount");
+ 			ResultSet rsSupermarket = stmt.executeQuery();
+ 			if (rsSupermarket.next()) {
+ 				supermarketLimit = rsSupermarket.getFloat("amount");
  			}
  
  			// Load restaurant limit
  			stmt.setString(1, InvoiceCategory.RESTAURANT.name());
- 			ResultSet rs2 = stmt.executeQuery();
- 			if (rs2.next()) {
- 				restaurantLimit = rs2.getFloat("amount");
+ 			ResultSet rsRestaurant = stmt.executeQuery();
+ 			if (rsRestaurant.next()) {
+ 				restaurantLimit = rsRestaurant.getFloat("amount");
  			}
- 
- 			rs1.close();
- 			rs2.close();
+
+			stmt.setString(1, InvoiceCategory.UNDETECTABLE.name());
+			ResultSet rsUndetactable = stmt.executeQuery();
+			if (rsUndetactable.next()) {
+				undetectableLimit = rsUndetactable.getFloat("amount");
+			}
+
+ 			rsSupermarket.close();
+ 			rsRestaurant.close();
+			rsUndetactable.close();
  			stmt.close();
  			return true;
  		} catch (Exception e) {

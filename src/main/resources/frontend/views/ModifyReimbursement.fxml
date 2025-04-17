@@ -56,5 +56,6 @@
             <Circle fx:id="backArrow" fill="#eceeef00" onMouseClicked="#handleBackToDashboard" radius="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
          </children>
       </StackPane>
+      <fx:include source="UserDropDown.fxml" layoutX="675.0" layoutY="54.0"/>
    </children>
 </AnchorPane>
