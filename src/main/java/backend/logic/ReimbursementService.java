@@ -28,18 +28,6 @@ public class ReimbursementService {
 	public static void setConnectionProvider(ConnectionProvider provider) {
         connectionProvider = provider;
     }
-
-
-	/*public ReimbursementService() {
-		if (!loadLimitsFromDatabase())
-			System.out.println("ReimbursementService loading failed");
-	}
-
-	public ReimbursementService(User user) {
-		if (!loadLimitsFromDatabase())
-			System.out.println("ReimbursementService loading failed");
-		this.user = user;
-	}*/
 	
 	public ReimbursementService() {
 		if (connectionProvider != null) {
@@ -115,9 +103,8 @@ public class ReimbursementService {
 		else {
 			try {
  				String sql = "UPDATE reimbursementAmount SET amount = ? WHERE category = ?::invoicecategory";
- 				DatabaseConnection conn = new DatabaseConnection();
- 				conn.connect();
- 				PreparedStatement stmt = conn.connect().prepareStatement(sql);
+ 				Connection conn = connectionProvider.getConnection();
+ 				PreparedStatement stmt = conn.prepareStatement(sql);
  				stmt.setFloat(1, newLimit);
  				stmt.setString(2, category.name());
  
@@ -151,11 +138,10 @@ public class ReimbursementService {
 	//created with help from AI
 	private boolean loadLimitsFromDatabase() {
  		try {
- 			DatabaseConnection conn = new DatabaseConnection();
- 			conn.connect();
+ 			Connection conn = connectionProvider.getConnection();
  
  			String query = "SELECT amount FROM reimbursementAmount WHERE category = ?::invoicecategory";
- 			PreparedStatement stmt = conn.connect().prepareStatement(query);
+ 			PreparedStatement stmt = conn.prepareStatement(query);
  
  			// Load supermarket limit
  			stmt.setString(1, InvoiceCategory.SUPERMARKET.name());
