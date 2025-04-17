@@ -77,7 +77,7 @@ class ReimbursementServiceTest {
         r1.setStatus(ReimbursementState.APPROVED);
 
         Reimbursement r2 = new Reimbursement();
-        r2.setApprovedAmount(7.0f);
+        r2.setApprovedAmount(2.0f);
         r2.setStatus(ReimbursementState.REJECTED);
 
         float total = service.getTotalReimbursement(Arrays.asList(r1, r2));
@@ -91,11 +91,11 @@ class ReimbursementServiceTest {
         r1.setStatus(ReimbursementState.PENDING);
 
         Reimbursement r2 = new Reimbursement();
-        r2.setApprovedAmount(4.0f);
+        r2.setApprovedAmount(3.0f);
         r2.setStatus(ReimbursementState.PENDING);
 
         float total = service.getTotalReimbursement(Arrays.asList(r1, r2), ReimbursementState.PENDING);
-        assertEquals(6.0f, total);
+        assertEquals(5.0f, total);
     }
 
     @Test
@@ -103,4 +103,70 @@ class ReimbursementServiceTest {
         assertEquals("4", service.convertMonthToNumber("April"));
         assertEquals("12", service.convertMonthToNumber("Dezember"));
     }
+    
+    @Test
+    void testConvertMonthToNumberInvalid() {
+    	Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.convertMonthToNumber("invalidMonth");
+        });
+        assertTrue(exception.getMessage().contains("Ungültiger Monat"));
+    }
+    
+    @Test
+    void testGetFilteredReimbursementsWithVariousFilters() {
+        List<Reimbursement> result = service.getFilteredReimbursements("April", "2023", "RESTAURANT", "APPROVED");
+        assertNotNull(result);
+    }
+    
+    @Test
+    void testGetAllReimbursements() {
+        List<Reimbursement> result = service.getAllReimbursements();
+        assertNotNull(result);
+    }
+
+    @Test
+    void testGetCurrentReimbursements() {
+        List<Reimbursement> result = service.getCurrentReimbursements();
+        assertNotNull(result);
+    }
+    
+    @Test
+    void testGetTotalReimbursementEmptyList() {
+    	float total = service.getTotalReimbursement(List.of());
+    	assertEquals(0.0f, total);
+    }
+    
+    @Test
+    void testGetTotalReimbursementAllRejected() {
+        Reimbursement r1 = new Reimbursement();
+        r1.setApprovedAmount(1.0f);
+        r1.setStatus(ReimbursementState.REJECTED);
+
+        float total = service.getTotalReimbursement(List.of(r1));
+        assertEquals(0.0f, total);
+    }
+    
+    @Test
+    void testGetTotalReimbursementByStateEmptyList() {
+        float total = service.getTotalReimbursement(List.of(), ReimbursementState.APPROVED);
+        assertEquals(0.0f, total);
+    }
+    
+    @Test
+    void testGetTotalReimbursementByStateNoMatch() {
+        Reimbursement r1 = new Reimbursement();
+        r1.setApprovedAmount(2.0f);
+        r1.setStatus(ReimbursementState.REJECTED);
+
+        float total = service.getTotalReimbursement(List.of(r1), ReimbursementState.APPROVED);
+        assertEquals(0.0f, total);
+    }
+    
+    @Test
+    void testGetFilteredReimbursementsWithAlleMonth() {
+        List<Reimbursement> result = service.getFilteredReimbursements("alle", "2023", "RESTAURANT", "APPROVED");
+        assertNotNull(result);
+    }
+
+
 }
