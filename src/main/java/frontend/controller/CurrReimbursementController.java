@@ -66,6 +66,10 @@ public class CurrReimbursementController {
 	@FXML
 	private Text currentMonthText;
 	
+	public void setReimbursementService(ReimbursementService reimbursementService) {
+		this.reimbursementService = reimbursementService;
+	}
+	
 	@FXML
 	void initialize() {
 	    if (user == null) {
@@ -73,12 +77,13 @@ public class CurrReimbursementController {
 	    }
 
 	    setCurrentMonthLabel();
-	    reimbursementService = new ReimbursementService(user);
+	    if (reimbursementService == null) {
+	    	 reimbursementService = new ReimbursementService(user);
+	    }
 	    loadList();
 	}
-
-
-    @FXML
+	
+	@FXML
     private void handleBackToDashboard(MouseEvent event) {
     	String role;
     	if (user.getRole() == UserRole.ADMIN) role = "AdminDashboard";
@@ -101,7 +106,7 @@ public class CurrReimbursementController {
         }
     }
     	
-    	private void loadList() {
+    	public void loadList() {
     		List<Reimbursement> reimbursements = reimbursementService.getCurrentReimbursements();
     	    String totalReimbursement = String.valueOf(reimbursementService.getTotalReimbursement(reimbursements));
     	    totalReimbursementAmountLabel.setText("€ " + totalReimbursement);
@@ -159,6 +164,10 @@ public class CurrReimbursementController {
     		String currMonth = currDate.getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault());
     		currentMonthText.setText("Rechnungen "  + currMonth);
     	}
+
+		public Label getTotalReimbursementAmountLabel() {
+			return this.totalReimbursementAmountLabel;
+		}
 }
 
 
