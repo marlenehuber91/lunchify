@@ -15,7 +15,7 @@ public class Invoice {
 
 
 
-    public Invoice(LocalDate date, float amount, InvoiceCategory category, ReimbursementState status,
+    public Invoice(LocalDate date, float amount, InvoiceCategory category,
                    File file, User user) {
         this.date = date;
         this.amount = amount;

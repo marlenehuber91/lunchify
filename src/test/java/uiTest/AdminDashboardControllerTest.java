@@ -65,12 +65,6 @@ public class AdminDashboardControllerTest extends ApplicationTest {
 		verifyThat("#submitButton", isVisible());
     }
 
-   /*@Test
-    void testOpenModifyReimbursementWindow() {
-        clickOn("#openModifyReimbursementButton");
-        verifyThat("#modifyReimbursementWindow", isVisible());
-    }*/
-
     @Test
     void testOpenCurrentReimbursementWindow() {
         clickOn("#openCurrReimbursements");

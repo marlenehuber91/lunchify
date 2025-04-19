@@ -42,8 +42,6 @@ import javafx.stage.Stage;
 @Tag("ui")
 public class InvoiceUploadControllerTest extends ApplicationTest {
 	
-	InvoiceUploadController controller;
-	
 	@Override
 	public void start(Stage stage) throws Exception {
 		Main mainApp = new Main();
