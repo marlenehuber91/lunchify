@@ -69,7 +69,7 @@ public class User {
     public void setState(UserState state) {
         this.state = state;
     }
-
+    
     public void uploadInvoice(Invoice invoice) {
         // Logik zum Hochladen einer Rechnung
     }
