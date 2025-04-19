@@ -24,12 +24,17 @@ import database.DatabaseConnection;
 
 
 public class InvoiceService {
-	private static ConnectionProvider connectionProvider;
+	public static ConnectionProvider connectionProvider;
 	private User user;
 	public List<Invoice> invoices;
 	
 	public static void setConnectionProvider(ConnectionProvider provider) {
 	        connectionProvider = provider;
+	}
+	
+	
+	public InvoiceService () {
+		this.invoices = new ArrayList<>();
 	}
 	
 	public InvoiceService(User user) {
@@ -40,10 +45,6 @@ public class InvoiceService {
             this.invoices = new ArrayList<>();
         }
     }
-	
-	public InvoiceService () {
-		this.invoices = new ArrayList<>();
-	}
 	
 	public boolean invoiceDateAlreadyUsed (LocalDate date, User user) {
 	   for (Invoice invoice: invoices) {
@@ -111,13 +112,11 @@ public class InvoiceService {
 		return this.invoices;
 	}
 	
-	public boolean addInvoice(Invoice invoice) { //created with AI (ChatGPT)
+	public static boolean addInvoice(Invoice invoice) { //created with AI (ChatGPT)
 	    String sql = "INSERT INTO invoices (date, amount, category, user_id, file, flagged) VALUES (?, ?, ?, ?, ?, ?)";
 
 	    try (Connection conn = connectionProvider.getConnection();
-	    	//FileInputStream fis = new FileInputStream(invoice.getFile());
 	        PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-	    	//stmt.setBinaryStream(2, fis, (int) invoice.getFile().length());
 
 	    	stmt.setDate(1, Date.valueOf(invoice.getDate()));
 	    	stmt.setFloat(2, invoice.getAmount());
@@ -129,7 +128,6 @@ public class InvoiceService {
 	            try {
 					stmt.setBinaryStream(5, new FileInputStream(invoice.getFile()), (int) invoice.getFile().length());
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	        } else {

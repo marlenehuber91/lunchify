@@ -250,10 +250,6 @@ public class ReimbursementService {
 		return getReimbursements(condition.toString());
 	}
 
-	public int getUserId() {
-		return this.user.getId();
-	}
-
 	public float getTotalReimbursement(List<Reimbursement> reimb) {
 		float total = 0;
 		for (Reimbursement reimbursement : reimb) {

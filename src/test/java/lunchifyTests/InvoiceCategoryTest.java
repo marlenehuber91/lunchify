@@ -11,34 +11,34 @@ public class InvoiceCategoryTest { //created with AI, changed by the team
 
 	@Test
 	public void testRestaurantCalculateReimbursementBelowLimit() {
-		float amount = 15.0f;
-		float limit = 20.0f;
+		float amount = 1.5f;
+		float limit = 2.5f;
 		float result = InvoiceCategory.RESTAURANT.calculateReimbursement(amount, limit);
-		assertEquals(15.0f, result, 0.001);
+		assertEquals(1.5f, result, 0.001);
 	}
 	
 	@Test
 	public void testRestaurantCalculateReimbursementAboveLimit() {
-		float amount = 25.0f;
-		float limit = 20.0f;
+		float amount = 14.5f;
+		float limit = 3.0f;
 		float result = InvoiceCategory.RESTAURANT.calculateReimbursement(amount, limit);
-		assertEquals(20.0f, result, 0.001f);
+		assertEquals(3.0f, result, 0.001f);
 	}
 	
 	 @Test
 	    public void testSupermarketCalculateReimbursementAboveLimit() {
 	        float amount = 30.0f;
-	        float limit = 25.0f;
+	        float limit = 2.5f;
 	        float result = InvoiceCategory.SUPERMARKET.calculateReimbursement(amount, limit);
-	        assertEquals(25.0f, result, 0.001);
+	        assertEquals(2.50, result, 0.001);
 	    }
 
 	    @Test
 	    public void testCalculateReimbursementExactLimit() {
-	        float amount = 20.0f;
-	        float limit = 20.0f;
-	        assertEquals(20.0f, InvoiceCategory.RESTAURANT.calculateReimbursement(amount, limit), 0.001);
-	        assertEquals(20.0f, InvoiceCategory.SUPERMARKET.calculateReimbursement(amount, limit), 0.001);
+	        float amount = 2.0f;
+	        float limit = 2.0f;
+	        assertEquals(2.0f, InvoiceCategory.RESTAURANT.calculateReimbursement(amount, limit), 0.001);
+	        assertEquals(2.0f, InvoiceCategory.SUPERMARKET.calculateReimbursement(amount, limit), 0.001);
 	    }
 
 	    @Test
@@ -47,6 +47,12 @@ public class InvoiceCategoryTest { //created with AI, changed by the team
 	        float limit = 20.0f;
 	        assertEquals(0.0f, InvoiceCategory.RESTAURANT.calculateReimbursement(amount, limit), 0.001);
 	        assertEquals(0.0f, InvoiceCategory.SUPERMARKET.calculateReimbursement(amount, limit), 0.001);
-	    }	
-	
+	    }
+	    
+	    @Test
+	    public void testUndedectabeleCategory () {
+	    	float amount = 3.0f;
+	    	float limit = 2.5f;
+	        assertEquals(0.0f, InvoiceCategory.UNDETECTABLE.calculateReimbursement(amount, limit), 0.001);
+	    }
 }

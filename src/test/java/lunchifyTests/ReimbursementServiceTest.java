@@ -18,15 +18,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -167,6 +170,18 @@ class ReimbursementServiceTest {
         List<Reimbursement> result = service.getFilteredReimbursements("alle", "2023", "RESTAURANT", "APPROVED");
         assertNotNull(result);
     }
+    
+    @Test //created by AI
+    void testAddReimbursement_ConnectionProviderNull_shouldThrowException() {
+        // Arrange
+        ReimbursementService.setConnectionProvider(null); // bewusst null setzen
+        ReimbursementService service = new ReimbursementService();
+        Invoice dummyInvoice = new Invoice(); // dummy Objekt, Details egal
 
+        // Act & Assert
+        assertThrows(IllegalStateException.class, () -> {
+            service.addReimbursement(dummyInvoice, 10.0f);
+        }, "Expected IllegalStateException when connectionProvider is null");
+    }
 
 }

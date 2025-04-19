@@ -110,9 +110,9 @@ public class InvoiceUploadController {
             if (newVal == null) {
                 updateLabel(datePickerLabel, false, "Kein Datum ausgewählt!", "");
             } else if (newVal.isBefore(LocalDate.now().withDayOfMonth(1))) {
-                updateLabel(datePickerLabel, false, "Datum zu früh!", "");
+                updateLabel(datePickerLabel, false, "Datum darf nicht vor dem aktuellen Monat liegen", "");
             } else if (newVal.isAfter(LocalDate.now())) {
-                updateLabel(datePickerLabel, false, "Kein Datum in der Zukunft!", "");
+                updateLabel(datePickerLabel, false, "Datum darf nicht in der Zukunft liegen", "");
             } else if (!invoiceService.isWorkday(newVal)) {
                 updateLabel(datePickerLabel, false, "Kein gültiger Arbeitstag!", "");
             } else {
