@@ -1,4 +1,6 @@
 package backend.model;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.List;
 
 
@@ -9,6 +11,8 @@ public class User {
     private String password;
     private UserRole role;
     private UserState state;
+
+    public User() {};
 
     public User(String name, String email, String password, UserRole role, UserState state) {
         this.name = name;
@@ -30,6 +34,10 @@ public class User {
     public int getId() {
         return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    };
 
     public String getName() {
         return this.name;
@@ -69,21 +77,30 @@ public class User {
     public void setState(UserState state) {
         this.state = state;
     }
-    
-    public void uploadInvoice(Invoice invoice) {
-        // Logik zum Hochladen einer Rechnung
+
+    @Override
+    public String toString() {
+        return id + " - " + name;
     }
 
-    public List<Invoice> viewCurrentReimbursement() {
-        // Logik zur Anzeige aktueller Erstattungen
-        return null;
+    public boolean isNameValid() {
+        return name != null && !name.isBlank();
     }
 
-    public void editInvoice(int invoiceId, Invoice newDetails) {
-        // Logik zur Bearbeitung einer Rechnung
+    public boolean isEmailValid() {
+        return email != null && email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
     }
-
-    public void deleteInvoice(int invoiceId) {
-        // Logik zum Löschen einer Rechnung
+    public boolean isPasswordValid() {
+        return true;
+        //TODO: rules for good password
+    }
+    public boolean isRoleValid() {
+        return role != null;
+    }
+    public boolean isStateValid() {
+        return state != null;
+    }
+    public String hashPassword() {
+        return BCrypt.hashpw(this.password, BCrypt.gensalt());
     }
 }
