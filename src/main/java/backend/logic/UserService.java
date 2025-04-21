@@ -1,9 +1,8 @@
 package backend.logic;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import backend.interfaces.ConnectionProvider;
 import org.mindrot.jbcrypt.BCrypt;
@@ -88,6 +87,106 @@ public class UserService {
 
         } catch (SQLException e) {
             throw new AuthenticationException("Datenbankfehler bei der Authentifizierung: " + e.getMessage(), e);
+        }
+    }
+    public List<User> getAllUsers() {
+        if (connectionProvider == null) {
+            throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
+        }
+
+        List<User> users = new ArrayList<>();
+
+        String sql = "SELECT id, name, email, password, role, state FROM users";
+
+        try (Connection conn = connectionProvider.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(UserRole.valueOf(rs.getString("role")));
+                user.setState(UserState.valueOf(rs.getString("state")));
+                users.add(user);
+            }
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+    //TODO: check, if Method can be deleted
+    public User getUserById(int userId) {
+        User user = new User();
+
+        String sql = "SELECT id, name, email, password, role, state FROM users WHERE id = ?";
+
+        try (Connection conn = connectionProvider.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                user.setId(userId);
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(UserRole.valueOf(rs.getString("role")));
+                user.setState(UserState.valueOf(rs.getString("state")));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+    public void updateUser(User editedUser) {
+        if (connectionProvider == null) {
+            throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
+        }
+
+        String sql = "UPDATE users SET name = ?, email = ?, password = ?, role = ?, state = ? WHERE id = ?";
+
+        try (Connection conn = connectionProvider.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, editedUser.getName());
+            stmt.setString(2, editedUser.getEmail());
+            stmt.setString(3, editedUser.hashPassword());
+            stmt.setObject(4, editedUser.getRole().name(), Types.OTHER);
+            stmt.setObject(5, editedUser.getState().name(), Types.OTHER);
+            stmt.setInt(6, editedUser.getId());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertUser(User newUser) {
+        if (connectionProvider == null) {
+            throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
+        }
+
+        String sql = "INSERT INTO users (name, email, password, role, state) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = connectionProvider.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newUser.getName());
+            stmt.setString(2, newUser.getEmail());
+            stmt.setString(3, newUser.hashPassword());
+            stmt.setObject(4, newUser.getRole().name(), Types.OTHER);
+            stmt.setObject(5, newUser.getState().name(), Types.OTHER);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

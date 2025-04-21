@@ -51,33 +51,58 @@
             <Circle fx:id="backArrow" fill="#eceeef00" onMouseClicked="#handleBackToDashboard" radius="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
          </children>
       </StackPane>
-      <AnchorPane fx:id="paneTable" layoutX="198.0" layoutY="201.0" prefHeight="640.0" prefWidth="770.0">
+      <AnchorPane fx:id="paneViewTable" layoutX="198.0" layoutY="201.0" prefHeight="640.0" prefWidth="770.0">
          <children>
-            <TableView fx:id="usersTable" prefHeight="200.0" prefWidth="702.0">
+            <TableView fx:id="usersTable" prefHeight="555.0" prefWidth="550.0">
                <columns>
-                  <TableColumn fx:id="name" prefWidth="120.0" text="Name" />
-                  <TableColumn fx:id="eMail" prefWidth="91.20001220703125" text="eMail" />
-                  <TableColumn fx:id="role" prefWidth="166.40005493164062" text="Rolle" />
-                  <TableColumn fx:id="userState" prefWidth="143.20001220703125" text="Status" />
-                  <TableColumn fx:id="password" prefWidth="129.5999755859375" text="Passwort" />
+                  <TableColumn fx:id="idColumn" prefWidth="50" text="id" />
+                  <TableColumn fx:id="nameColumn" prefWidth="150" text="Name" />
+                  <TableColumn fx:id="emailColumn" prefWidth="150" text="eMail" />
+                  <TableColumn fx:id="roleColumn" prefWidth="100" text="Rolle" />
+                  <TableColumn fx:id="stateColumn" prefWidth="100" text="Status" />
                </columns>
             </TableView>
          </children>
       </AnchorPane>
       <AnchorPane fx:id="paneNewUser" layoutX="109.0" layoutY="291.0" prefHeight="502.0" prefWidth="506.0">
          <children>
-            <ComboBox fx:id="statusUserBox" layoutY="316.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Status" />
-            <TextField fx:id="passwordField" layoutY="246.0" prefHeight="54.0" prefWidth="394.0" promptText="Erstattungsbetrag" text="Passwort" />
-            <ComboBox fx:id="roleBox" layoutY="41.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Rolle" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="41.0" />
-            <Label text="Daten neuer User" />
-            <TextField fx:id="nameField" layoutY="112.0" prefHeight="54.0" prefWidth="394.0" promptText="Erstattungsbetrag" text="Name" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="112.0" />
-            <Text fx:id="previewText" strokeType="OUTSIDE" strokeWidth="0.0" text=" " />
-            <TextField fx:id="eMailField" layoutY="179.0" prefHeight="54.0" prefWidth="394.0" promptText="Erstattungsbetrag" text="eMail" />
-            <Button fx:id="saveButton" layoutY="459.0" mnemonicParsing="false" onMouseClicked="#onMouseClickedSaveNewUserButton" prefHeight="60.0" prefWidth="250.0" style="-fx-background-color: #42b35b;" text="anlegen" textFill="WHITE">
-               <font>
-                  <Font size="21.0" />
-               </font>
-            </Button>
+            <VBox layoutY="-12.94921875" spacing="10.0">
+               <children>
+                  <Text fx:id="previewText" strokeType="OUTSIDE" strokeWidth="0.0" text=" " />
+                  <Label text="Daten neuer User" />
+                  <TextField fx:id="nameNewField" prefHeight="54.0" prefWidth="394.0" promptText="Name" />
+                  <TextField fx:id="eMailNewField" prefHeight="54.0" prefWidth="394.0" promptText="eMail" />
+                  <TextField fx:id="passwordNewField" prefHeight="54.0" prefWidth="394.0" promptText="Passwort" />
+                  <ComboBox fx:id="roleNewBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Rolle" />
+                  <ComboBox fx:id="statusNewUserBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Status" />
+                  <Button fx:id="saveNewButton" mnemonicParsing="false" onMouseClicked="#onMouseClickedSaveNewUserButton" prefHeight="60.0" prefWidth="250.0" style="-fx-background-color: #42b35b;" text="anlegen" textFill="WHITE">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="paneEditUser" layoutX="109.0" layoutY="291.0" prefHeight="502.0" prefWidth="506.0">
+         <children>
+            <ComboBox fx:id="userEditUserBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="User" />
+            <VBox layoutX="-1.0" layoutY="81.0" spacing="10.0">
+               <children>
+                  <Label text="Daten User" />
+                  <TextField fx:id="nameEditField" prefHeight="54.0" prefWidth="394.0" promptText="Name" />
+                  <TextField fx:id="eMailEditField" prefHeight="54.0" prefWidth="394.0" promptText="eMail" />
+                  <TextField fx:id="passwordEditField" prefHeight="54.0" prefWidth="394.0" promptText="Passwort" />
+                  <ComboBox fx:id="roleEditBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Rolle" />
+                  <ComboBox fx:id="statusEditUserBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Status" />
+                  <Button fx:id="saveEditButton" mnemonicParsing="false" onMouseClicked="#onMouseClickedSaveEditUserButton" prefHeight="60.0" prefWidth="250.0" style="-fx-background-color: #42b35b;" text="ändern" textFill="WHITE">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Button>
+               </children>
+            </VBox>
+            <Text fx:id="previewEditText" strokeType="OUTSIDE" strokeWidth="0.0" text=" " />
          </children>
       </AnchorPane>
       <fx:include layoutX="675.0" layoutY="54.0" source="UserDropDown.fxml" />
