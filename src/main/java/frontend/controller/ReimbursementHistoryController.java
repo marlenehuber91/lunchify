@@ -48,7 +48,7 @@ public class ReimbursementHistoryController {
 	private StackPane backButton;
 
 	@FXML
-	private TableView<Reimbursement> currReimbursementTable;
+	private TableView<Reimbursement> reimbursementHistoryTable;
 
 	@FXML
 	private TableColumn<Reimbursement, String> invoiceDate;
@@ -191,7 +191,7 @@ public class ReimbursementHistoryController {
 			}
 		});
 
-		currReimbursementTable.setItems(reimbursementList);
+		reimbursementHistoryTable.setItems(reimbursementList);
 		calculateTotalReimbursement();
 	}
 
@@ -253,5 +253,11 @@ public class ReimbursementHistoryController {
 			default -> "alle";
 			};
 		}
+	}
+	
+	//for testing
+	public void setReimbursementService(ReimbursementService service) {
+		this.reimbursementService = service;
+		
 	}
 }

@@ -29,8 +29,6 @@ public class AdminDashboardController {
 
     @FXML
     void initialize() {
-    	ReimbursementService.setConnectionProvider(DatabaseConnection::connect);
-    	InvoiceService.setConnectionProvider(DatabaseConnection::connect);
     	User user = SessionManager.getCurrentUser();
         if (user != null) {
             String username = user.getName();
