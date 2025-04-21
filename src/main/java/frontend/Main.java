@@ -1,8 +1,7 @@
 package frontend;
 
-import backend.Exceptions.AuthenticationException;
+import backend.configs.AppContext;
 import backend.logic.SessionManager;
-import backend.logic.UserService;
 import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
@@ -18,6 +17,7 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		AppContext.initialize();
 		try {
 			AnchorPane root;
 			if (isOnTestMode) {

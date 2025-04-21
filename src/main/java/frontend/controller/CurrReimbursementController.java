@@ -168,6 +168,11 @@ public class CurrReimbursementController {
 		public Label getTotalReimbursementAmountLabel() {
 			return this.totalReimbursementAmountLabel;
 		}
+
+		public Object loadCurrentReimbursements() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 }
 
 

@@ -37,7 +37,7 @@ public class UserDashboardController {
     	adminController.openReimbursementHistory(event);
     }
 
-    @FXML
+    @FXML //@Silvia: ist das im UserDashboar notwendig?
     public void onClickOpenModifyReimbursementWindow(MouseEvent mouseEvent) {
         adminController.onClickOpenModifyReimbursementWindow(mouseEvent);
     }

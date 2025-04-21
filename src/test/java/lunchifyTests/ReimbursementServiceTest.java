@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -183,5 +185,72 @@ class ReimbursementServiceTest {
             service.addReimbursement(dummyInvoice, 10.0f);
         }, "Expected IllegalStateException when connectionProvider is null");
     }
+   
+    @Test
+    void testNewReimbursementHasPendingStatus() throws Exception {
+        // Setup Invoice
+        Invoice invoice = new Invoice();
+        invoice.setId(1);
+        invoice.setAmount(10.0f);
+        invoice.setCategory(InvoiceCategory.RESTAURANT);
+        invoice.setDate(LocalDate.now());
 
+        // Mock INSERT
+        when(mockConnection.prepareStatement(anyString(), anyInt())).thenReturn(mockStatement);
+        when(mockStatement.executeUpdate()).thenReturn(1);
+
+        ResultSet mockKeys = mock(ResultSet.class);
+        when(mockStatement.getGeneratedKeys()).thenReturn(mockKeys);
+        when(mockKeys.next()).thenReturn(true);
+        when(mockKeys.getInt(1)).thenReturn(123);
+
+        boolean added = service.addReimbursement(invoice, 3.0f);
+
+        assertTrue(added);
+        assertEquals(123, invoice.getId());
+
+        // Jetzt simulieren wir eine Rückgabe mit Status PENDING
+        PreparedStatement mockSelectStmt = mock(PreparedStatement.class);
+        when(mockConnection.prepareStatement(startsWith("SELECT"))).thenReturn(mockSelectStmt);
+        when(mockSelectStmt.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(true, false); // nur ein Eintrag
+        when(mockResultSet.getInt("reimbId")).thenReturn(123);
+        when(mockResultSet.getFloat("approved_amount")).thenReturn(3.0f);
+        when(mockResultSet.getDate("processed_date")).thenReturn(Date.valueOf(LocalDate.now()));
+        when(mockResultSet.getString("status")).thenReturn("PENDING");
+
+        when(mockResultSet.getInt("invoice_id")).thenReturn(1);
+        when(mockResultSet.getFloat("invoiceAmount")).thenReturn(10.0f);
+        when(mockResultSet.getString("category")).thenReturn("RESTAURANT");
+        when(mockResultSet.getDate("date")).thenReturn(Date.valueOf(LocalDate.now()));
+
+        List<Reimbursement> reimbursements = service.getAllReimbursements();
+
+        assertEquals(1, reimbursements.size());
+        assertEquals(ReimbursementState.PENDING, reimbursements.get(0).getStatus());
+    }
+    
+    @Test // created by ChatGPT corrected
+    void testGetFilteredReimbursementsReturnsCorrectItems() throws SQLException {
+  
+        when(mockResultSet.next()).thenReturn(true, false);
+        
+        when(mockResultSet.getString("category")).thenReturn("RESTAURANT");
+        when(mockResultSet.getString("status")).thenReturn("APPROVED");
+        when(mockResultSet.getFloat("approved_amount")).thenReturn(5.0f);
+        when(mockResultSet.getDate("processed_date")).thenReturn(Date.valueOf("2023-04-10"));
+        when(mockResultSet.getDate("date")).thenReturn(Date.valueOf("2023-04-01"));
+
+        when(mockResultSet.getInt("reimbId")).thenReturn(1);
+        when(mockResultSet.getInt("invoice_id")).thenReturn(10);
+        when(mockResultSet.getFloat("invoiceAmount")).thenReturn(10.0f);
+
+        // Methode aufrufen mit Filter für April 2023, Kategorie RESTAURANT, Status APPROVED
+        List<Reimbursement> filtered = service.getFilteredReimbursements("April", "2023", "RESTAURANT", "APPROVED");
+
+        // Erwartet: genau 1 Eintrag
+        assertEquals(1, filtered.size());
+        assertEquals("RESTAURANT", filtered.get(0).getInvoice().getCategory().toString());
+        assertEquals(ReimbursementState.APPROVED, filtered.get(0).getStatus());
+    }    
 }

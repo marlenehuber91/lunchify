@@ -1,42 +1,28 @@
 package uiTest;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.*;
 
-import java.io.File;
 import java.time.LocalDate;
-import java.util.List;
-import javafx.scene.Node;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationTest;
 
-import com.sun.jdi.Field;
-
 import backend.logic.SessionManager;
-import backend.model.Invoice;
 import backend.model.InvoiceCategory;
-import backend.model.ReimbursementState;
 import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
 import frontend.Main;
-import frontend.controller.InvoiceUploadController;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 @Tag("ui")
