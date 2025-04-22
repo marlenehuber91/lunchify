@@ -17,10 +17,10 @@ public class UserDropDownController {
     @FXML
     private ImageView userImageView;
     @FXML
-    private MenuButton userDropDown;
+    public MenuButton userDropDown;
 
     @FXML
-    private void initialize() {
+    public void initialize() {
         userImageView.setOnMouseClicked(event -> {
             userDropDown.show();
         });
