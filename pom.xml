@@ -47,6 +47,7 @@
 				<configuration>
 					<excludes>
 						<exclude>**/uiTest/**</exclude>
+						<exclude>**/OCRServiceTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

@@ -140,11 +140,13 @@ public class OCRService {
             try {
                 lastValue = Float.parseFloat(matcher.group(1).replace(",", "."));
             } catch (NumberFormatException e) {
-                // Ignorieren
             }
         }
         return lastValue;
     }
 
-
+    //for tests
+    public ITesseract getTesseract() {
+        return tesseract;
+    }
 }
