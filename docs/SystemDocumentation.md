@@ -1,7 +1,144 @@
-# WELCOME to Lunchify
+# System Documentation – Lunchify
 
-## Getting Started
+## Table of Contents
 
-## Modules
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Technology Stack](#technology-stack)
+- [Authentication & Authorization](#authentication--authorization)
+- [Database](#database)
+- [Application Workflow](#application-workflow)
+- [OCR & Receipt Handling](#ocr--receipt-handling)
+- [Reporting & Exports](#reporting--exports)
+- [Deployment](#deployment)
+- [Configuration](#configuration)
+- [Limitations](#limitations)
+- [Future Enhancements](#future-enhancements)
 
-### Database
+---
+
+## Overview
+
+**Lunchify** is a desktop application developed in JavaFX that enables employees to submit lunch receipts for partial reimbursement. Administrators can view, manage, and export data for payroll integration. The software is intended for internal use within a company and is not optimized for high concurrency beyond a moderate number of users.
+
+---
+
+## Architecture
+
+Lunchify follows the **MVC (Model-View-Controller)** pattern:
+
+- **Model**: Manages business logic and data access using JDBC.
+- **View**: Implemented with JavaFX for the user interface.
+- **Controller**: Handles input and updates both the model and the view.
+
+---
+
+## Technology Stack
+
+- **Programming Language**: Java 21 (Oracle OpenJDK 21.0.6)
+- **UI Framework**: JavaFX SDK 21.6.0
+- **Database**: PostgreSQL
+- **Database Access**: JDBC
+- **Authentication**: BCrypt (password hashing)
+- **OCR Engine**: Tesseract
+- **Executable Format**: `.jar` file
+- **Startup**: GUI executable
+
+> ⚠️ **TO BE DEFINED**: Additional libraries and frameworks (e.g., for PDF/CSV export, charts, logging, dependency injection).
+
+---
+
+## Authentication & Authorization
+
+- All users must log in with email and password.
+- Passwords are hashed using **BCrypt** before storage.
+- The first admin must be created manually in the PostgreSQL database.
+- Admins can add/remove users within the application.
+- Role-based access:
+    - **Users** can upload and manage receipts and their own reimbursement.
+    - **Admins** can view/export reports, configure the system, and manage users.
+
+---
+
+## Database
+
+- The PostgreSQL database must be initialized using an SQL script **prior to first use**.
+- Data includes:
+    - User accounts (with roles)
+    - Receipts and reimbursement records
+    - Monthly configuration (e.g., refund limits)
+
+---
+
+## Application Workflow
+
+### User Flow:
+1. Log in using email and password.
+2. Upload daily receipt (JPEG, PNG, PDF).
+3. Enter or confirm amount and classification (restaurant/supermarket).
+4. Submit for reimbursement.
+5. View past submissions and statuses.
+6. Edit or delete submissions until end of month.
+
+### Admin Flow:
+1. Log in as admin.
+2. View all receipts and statistics.
+3. Export data for payroll.
+4. Manage refund rules and users.
+5. Detect anomalies.
+
+---
+
+## OCR & Receipt Handling
+
+- Text extraction from receipts is performed using **Tesseract OCR**.
+- Automatic detection of:
+    - Vendor type (restaurant vs. supermarket)
+    - Amount
+- Manual correction possible before submission.
+
+> ⚠️ **Note**: No license-based OCR solution used due to budget limitations.
+
+---
+
+## Reporting & Exports
+
+Admins can:
+- Generate reports:
+    - Receipt count per month/user
+    - Vendor type distribution
+    - Total reimbursement amounts
+- Export data as:
+    - PDF / CSV
+    - JSON / XML for payroll system
+
+> ⚠️ **TO BE DEFINED**: Library/tech used for PDF/CSV generation and chart rendering.
+
+---
+
+## Deployment
+
+- Distributed as a `.jar` file.
+- Can be launched via GUI (double-click or platform-specific application wrapper).
+- Manual updates only (no auto-updater).
+
+---
+
+## Configuration
+
+> ⚠️ **TO BE DEFINED**: Details on configuration storage (e.g., `config.properties`, GUI-based settings, environment variables).
+
+Configuration options (admin-only):
+- Reimbursement limits (restaurant, supermarket)
+- User account management
+
+---
+
+## Limitations
+
+- Not intended for use by thousands of users simultaneously.
+- Currently only available in **German**.
+- No Dark Mode or mobile/web version.
+- Receipt edits are only allowed until the last day of the current month.
+
+---
