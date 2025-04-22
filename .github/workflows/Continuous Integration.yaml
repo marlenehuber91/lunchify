@@ -44,6 +44,11 @@ jobs:
           name: project
           path: staging
 
+      # Tesseract install - needed to push tests!
+      - name: Install Tesseract
+        run: sudo apt-get install -y tesseract-ocr
+
+
       # Perform PMD code check
       - name: PMD code check
         uses: pmd/pmd-github-action@v2
