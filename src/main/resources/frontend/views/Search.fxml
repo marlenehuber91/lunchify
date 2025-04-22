@@ -39,7 +39,7 @@
         <AnchorPane fx:id="searchBar" layoutX="171.0" layoutY="60.0" prefHeight="81.0" prefWidth="795.0">
             <children>
                 <Rectangle arcHeight="50.0" arcWidth="50.0" fill="transparent" height="79.0" stroke="#42b35b" strokeWidth="2.0" width="796.0" />
-                <TextField fx:id="searchField" layoutX="8.0" layoutY="23.0" prefHeight="35.0" prefWidth="765.0" promptText="E-Mail Adresse eingeben" style="-fx-background-color: white;-fx-border-color: transparent;-fx-border-width: 0;-fx-border-radius: 25;-fx-background-radius: 25;-fx-text-fill: #42b35b; -fx-font-size: 16px;-fx-prompt-text-fill: derive(#42b35b, -30%);" />
+                <TextField fx:id="searchField" layoutX="8.0" layoutY="23.0" prefHeight="35.0" prefWidth="765.0" promptText="E-Mail Adresse eingeben" style="-fx-background-color: white;-fx-border-color: transparent;-fx-border-width: 0;-fx-border-radius: 25;-fx-background-radius: 25;-fx-text-fill: black; -fx-font-size: 16px;-fx-prompt-text-fill: black;" />
                 <ImageView fx:id="searchButton" fitHeight="24.0" fitWidth="24.0" layoutX="735.0" layoutY="28.0" onMouseReleased="#startSearchManually" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../images/magnifiying_glass.png" />
