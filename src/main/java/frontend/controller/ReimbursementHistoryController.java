@@ -308,7 +308,7 @@ public class ReimbursementHistoryController {
 	public void loadReimbursementsForUser(User selectedUser) {
 		if (selectedUser != null) {
 			reimbursementService = new ReimbursementService(selectedUser);
-			List<Reimbursement> reimbursements = reimbursementService.getAllReimbursements();
+			List<Reimbursement> reimbursements = reimbursementService.getAllReimbursements(selectedUser.getId());
 			reimbursementHistoryTable.getItems().setAll(reimbursements);
 		}
 	}
