@@ -15,10 +15,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.testfx.framework.junit5.ApplicationTest;
 
 import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
+import backend.logic.UserService;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
 import backend.model.Reimbursement;
@@ -144,4 +146,45 @@ public class ReimbursementHistoryControllerTest extends ApplicationTest {
         clickOn("#backButton");
         verifyThat("#adminDashboard", isVisible());
     }
+    
+    @Test
+    void testFilterByUser() {
+        // Simuliere Auswahl eines Nutzers (vorausgesetzt UserFilterBox hat Einträge)
+        clickOn("#userFilterBox");
+        clickOn("max@mustermann.at");
+        verifyThat("#reimbursementHistoryTable", (TableView<Reimbursement> table) ->
+            table.getItems().stream().allMatch(r ->
+                r.getInvoice().getUser().getEmail().equals("max@mustermann.at")));
+    }
+    
+    @Test
+    void testTotalReimbursementAmountCorrect() {
+        clickOn("#statusFilterBox");
+        clickOn("genehmigt");
+
+        // Diese Prüfung setzt voraus, dass entsprechende genehmigte Einträge geladen werden
+        Label totalLabel = lookup("#totalReimbursementAmountLabel").query();
+        verifyThat(totalLabel, isVisible());
+
+        // Inhaltliche Prüfung auf nicht null und format
+        assertTrue(totalLabel.getText().matches("€\\s[\\d\\.]+"));
+    }
+    
+    @Test // Neues Test: Test für korrektes Verhalten beim Zurücksetzen des Filters
+    void testResetFiltersToDefaults() {
+        // Filter setzen
+        clickOn("#monthFilterBox");
+        clickOn("Jänner");
+
+        // Filter zurücksetzen
+        clickOn("#resetFilterButton");
+
+        // Überprüfen, ob alle Filter zurückgesetzt sind
+        ComboBox<String> monthFilter = lookup("#monthFilterBox").query();
+        ComboBox<String> statusFilter = lookup("#statusFilterBox").query();
+        
+        Assertions.assertNull(monthFilter.getValue());
+        Assertions.assertNull(statusFilter.getValue());
+    }
 }
+

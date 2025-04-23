@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.List;
 import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
+import backend.logic.UserService;
 import backend.model.Reimbursement;
 import backend.model.ReimbursementState;
 import backend.model.User;
 import backend.model.UserRole;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -34,12 +34,14 @@ public class ReimbursementHistoryController {
 
 	User user;
 	ReimbursementService reimbursementService;
+	UserService userService;
 	List<Reimbursement> reimbursements;
 	String month;
 	String year;
 	String category;
 	String status;
 	String totalReimbursement;
+	int currUserId;
 
 	@FXML
 	private Circle backArrow;
@@ -64,6 +66,9 @@ public class ReimbursementHistoryController {
 
 	@FXML
 	private TableColumn<Reimbursement, String> reimbursementState;
+	
+	@FXML 
+	private TableColumn<Reimbursement, String> userEmailColumn;
 
 	@FXML
 	private Label totalReimbursementAmountLabel;
@@ -80,19 +85,32 @@ public class ReimbursementHistoryController {
 	@FXML
 	private ComboBox<String> yearFilterBox;
 	
+	@FXML 
+	private ComboBox<String> userFilterBox;
+	
 	@FXML
 	private Text textTotalReimb;
 	
 	@FXML
 	private Rectangle resetFilterButton;
+	
+	@FXML
+	private Label userFilterLabel;
 
 	@FXML
 	void initialize() {
 		if (user == null) {
 			user = SessionManager.getCurrentUser();
 		}
+		
 		reimbursementService = new ReimbursementService(user);
-		reimbursements = reimbursementService.getAllReimbursements();
+		reimbursements = reimbursementService.getAllReimbursements(user.getId());
+		
+		if (user.getRole()!= UserRole.ADMIN) {
+			userFilterBox.setVisible(false);
+			userFilterLabel.setVisible(false);
+		}
+		
 		populateBoxes();
 		loadList();
 		
@@ -101,6 +119,7 @@ public class ReimbursementHistoryController {
 	    yearFilterBox.setOnAction(e -> handleFilter(null));
 	    categoryFilterBox.setOnAction(e -> handleFilter(null));
 	    statusFilterBox.setOnAction(e -> handleFilter(null));
+	    userFilterBox.setOnAction(e -> handleFilter(null));
 	}
 
 	@FXML
@@ -130,8 +149,7 @@ public class ReimbursementHistoryController {
 
 	@FXML
 	private void handleFilter(MouseEvent event) {
-		getFilterInput();
-		reimbursements = reimbursementService.getFilteredReimbursements(month, year, category, status);
+		getFilterInput();		
 		loadList();
 		textTotalReimb.setText("Summe Rückerstattungen: '" + translateStauts(status)+ "'" );
 	}
@@ -190,6 +208,15 @@ public class ReimbursementHistoryController {
 				}
 			}
 		});
+		
+		userEmailColumn.setCellValueFactory(
+			    cellData -> {
+			        if (cellData.getValue().getInvoice().getUser() != null) {
+			            return new SimpleStringProperty(cellData.getValue().getInvoice().getUser().getEmail());
+			        } else {
+			            return new SimpleStringProperty("Unbekannt");
+			        }
+			    });
 
 		reimbursementHistoryTable.setItems(reimbursementList);
 		calculateTotalReimbursement();
@@ -202,6 +229,11 @@ public class ReimbursementHistoryController {
 		categoryFilterBox.setItems(FXCollections.observableArrayList("Restaurant", "Supermarkt", "alle"));
 		statusFilterBox.setItems(
 				FXCollections.observableArrayList("abgelehnt", "genehmigt", "offen", "zur Kontrolle", "alle"));
+		List<String> emailUser = UserService.getAllUsersEmail();
+		emailUser.add("alle");
+		
+		userFilterBox.setItems(FXCollections.observableArrayList(emailUser));
+		userFilterBox.setValue(user.getEmail());
 	}
 
 	public void getFilterInput() {
@@ -209,6 +241,18 @@ public class ReimbursementHistoryController {
 		year = "alle".equals(yearFilterBox.getValue()) ? null : yearFilterBox.getValue();
 		category = mapCategory(categoryFilterBox.getValue());
 		status = mapStatus (statusFilterBox.getValue());
+		
+		String selectedUserEmail = userFilterBox.getValue();
+		int targetUserId;
+
+		if (selectedUserEmail == null || selectedUserEmail.equals("alle")) {
+			reimbursements = reimbursementService.getFilteredReimbursements(month, year, category, status, -1);
+		} else {
+			targetUserId = UserService.getUserIdByEmail(selectedUserEmail);
+			reimbursements = reimbursementService.getFilteredReimbursements(month, year, category, status, targetUserId);
+		}
+		
+		loadList();
 	}
 	
 	private void calculateTotalReimbursement () {
