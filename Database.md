@@ -31,7 +31,6 @@ category InvoiceCategory NOT NULL,
 user_id INT NOT NULL,
 file BYTEA,
 flagged BOOLEAN,
-text TEXT,
 FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
@@ -55,6 +54,7 @@ id SERIAL PRIMARY KEY,
 category InvoiceCategory NOT NULL,
 amount FLOAT NOT NULL
 );
+
 
 ALTER TABLE Reimbursements
 ADD CONSTRAINT fk_reimbursement_invoice FOREIGN KEY (invoice_id) REFERENCES Invoices(id) ON DELETE CASCADE;

@@ -190,6 +190,7 @@ public class UserService {
             e.printStackTrace();
         }
     }
+
     
     public static List<String> getAllUsersEmail () {
     	List<User> allUsers = getAllUsers();
@@ -218,5 +219,35 @@ public class UserService {
 			e.printStackTrace();
 		}
 		return -1;
+    }
+
+    public static User getUserByEmail(String email) {
+        if (connectionProvider == null) {
+            throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
+        }
+
+        User user = null;
+        String sql = "SELECT * FROM users WHERE email = ?";
+
+        try (Connection conn = connectionProvider.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                user = new User();
+                user.setId(rs.getInt("id"));
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(UserRole.valueOf(rs.getString("role")));
+                user.setState(UserState.valueOf(rs.getString("state")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return user;
     }
 }

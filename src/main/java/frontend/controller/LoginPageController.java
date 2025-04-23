@@ -1,10 +1,8 @@
 package frontend.controller;
 
-import java.awt.*;
 import java.io.IOException;
 
 import backend.Exceptions.AuthenticationException;
-import backend.logic.ReimbursementService;
 import backend.logic.UserService;
 import backend.model.User;
 import backend.model.UserRole;
@@ -23,7 +21,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.scene.shape.Rectangle;
-import javafx.fxml.FXML;
+
 
 public class LoginPageController {
 
