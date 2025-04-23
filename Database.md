@@ -3,6 +3,7 @@ DROP TABLE Reimbursements;
 DROP TABLE Invoices;
 DROP TABLE Users;
 DROP TABLE ReimbursementAmount;
+DROP TABLE OCR; 
 DROP TYPE ReimbursementState;
 DROP TYPE InvoiceCategory;
 DROP TYPE UserState;
@@ -31,7 +32,6 @@ category InvoiceCategory NOT NULL,
 user_id INT NOT NULL,
 file BYTEA,
 flagged BOOLEAN,
-text TEXT,
 FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
@@ -55,6 +55,14 @@ id SERIAL PRIMARY KEY,
 category InvoiceCategory NOT NULL,
 amount FLOAT NOT NULL
 );
+
+CREATE TABLE OCR (
+	id SERIAL PRIMARY KEY,
+	date DATE NOT NULL,
+	amount FLOAT NOT NULL,
+	category InvoiceCategory NOT NULL,
+	user_id INT NOT NULL
+); 
 
 ALTER TABLE Reimbursements
 ADD CONSTRAINT fk_reimbursement_invoice FOREIGN KEY (invoice_id) REFERENCES Invoices(id) ON DELETE CASCADE;
