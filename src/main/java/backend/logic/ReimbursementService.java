@@ -23,7 +23,7 @@ public class ReimbursementService {
 	private float reimbursementAmount;
 	private float supermarketLimit = 2.5f;
 	private float restaurantLimit = 3.0f;
-  private float undetectableLimit = 2.5f;
+	private float undetectableLimit = 2.5f;
 	
 	public static void setConnectionProvider(ConnectionProvider provider) {
         connectionProvider = provider;
@@ -173,17 +173,18 @@ public class ReimbursementService {
  		}
  	}
 
-	public List<Reimbursement> getReimbursements(String condition) {
+	public List<Reimbursement> getReimbursements(String condition, int userId) {
 		List<Reimbursement> reimbursements = new ArrayList<>();
 
-		String sql = "SELECT r.id AS reimbId, approved_amount, processed_date, date, r.status AS status, user_id, "
-				+ "i.id AS invoice_id, i.amount AS invoiceAmount, i.category AS category " + "FROM Reimbursements r "
-				+ "JOIN Invoices i ON r.invoice_id = i.id " + "WHERE " + condition;
+		String sql = "SELECT r.id AS reimbId, approved_amount, processed_date, date, r.status AS status, user_id,"
+				+ "i.id AS invoice_id, i.amount AS invoiceAmount, i.category AS category, u.email AS userEmail " 
+				+ "FROM Reimbursements r "
+				+ "JOIN Invoices i ON r.invoice_id = i.id " 
+				+ "JOIN Users u ON  i.user_id = u.id "
+				+ "WHERE " + condition;
 
 		try (Connection conn = connectionProvider.getConnection();
 				 PreparedStatement stmt = conn.prepareStatement(sql))  {
-			// Setze die Parameter für die Abfrage
-			stmt.setInt(1, user.getId());
 
 			ResultSet rs = stmt.executeQuery();
 
@@ -194,9 +195,14 @@ public class ReimbursementService {
 				reimb.setApprovedAmount(rs.getFloat("approved_amount"));
 				reimb.setProcessedDate(rs.getDate("processed_date"));
 				reimb.setStatus(ReimbursementState.valueOf(rs.getString("status")));
+				
+				User user = new User();
+				user.setId(rs.getInt("user_Id"));
+				user.setEmail(rs.getString("userEmail"));
 
 				// Erstelle das Invoice-Objekt und setze es
 				Invoice invoice = new Invoice();
+				invoice.setUser(user);
 				invoice.setId(rs.getInt("invoice_id"));
 				invoice.setAmount(rs.getFloat("invoiceAmount"));
 				invoice.setCategory(InvoiceCategory.valueOf(rs.getString("category")));
@@ -213,19 +219,24 @@ public class ReimbursementService {
 		return reimbursements;
 	}
 
-	public List<Reimbursement> getCurrentReimbursements() {
+	public List<Reimbursement> getCurrentReimbursements(int userId) {
 		return getReimbursements(
-				"i.user_id = ? " + "AND EXTRACT( MONTH FROM i.date) = EXTRACT(MONTH FROM CURRENT_DATE) "
-						+ "AND EXTRACT(YEAR FROM i.date) = EXTRACT(YEAR FROM CURRENT_DATE)");
+				"i.user_id = " + userId + " AND EXTRACT( MONTH FROM i.date) = EXTRACT(MONTH FROM CURRENT_DATE) "
+						+ "AND EXTRACT(YEAR FROM i.date) = EXTRACT(YEAR FROM CURRENT_DATE)", userId);
 	}
 
-	public List<Reimbursement> getAllReimbursements() {
-		return getReimbursements("i.user_id = ?;");
+	public List<Reimbursement> getAllReimbursements(int userId) {
+		return getReimbursements(("i.user_id = " + userId) ,userId );
+	}
+	
+	public List<Reimbursement> getAllReimbursements(String condition) {
+		return getReimbursements(("1 = 1"), 0);
 	}
 
 	public List<Reimbursement> getFilteredReimbursements(String selectedMonth, String selectedYear,
-			String selectedCategory, String selectedStatus) {
-		StringBuilder condition = new StringBuilder("i.user_id = ? ");
+			String selectedCategory, String selectedStatus, int userId) {
+		
+		StringBuilder condition = new StringBuilder(buildUserFilterCondition(userId));
 		// Monat filtern
 		if (selectedMonth != null && !selectedMonth.isEmpty()) {
 			condition.append(" AND EXTRACT(MONTH FROM i.date) = ").append(convertMonthToNumber(selectedMonth));
@@ -247,7 +258,7 @@ public class ReimbursementService {
 		}
 
 		// Übergibt die Filter-Bedingungen an getReimbursements
-		return getReimbursements(condition.toString());
+		return getReimbursements(condition.toString(), userId);
 	}
 
 	public float getTotalReimbursement(List<Reimbursement> reimb) {
@@ -302,5 +313,9 @@ public class ReimbursementService {
 		default:
 			throw new IllegalArgumentException("Ungültiger Monat: " + month);
 		}
+	}
+	
+	private String buildUserFilterCondition(int userId) {
+		return userId > 0 ? "i.user_id = " + userId : "1=1";
 	}
 }

@@ -1,5 +1,6 @@
 package backend.logic;
 
+import java.security.interfaces.RSAKey;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +90,7 @@ public class UserService {
             throw new AuthenticationException("Datenbankfehler bei der Authentifizierung: " + e.getMessage(), e);
         }
     }
-    public List<User> getAllUsers() {
+    public static List<User> getAllUsers() {
         if (connectionProvider == null) {
             throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
         }
@@ -190,6 +191,36 @@ public class UserService {
         }
     }
 
+    
+    public static List<String> getAllUsersEmail () {
+    	List<User> allUsers = getAllUsers();
+    	List <String> userEmail = new ArrayList<>();
+    	for (User user : allUsers) {
+    		userEmail.add(user.getEmail());
+    	}
+    	return userEmail;
+    }
+    
+	public static int getUserIdByEmail(String email) {
+		String sql = "SELECT id, name, email, password, role, state FROM users WHERE email = ?";
+
+		try (Connection conn = connectionProvider.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setString(1, email);
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				return rs.getInt("id");
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return -1;
+    }
+
     public static User getUserByEmail(String email) {
         if (connectionProvider == null) {
             throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
@@ -219,5 +250,4 @@ public class UserService {
 
         return user;
     }
-
 }

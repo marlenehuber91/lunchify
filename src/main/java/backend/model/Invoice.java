@@ -92,4 +92,8 @@ public class Invoice {
     public String getText() {
         return this.text;
     }
+    
+    public int getUserId() {
+    	return this.user.getId();
+    }
 }

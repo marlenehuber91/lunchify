@@ -107,7 +107,7 @@ public class CurrReimbursementController {
     }
     	
     	public void loadList() {
-    		List<Reimbursement> reimbursements = reimbursementService.getCurrentReimbursements();
+    		List<Reimbursement> reimbursements = reimbursementService.getCurrentReimbursements(user.getId());
     	    String totalReimbursement = String.valueOf(reimbursementService.getTotalReimbursement(reimbursements));
     	    totalReimbursementAmountLabel.setText("€ " + totalReimbursement);
     	    totalReimbursementAmountLabel.setStyle("");

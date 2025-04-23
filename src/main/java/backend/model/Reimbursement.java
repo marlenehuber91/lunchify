@@ -17,6 +17,7 @@ public class Reimbursement {
         this.invoice = invoice;
         this.approvedAmount = approvedAmount;
         this.processedDate = processedDate;
+        this.state = ReimbursementState.PENDING;
     }
 
     public int getId() {

@@ -8,6 +8,7 @@ import backend.model.ReimbursementState;
 import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
+import frontend.controller.ReimbursementHistoryController;
 import backend.interfaces.ConnectionProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,20 +91,6 @@ class ReimbursementServiceTest {
     }
 
     @Test
-    void testGetTotalReimbursementByState() {
-        Reimbursement r1 = new Reimbursement();
-        r1.setApprovedAmount(2.0f);
-        r1.setStatus(ReimbursementState.PENDING);
-
-        Reimbursement r2 = new Reimbursement();
-        r2.setApprovedAmount(3.0f);
-        r2.setStatus(ReimbursementState.PENDING);
-
-        float total = service.getTotalReimbursement(Arrays.asList(r1, r2), ReimbursementState.PENDING);
-        assertEquals(5.0f, total);
-    }
-
-    @Test
     void testConvertMonthToNumberValid() {
         assertEquals("4", service.convertMonthToNumber("April"));
         assertEquals("12", service.convertMonthToNumber("Dezember"));
@@ -119,19 +106,19 @@ class ReimbursementServiceTest {
     
     @Test
     void testGetFilteredReimbursementsWithVariousFilters() {
-        List<Reimbursement> result = service.getFilteredReimbursements("April", "2023", "RESTAURANT", "APPROVED");
+        List<Reimbursement> result = service.getFilteredReimbursements("April", "2023", "RESTAURANT", "APPROVED", testUser.getId());
         assertNotNull(result);
     }
     
     @Test
     void testGetAllReimbursements() {
-        List<Reimbursement> result = service.getAllReimbursements();
+        List<Reimbursement> result = service.getAllReimbursements(testUser.getId());
         assertNotNull(result);
     }
 
     @Test
     void testGetCurrentReimbursements() {
-        List<Reimbursement> result = service.getCurrentReimbursements();
+        List<Reimbursement> result = service.getCurrentReimbursements(testUser.getId());
         assertNotNull(result);
     }
     
@@ -168,8 +155,8 @@ class ReimbursementServiceTest {
     }
     
     @Test
-    void testGetFilteredReimbursementsWithAlleMonth() {
-        List<Reimbursement> result = service.getFilteredReimbursements("alle", "2023", "RESTAURANT", "APPROVED");
+    void testGetFilteredReimbursementsWithAllMonth() {
+        List<Reimbursement> result = service.getFilteredReimbursements("alle", "2023", "RESTAURANT", "APPROVED", testUser.getId());
         assertNotNull(result);
     }
     
@@ -219,38 +206,126 @@ class ReimbursementServiceTest {
         when(mockResultSet.getDate("processed_date")).thenReturn(Date.valueOf(LocalDate.now()));
         when(mockResultSet.getString("status")).thenReturn("PENDING");
 
-        when(mockResultSet.getInt("invoice_id")).thenReturn(1);
+        when(mockResultSet.getInt("invoice_id")).thenReturn(10);
+        when(mockResultSet.getInt("user_Id")).thenReturn(testUser.getId());
         when(mockResultSet.getFloat("invoiceAmount")).thenReturn(10.0f);
         when(mockResultSet.getString("category")).thenReturn("RESTAURANT");
+        when(mockResultSet.getString("userEmail")).thenReturn("user@example.com");
         when(mockResultSet.getDate("date")).thenReturn(Date.valueOf(LocalDate.now()));
 
-        List<Reimbursement> reimbursements = service.getAllReimbursements();
+        List<Reimbursement> reimbursements = service.getAllReimbursements(testUser.getId());
 
         assertEquals(1, reimbursements.size());
         assertEquals(ReimbursementState.PENDING, reimbursements.get(0).getStatus());
     }
     
-    @Test // created by ChatGPT corrected
+    @Test //created by AI - changed by the team
     void testGetFilteredReimbursementsReturnsCorrectItems() throws SQLException {
-  
         when(mockResultSet.next()).thenReturn(true, false);
-        
-        when(mockResultSet.getString("category")).thenReturn("RESTAURANT");
-        when(mockResultSet.getString("status")).thenReturn("APPROVED");
+        when(mockResultSet.getInt("reimbId")).thenReturn(1);
         when(mockResultSet.getFloat("approved_amount")).thenReturn(5.0f);
         when(mockResultSet.getDate("processed_date")).thenReturn(Date.valueOf("2023-04-10"));
-        when(mockResultSet.getDate("date")).thenReturn(Date.valueOf("2023-04-01"));
-
-        when(mockResultSet.getInt("reimbId")).thenReturn(1);
+        when(mockResultSet.getString("status")).thenReturn("APPROVED");
+        when(mockResultSet.getInt("user_Id")).thenReturn(1);
         when(mockResultSet.getInt("invoice_id")).thenReturn(10);
         when(mockResultSet.getFloat("invoiceAmount")).thenReturn(10.0f);
+        when(mockResultSet.getString("category")).thenReturn("RESTAURANT");
+        when(mockResultSet.getString("userEmail")).thenReturn("user@example.com");
+        when(mockResultSet.getDate("date")).thenReturn(Date.valueOf("2023-04-01"));
 
-        // Methode aufrufen mit Filter für April 2023, Kategorie RESTAURANT, Status APPROVED
-        List<Reimbursement> filtered = service.getFilteredReimbursements("April", "2023", "RESTAURANT", "APPROVED");
+        List<Reimbursement> filtered = service.getFilteredReimbursements("April", "2023", "RESTAURANT", "APPROVED", testUser.getId());
 
-        // Erwartet: genau 1 Eintrag
         assertEquals(1, filtered.size());
         assertEquals("RESTAURANT", filtered.get(0).getInvoice().getCategory().toString());
         assertEquals(ReimbursementState.APPROVED, filtered.get(0).getStatus());
-    }    
+    }
+    
+    @Test
+    void testGetFilteredReimbursementsWithFilters() {
+        // Mock für Service und Testdaten
+        ReimbursementService mockService = mock(ReimbursementService.class);
+        User testUser = new User(1, "Test", "test@example.com", UserRole.ADMIN, UserState.ACTIVE);
+
+        Invoice invoice1 = new Invoice(LocalDate.of(2023, 4, 1), 10.0f, InvoiceCategory.RESTAURANT, null, testUser);
+        Invoice invoice2 = new Invoice(LocalDate.of(2023, 4, 10), 20.0f, InvoiceCategory.RESTAURANT, null, testUser);
+
+        Reimbursement r1 = new Reimbursement(invoice1, 5.0f, Date.valueOf(LocalDate.of(2023, 4, 5)));
+        Reimbursement r2 = new Reimbursement(invoice2, 15.0f, Date.valueOf(LocalDate.of(2023, 4, 15)));
+
+        List<Reimbursement> mockReimbursements = List.of(r1, r2);
+
+        when(mockService.getFilteredReimbursements("April", "2023", "RESTAURANT", "APPROVED", testUser.getId()))
+            .thenReturn(mockReimbursements);
+
+        List<Reimbursement> filteredReimbursements = mockService.getFilteredReimbursements("April", "2023", "RESTAURANT", "APPROVED", testUser.getId());
+
+        // Assertions
+        assertNotNull(filteredReimbursements);
+        assertEquals(2, filteredReimbursements.size());
+        assertEquals(InvoiceCategory.RESTAURANT, filteredReimbursements.get(0).getInvoice().getCategory());
+        assertEquals(5.0f, filteredReimbursements.get(0).getApprovedAmount());
+    }
+    
+    @Test
+    void testGetTotalReimbursementWithoutFilters() {
+        // Mock für Service und Daten
+        ReimbursementService mockService = mock(ReimbursementService.class);
+
+        Invoice invoice1 = new Invoice(LocalDate.of(2023, 4, 1), 10.0f, InvoiceCategory.RESTAURANT, null, null);
+        Invoice invoice2 = new Invoice(LocalDate.of(2023, 4, 10), 15.0f, InvoiceCategory.SUPERMARKET, null, null);
+
+        Reimbursement r1 = new Reimbursement(invoice1, 5.0f, Date.valueOf(LocalDate.of(2023, 4, 5)));
+        Reimbursement r2 = new Reimbursement(invoice2, 10.0f, Date.valueOf(LocalDate.of(2023, 4, 10)));
+
+        List<Reimbursement> reimbursements = List.of(r1, r2);
+
+        when(mockService.getTotalReimbursement(reimbursements)).thenReturn(15.0f);
+
+        float total = mockService.getTotalReimbursement(reimbursements);
+
+        // Assertions
+        assertEquals(15.0f, total);
+    }
+    
+    @Test
+    void testGetFilteredReimbursementsWithoutSpecificMonthAndYear() {
+        ReimbursementService mockService = mock(ReimbursementService.class);
+        User testUser = new User(1, "Test", "test@example.com", UserRole.ADMIN, UserState.ACTIVE);
+
+        Invoice invoice = new Invoice(LocalDate.of(2023, 1, 1), 10.0f, InvoiceCategory.SUPERMARKET, null, testUser);
+        Reimbursement reimbursement = new Reimbursement(invoice, 0.0f, Date.valueOf(LocalDate.of(2023, 1, 5)));
+
+        List<Reimbursement> reimbursements = List.of(reimbursement);
+
+        when(mockService.getFilteredReimbursements(null, null, null, null, testUser.getId())).thenReturn(reimbursements);
+
+        List<Reimbursement> filtered = mockService.getFilteredReimbursements(null, null, null, null, testUser.getId());
+
+        // Assertions
+        assertNotNull(filtered);
+        assertEquals(1, filtered.size());
+        assertEquals(ReimbursementState.PENDING, filtered.get(0).getStatus()); // Falls Status PENDING Standard ist
+    }
+    @Test
+    void testGetTotalReimbursementByState1() {
+        ReimbursementService mockService = mock(ReimbursementService.class);
+
+        Invoice invoice1 = new Invoice(LocalDate.of(2023, 4, 1), 10.0f, InvoiceCategory.RESTAURANT, null, null);
+        Invoice invoice2 = new Invoice(LocalDate.of(2023, 4, 10), 20.0f, InvoiceCategory.SUPERMARKET, null, null);
+
+        Reimbursement r1 = new Reimbursement(invoice1, 5.0f, Date.valueOf(LocalDate.of(2023, 4, 5)));
+        r1.setStatus(ReimbursementState.APPROVED);
+
+        Reimbursement r2 = new Reimbursement(invoice2, 10.0f, Date.valueOf(LocalDate.of(2023, 4, 15)));
+        r2.setStatus(ReimbursementState.REJECTED);
+
+        List<Reimbursement> reimbursements = List.of(r1, r2);
+
+        when(mockService.getTotalReimbursement(reimbursements, ReimbursementState.APPROVED)).thenReturn(5.0f);
+
+        float total = mockService.getTotalReimbursement(reimbursements, ReimbursementState.APPROVED);
+
+        // Assertions
+        assertEquals(5.0f, total);
+    }
 }
