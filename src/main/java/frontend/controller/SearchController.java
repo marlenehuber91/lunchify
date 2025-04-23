@@ -1,5 +1,10 @@
 package frontend.controller;
 
+import backend.logic.SearchService;
+import backend.logic.SessionManager;
+import backend.model.User;
+import backend.logic.UserService;
+import database.DatabaseConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -10,58 +15,57 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 
 public class SearchController {
 
     @FXML
+    private TextField searchField;
+    @FXML
+    private ListView<String> listOfMatches;
+    @FXML
     private Label userNotFoundLabel;
 
     @FXML
-    private ListView<String> listOfMatches;
-
-    @FXML
-    private TextField searchField;
-
-    @FXML
-    private ImageView searchButton;
-
-    @FXML
     public void initialize() {
-        // Setze die ListView und Label initial auf unsichtbar
+        SearchService.setConnectionProvider(DatabaseConnection::connect);
+
         listOfMatches.setVisible(false);
         userNotFoundLabel.setVisible(false);
-    }
 
-    //TODO ALLES HIER IST NOCH DUMMY CODE ZUM TESTEN!! DAS MUSS NOCH GEÄNDERT WERDEN!
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.trim().isEmpty()) {
+                try {
+                    List<String> results = new SearchService().searchUsers(newValue);
+                    listOfMatches.getItems().setAll(results);
 
-    @FXML
-    private void startSearchManually(MouseEvent event) {
-        String searchQuery = searchField.getText().trim();
-        if (searchQuery.isEmpty()) {
-            // Wenn das Suchfeld leer ist, zeige keine Ergebnisse an
-            listOfMatches.setVisible(false);
-            userNotFoundLabel.setVisible(false);
-        } else {
-            // TODO: Führe hier eine Datenbankabfrage durch, um passende E-Mail-Adressen zu finden
+                    if (results.isEmpty()) {
+                        listOfMatches.setVisible(false);
+                        userNotFoundLabel.setVisible(true);
+                    } else {
+                        listOfMatches.setVisible(true);
+                        userNotFoundLabel.setVisible(false);
+                    }
 
-            // Beispiel für das Hinzufügen von Daten zu ListView
-            listOfMatches.getItems().clear(); // Leere Liste bevor neue Daten hinzugefügt werden
-            listOfMatches.getItems().add("alexander@example.com");
-            listOfMatches.getItems().add("andrea@example.com");
-            listOfMatches.getItems().add("alessio@example.com");
-
-            // Wenn keine Ergebnisse gefunden wurden
-            if (listOfMatches.getItems().isEmpty()) {
-                userNotFoundLabel.setVisible(true);
+                } catch (Exception e) {
+                    listOfMatches.getItems().setAll("Fehler bei der Suche: " + e.getMessage());
+                    listOfMatches.setVisible(true);
+                    userNotFoundLabel.setVisible(false);
+                }
             } else {
+                listOfMatches.getItems().clear();
+                listOfMatches.setVisible(false);
                 userNotFoundLabel.setVisible(false);
-                listOfMatches.setVisible(true);
             }
-        }
+        });
     }
+
 
     @FXML
     private void handleBackToDashboard(MouseEvent event) {
@@ -79,6 +83,33 @@ public class SearchController {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleUserChoice(MouseEvent event) {
+        String selectedEmail = listOfMatches.getSelectionModel().getSelectedItem();
+
+        if (selectedEmail != null) {
+            User user = UserService.getUserByEmail(selectedEmail);
+
+            if (user != null) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/views/ReimbursementHistory.fxml"));
+                    AnchorPane historyPane = loader.load();
+
+                    ReimbursementHistoryController controller = loader.getController();
+                    controller.loadReimbursementsForUser(user);
+
+                    Stage stage = (Stage) listOfMatches.getScene().getWindow();
+                    stage.setScene(new Scene(historyPane));
+
+                    stage.show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
