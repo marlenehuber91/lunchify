@@ -14,6 +14,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
+
 	<!-- Maven Plugins -->
 	<build>
 		<plugins>
@@ -79,8 +80,19 @@
 					<mainClass>frontend.Main</mainClass>
 				</configuration>
 			</plugin>
+
 		</plugins>
 
+		<!-- for PMD -->
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-pmd-plugin</artifactId>
+					<version>3.23.0</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 	<dependencies>
 		<dependency>
@@ -201,4 +213,14 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<!-- PMD -->
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>

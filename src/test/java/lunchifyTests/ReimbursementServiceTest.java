@@ -161,7 +161,7 @@ class ReimbursementServiceTest {
     }
     
     @Test //created by AI
-    void testAddReimbursement_ConnectionProviderNull_shouldThrowException() {
+    void testAddReimbursementConnectionProviderNullShouldThrowException() {
         // Arrange
         ReimbursementService.setConnectionProvider(null); // bewusst null setzen
         ReimbursementService service = new ReimbursementService();

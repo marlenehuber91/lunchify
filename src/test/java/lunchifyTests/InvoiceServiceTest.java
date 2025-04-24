@@ -64,25 +64,25 @@ public class InvoiceServiceTest {
 
 
     @Test
-    public void testIsValidDate_withValidDate() {
+    public void testIsValidDateWithValidDate() {
         LocalDate validDate = LocalDate.now().minusDays(1); //muss je nach Tag an dem getestet wird angepasst werden
         assertTrue(invoiceService.isValidDate(validDate));
     }
 
     @Test
-    public void testIsValidDate_withFutureDate() {
+    public void testIsValidDateWithFutureDate() {
         LocalDate futureDate = LocalDate.now().plusDays(1);
         assertFalse(invoiceService.isValidDate(futureDate));
     }
 
     @Test
-    public void testIsValidDate_withDifferentMonth() {
+    public void testIsValidDateWithDifferentMonth() {
         LocalDate oldDate = LocalDate.now().minusMonths(1);
         assertFalse(invoiceService.isValidDate(oldDate));
     }
 
     @Test
-    public void testIsValidDate_withWeekend() {
+    public void testIsValidDateWithWeekend() {
         // Finde nächstes Wochenende
         LocalDate saturday = LocalDate.now().with(DayOfWeek.SATURDAY);
         assertFalse(InvoiceService.isWorkday(saturday));
@@ -90,26 +90,26 @@ public class InvoiceServiceTest {
     }
 
     @Test
-    public void testIsWorkday_forWeekday() {
+    public void testIsWorkdayForWeekday() {
         LocalDate monday = LocalDate.now().with(DayOfWeek.MONDAY);
         assertTrue(InvoiceService.isWorkday(monday));
     }
 
 
     @Test
-    public void testInvoiceDateAlreadyUsed_found() {
+    public void testInvoiceDateAlreadyUsedFound() {
         LocalDate existingDate = invoiceService.invoices.get(0).getDate();
         assertTrue(invoiceService.invoiceDateAlreadyUsed(existingDate, user));
     }
 
     @Test
-    public void testInvoiceDateAlreadyUsed_notFound() {
+    public void testInvoiceDateAlreadyUsedNotFound() {
         LocalDate newDate = LocalDate.of(2000, 1, 1);
         assertFalse(invoiceService.invoiceDateAlreadyUsed(newDate, user));
     }
     
     @Test
-    public void dateisNull () {
+    public void dateIsNull () {
     	LocalDate newDate = null;
     	assertFalse(invoiceService.isValidDate(newDate));
     }

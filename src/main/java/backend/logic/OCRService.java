@@ -31,7 +31,7 @@ public class OCRService {
 
     public OCRService() {
         tesseract = new Tesseract();
-        tesseract.setDatapath("C:\\teaching-2025.ss.prse.braeuer.team4\\src\\main\\resources\\tessdata");
+        tesseract.setDatapath("src/main/resources/tessdata");
         tesseract.setLanguage("deu+eng");
     }
 
