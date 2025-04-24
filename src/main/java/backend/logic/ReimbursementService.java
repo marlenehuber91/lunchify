@@ -318,4 +318,23 @@ public class ReimbursementService {
 	private String buildUserFilterCondition(int userId) {
 		return userId > 0 ? "i.user_id = " + userId : "1=1";
 	}
+
+	public String getInfoText() {
+		StringBuilder info = new StringBuilder();
+		info.append("Pro Arbeitstag kann eine Rechnung eingereicht werden.").append(System.lineSeparator()).append(System.lineSeparator());
+		info.append("Maximale Rückerstattung pro Arbeitstag:").append(System.lineSeparator()).append(System.lineSeparator());
+
+		for (InvoiceCategory category : InvoiceCategory.values()) {
+			if (category != InvoiceCategory.UNDETECTABLE) {
+				float limit = getLimit(category);
+				info.append(category.name().charAt(0))
+						.append(category.name().substring(1).toLowerCase())
+						.append(": ")
+						.append(String.format("%.2f €", limit))
+						.append(System.lineSeparator());
+			}
+		}
+
+		return info.toString().trim();
+	}
 }
