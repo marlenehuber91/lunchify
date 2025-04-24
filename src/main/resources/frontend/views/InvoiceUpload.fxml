@@ -33,7 +33,7 @@
             <Font size="41.0" />
          </font>
       </Text>
-      <TextArea editable="false" layoutX="1015.0" layoutY="40.0" prefHeight="330.0" prefWidth="250.0" promptText="Information" text="Pro Arbeitstag kann eine Rechnung eingereicht werden.&#10;&#10;maximale Rückerstattung pro Arbeitstag:&#10; &#10; Restaurant: € 3,00&#10;Supermarkt: € 2,50" wrapText="true" AnchorPane.rightAnchor="14.599999999999994">
+      <TextArea fx:id="infoText" editable="false" layoutX="1015.0" layoutY="40.0" prefHeight="368.0" prefWidth="250.0" promptText="Information" text="Pro Arbeitstag kann eine Rechnung eingereicht werden.&#10;&#10;maximale Rückerstattung pro Arbeitstag:&#10;&#10;" wrapText="true" AnchorPane.rightAnchor="15.0">
          <font>
             <Font size="22.0" />
          </font>

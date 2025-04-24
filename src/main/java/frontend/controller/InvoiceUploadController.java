@@ -6,22 +6,16 @@ import java.time.LocalDate;
 import java.util.List;
 
 import backend.logic.*;
-import backend.model.Invoice;
-import backend.model.InvoiceCategory;
-import backend.model.ReimbursementState;
-import backend.model.User;
-import backend.model.UserRole;
+import backend.model.*;
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -31,7 +25,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class InvoiceUploadController {
-	
+
     @FXML
     private StackPane uploadPane;
     @FXML
@@ -50,6 +44,8 @@ public class InvoiceUploadController {
     private DatePicker datePicker;
     @FXML
     private Label amountLabel, datePickerLabel, imageUploadLabel;
+    @FXML
+    private TextArea infoText;
 
     private List<Invoice> invoices;
     
@@ -73,6 +69,7 @@ public class InvoiceUploadController {
 
         submitButton.setDisable(true);
 
+        infoText.setText(reimbursementService.getInfoText());
 
         amountField.textProperty().addListener((obs, oldVal, newVal) -> {
             boolean isAmountValid = invoiceService.isValidFloat(newVal);
