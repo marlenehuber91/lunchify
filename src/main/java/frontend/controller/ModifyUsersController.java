@@ -161,7 +161,6 @@ public class ModifyUsersController {
             loadUserToEdit();
             paneNewUser.setVisible(false);
         }
-        else return;
     }
 
     //from Codepilot

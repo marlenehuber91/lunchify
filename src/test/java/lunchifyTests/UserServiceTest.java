@@ -44,7 +44,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void AuthenticateValidUser() throws Exception {
+    public void authenticateValidUser() throws Exception {
         when(mockResultSet.next()).thenReturn(true);
         when(mockResultSet.getString("state")).thenReturn("ACTIVE");
         when(mockResultSet.getString("password"))
@@ -62,7 +62,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void AuthenticateValidAdmin() throws Exception {
+    public void authenticateValidAdmin() throws Exception {
         when(mockResultSet.next()).thenReturn(true); // Ein Datensatz vorhanden
         when(mockResultSet.getString("state")).thenReturn("ACTIVE");
         when(mockResultSet.getString("password"))

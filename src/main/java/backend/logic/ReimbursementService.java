@@ -15,7 +15,6 @@ import backend.model.InvoiceCategory;
 import backend.model.Reimbursement;
 import backend.model.ReimbursementState;
 import backend.model.User;
-import database.DatabaseConnection;
 
 public class ReimbursementService {
 	public static ConnectionProvider connectionProvider;
@@ -129,14 +128,15 @@ public class ReimbursementService {
 					return true;
 				}
  				return false;
- 			} catch (Exception e) {
- 				throw new RuntimeException(e);
+ 			} catch (SQLException e) {
+ 				e.printStackTrace();
  			}
 		}
+		return false;
 	}
 
 	//created with help from AI
-	private boolean loadLimitsFromDatabase() {
+	private void loadLimitsFromDatabase() {
  		try {
  			Connection conn = connectionProvider.getConnection();
  
@@ -167,11 +167,10 @@ public class ReimbursementService {
  			rsRestaurant.close();
 			rsUndetactable.close();
  			stmt.close();
- 			return true;
- 		} catch (Exception e) {
- 			throw new RuntimeException(e);
+		} catch (SQLException e) {
+ 			e.printStackTrace();
  		}
- 	}
+	}
 
 	public List<Reimbursement> getReimbursements(String condition, int userId) {
 		List<Reimbursement> reimbursements = new ArrayList<>();
