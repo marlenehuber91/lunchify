@@ -192,7 +192,7 @@ public class ModifyUsersController {
     //created by AI
     @FXML
     public void onMouseClickedSaveNewUserButton(MouseEvent mouseEvent) {
-        System.out.println("onMouseClickedSaveNewUserButton");
+
         try {
             String name = nameNewField.getText();
             String email = eMailNewField.getText();
@@ -251,7 +251,6 @@ public class ModifyUsersController {
 
     @FXML
     public void onMouseClickedSaveEditUserButton(MouseEvent mouseEvent) {
-        System.out.println("onMouseClickedSaveEditUserButton");
 
         User selectedUser = userEditUserBox.getValue();
         if (selectedUser == null) {
