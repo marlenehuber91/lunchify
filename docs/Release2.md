@@ -19,6 +19,8 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 ### Analyse der Codequalität
 - Beispiele analyiserter Codestellen
 - Best-of PMD Findings
+  - UnterstricheInDen_Namen
+  - System.out.println("Debugging");
 
 ### Projektdokus (System, Benutzerdoku)
 ---
