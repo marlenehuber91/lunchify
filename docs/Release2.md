@@ -1,13 +1,15 @@
+Team 4  
+Marlene Huber, Johanna Ferstl, Silvia Mahringer  
 # Release 2, Milestone 0.2.0
-Team 4
-Marlene Huber, Johanna Ferstl, Silvia Mahringer
+## Team 4
+
 ---
 ## aktueller Stand
 ### Implementierung inkl. Demo
 - bisher umgesetzt
 - Aufteilung
 - neue Userstories: zB Logout
-- neue Tasks: new Table in Database, alter Tables
+- neue Tasks: new Table in Database, alter Tables  
 --> Demo Applikation
 
 ### Tests
