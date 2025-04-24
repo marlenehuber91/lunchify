@@ -24,7 +24,7 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 ---
 
 ## Sprint Retro
-- gebuchte Stunden:
+- gebuchte Stunden 9.-29.4.
 - gröbere Probleme
 - Learnings für Sprint 3
 
