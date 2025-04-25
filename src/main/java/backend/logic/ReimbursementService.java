@@ -208,6 +208,7 @@ public class ReimbursementService {
 				invoice.setCategory(InvoiceCategory.valueOf(rs.getString("category")));
 				invoice.setDate(rs.getDate("date").toLocalDate());
 				reimb.setInvoice(invoice);
+				reimb.setId(rs.getInt("reimbId"));
 
 				reimbursements.add(reimb);
 
@@ -336,5 +337,25 @@ public class ReimbursementService {
 		}
 
 		return info.toString().trim();
+	}
+	
+	public boolean updateReimbursementIfChanged(Reimbursement oldReimb, Reimbursement newReimb) {
+	    boolean updated = false;
+
+	    try (Connection conn = connectionProvider.getConnection()) {
+
+	        if (oldReimb.getApprovedAmount() != newReimb.getApprovedAmount()) {
+	            PreparedStatement stmt = conn.prepareStatement("UPDATE reimbursements SET amount = ? WHERE id = ?");
+	            stmt.setFloat(1, newReimb.getApprovedAmount());
+	            stmt.setInt(2, oldReimb.getId());
+	            stmt.executeUpdate();
+	            updated = true;
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return updated;
 	}
 }

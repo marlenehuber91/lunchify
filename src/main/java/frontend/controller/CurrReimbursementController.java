@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
+import backend.logic.UserService;
 import backend.model.Reimbursement;
 import backend.model.User;
 import backend.model.UserRole;
@@ -25,6 +26,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
@@ -59,6 +61,9 @@ public class CurrReimbursementController {
 
 	@FXML
 	private TableColumn<Reimbursement, String> reimbursementState;
+	
+	@FXML
+	private TableColumn<Reimbursement, Integer> reimbursementId;
 	
 	@FXML
 	private Label totalReimbursementAmountLabel;
@@ -105,7 +110,33 @@ public class CurrReimbursementController {
             e.printStackTrace();
         }
     }
-    	
+	
+	@FXML
+	public void handleUserChoice() {
+		Reimbursement selectedReimbursement = currReimbursementTable.getSelectionModel().getSelectedItem();
+		
+		if (selectedReimbursement != null) {
+
+            if (user != null) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/views/EditReimbursement.fxml"));
+                    AnchorPane editReimbursementPane = loader.load();
+
+                    EditReimbursementController controller = loader.getController();
+                    controller.setReimbursement(selectedReimbursement);
+
+                    Stage stage = (Stage) currReimbursementTable.getScene().getWindow();
+                    stage.setScene(new Scene(editReimbursementPane));
+
+                    stage.show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+		}   
+	}              
+
     	public void loadList() {
     		List<Reimbursement> reimbursements = reimbursementService.getCurrentReimbursements(user.getId());
     	    String totalReimbursement = String.valueOf(reimbursementService.getTotalReimbursement(reimbursements));
@@ -168,7 +199,7 @@ public class CurrReimbursementController {
 		public Label getTotalReimbursementAmountLabel() {
 			return this.totalReimbursementAmountLabel;
 		}
-
+		
 		public Object loadCurrentReimbursements() {
 			// TODO Auto-generated method stub
 			return null;

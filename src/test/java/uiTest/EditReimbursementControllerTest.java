@@ -26,7 +26,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 @Tag("ui")
-public class InvoiceUploadControllerTest extends ApplicationTest {
+public class EditReimbursementControllerTest extends ApplicationTest {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
