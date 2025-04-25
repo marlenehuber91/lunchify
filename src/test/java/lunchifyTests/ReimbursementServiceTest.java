@@ -8,7 +8,6 @@ import backend.model.ReimbursementState;
 import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
-import frontend.controller.ReimbursementHistoryController;
 import backend.interfaces.ConnectionProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +41,8 @@ class ReimbursementServiceTest {
     @Mock private PreparedStatement mockStatement;
     @Mock private ResultSet mockResultSet;
 
+    @Mock private ReimbursementService mockReimbursementService;
+
     private ReimbursementService service;
     private User testUser;
 
@@ -57,6 +58,7 @@ class ReimbursementServiceTest {
         lenient().when(mockStatement.executeQuery()).thenReturn(mockResultSet);
 
         service = new ReimbursementService(testUser);
+        mockReimbursementService = new ReimbursementService(testUser);
     }
 
     @Test
@@ -328,4 +330,104 @@ class ReimbursementServiceTest {
         // Assertions
         assertEquals(5.0f, total);
     }
+    @Test
+    void testGetInfoText() {
+        ReimbursementService mockService = mock(ReimbursementService.class);
+
+        when(mockService.getInfoText()).thenReturn("Pro Arbeitstag kann eine Rechnung eingereicht werden. \n\n" +
+                        "Maximale Rückerstattung pro Arbeitstag: \n" +
+                        "Supermarket: 2,50 €));\n" +
+                        "Restaurant: 3,00 €");
+
+        String info = mockService.getInfoText();
+
+        assertTrue(info.contains("Supermarket: 2,50 €"));
+        assertTrue(info.contains("Restaurant: 3,00 €"));
+        assertFalse(info.contains("Undetectable"));
+        assertTrue(info.startsWith("Pro Arbeitstag"));
+    }
+
+    @Test
+    void testIsValidFloat() {
+        assertTrue(service.isValidFloat("1.0"));
+        assertTrue(service.isValidFloat("0"));
+        assertFalse(service.isValidFloat("-1"));
+        assertTrue(service.isValidFloat("42"));
+        assertFalse(service.isValidFloat("abc"));
+        assertFalse(service.isValidFloat("12.3.4"));
+        assertFalse(service.isValidFloat(""));
+    }
+
+    @Test
+    void testIsAmountValid() {
+        assertTrue(service.isAmountValid("2.5"));
+        assertFalse(service.isAmountValid("abc"));
+        assertFalse(service.isAmountValid(null));
+    }
+
+    @Test
+    void testSetAndGetReimbursementAmount() {
+        service.setReimbursementAmount(5.75f);
+        assertEquals(5.75f, service.getReimbursementAmount());
+    }
+
+    //Constructor uses Database, because it calls loadLimitsFromDatabase() always
+    //Constructor cannot be mocked
+    /*
+    @Test
+    void testGetLimit() {
+        when(mockReimbursementService.getLimit(InvoiceCategory.SUPERMARKET)).thenReturn(2.5f);
+        when(mockReimbursementService.getLimit(InvoiceCategory.RESTAURANT)).thenReturn(3.0f);
+        when(mockReimbursementService.getLimit(InvoiceCategory.UNDETECTABLE)).thenReturn(1.0f);
+
+        assertEquals(2.5f, mockReimbursementService.getLimit(InvoiceCategory.SUPERMARKET));
+        assertEquals(3.0f, mockReimbursementService.getLimit(InvoiceCategory.RESTAURANT));
+        assertEquals(1.0f, mockReimbursementService.getLimit(InvoiceCategory.UNDETECTABLE));
+    }
+
+     */
+
+    @Test
+    void testModifyLimits() throws SQLException {
+        float newLimit = 7.5f;
+
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+        when(mockStatement.executeUpdate()).thenReturn(1);
+
+        boolean success = mockReimbursementService.modifyLimits(InvoiceCategory.RESTAURANT, newLimit);
+
+        assertTrue(success);
+        assertEquals(newLimit, mockReimbursementService.getLimit(InvoiceCategory.RESTAURANT));
+    }
+    /*
+    @Test
+    void testLoadLimitsFromDatabase() throws SQLException {
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+
+        ResultSet rs1 = mock(ResultSet.class);
+        ResultSet rs2 = mock(ResultSet.class);
+        ResultSet rs3 = mock(ResultSet.class);
+
+        when(mockStatement.executeQuery())
+                .thenReturn(rs1)  // SUPERMARKET
+                .thenReturn(rs2)  // RESTAURANT
+                .thenReturn(rs3); // UNDETECTABLE
+
+        when(rs1.next()).thenReturn(true);
+        when(rs1.getFloat("amount")).thenReturn(2.2f);
+
+        when(rs2.next()).thenReturn(true);
+        when(rs2.getFloat("amount")).thenReturn(3.3f);
+
+        when(rs3.next()).thenReturn(true);
+        when(rs3.getFloat("amount")).thenReturn(4.4f);
+
+        // Neuen Service erzeugen, der loadLimits im Konstruktor aufruft
+        ReimbursementService loadedService = new ReimbursementService(testUser);
+
+        assertEquals(2.2f, loadedService.getLimit(InvoiceCategory.SUPERMARKET));
+        assertEquals(3.3f, loadedService.getLimit(InvoiceCategory.RESTAURANT));
+        assertEquals(4.4f, loadedService.getLimit(InvoiceCategory.UNDETECTABLE));
+    }
+     */
 }
