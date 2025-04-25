@@ -24,106 +24,17 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class InvoiceUploadController {
+public class InvoiceUploadController extends BaseUploadController {
 
-    @FXML
-    private StackPane uploadPane;
-    @FXML
-    private ImageView uploadedImageView;
-    @FXML
-    private Text uploadText;
-    @FXML
-    private Text previewText;
-    @FXML
-    private Button submitButton;
-    @FXML
-    private ComboBox<InvoiceCategory> categoryBox;
-    @FXML
-    private TextField amountField, reimbursementAmountField;
-    @FXML
-    private DatePicker datePicker;
-    @FXML
-    private Label amountLabel, datePickerLabel, imageUploadLabel;
-    @FXML
-    private TextArea infoText;
-
-    private List<Invoice> invoices;
-    
-    private User user;
-    private File uploadedFile;
-    private InvoiceService invoiceService = new InvoiceService(); 
-    private ReimbursementService reimbursementService;
     private Invoice extractedInvoice;
 
     @FXML
     public void initialize() {
-        if (user == null) {
-            user = SessionManager.getCurrentUser();
-        }
-
-        invoiceService = new InvoiceService(user);
-        invoices = invoiceService.getInvoices();
-        reimbursementService = new ReimbursementService(user);
-
-        categoryBox.getItems().addAll(InvoiceCategory.values());
-
-        submitButton.setDisable(true);
-
-        infoText.setText(reimbursementService.getInfoText());
-
-        amountField.textProperty().addListener((obs, oldVal, newVal) -> {
-            boolean isAmountValid = invoiceService.isValidFloat(newVal);
-            updateLabel(amountLabel, isAmountValid, "Kein gültiger Zahlenwert", "Betrag eingegeben");
-
-            checkFields();
-        });
-
-
-        categoryBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-            checkFields();
-        });
-
-
-        datePicker.setDayCellFactory(picker -> new javafx.scene.control.DateCell() {
-            @Override
-            public void updateItem(LocalDate date, boolean empty) {
-                super.updateItem(date, empty);
-
-                LocalDate today = LocalDate.now();
-                LocalDate firstDayOfMonth = today.withDayOfMonth(1);
-                LocalDate lastDayOfMonth = today.withDayOfMonth(today.lengthOfMonth());
-
-                boolean isDisabled = date.isBefore(firstDayOfMonth) || date.isAfter(today);
-
-                setDisable(isDisabled);
-                if (isDisabled) {
-                    setStyle("-fx-background-color: #d3d3d3;");
-                }
-            }
-        });
-
-        datePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
-
-            if (newVal == null) {
-                updateLabel(datePickerLabel, false, "Kein Datum ausgewählt!", "");
-            } else if (newVal.isBefore(LocalDate.now().withDayOfMonth(1))) {
-                updateLabel(datePickerLabel, false, "Datum darf nicht vor dem aktuellen Monat liegen", "");
-            } else if (newVal.isAfter(LocalDate.now())) {
-                updateLabel(datePickerLabel, false, "Datum darf nicht in der Zukunft liegen", "");
-            } else if (!invoiceService.isWorkday(newVal)) {
-                updateLabel(datePickerLabel, false, "Kein gültiger Arbeitstag!", "");
-            } else {
-                updateLabel(datePickerLabel, true, "", "Datum eingegeben");
-            }
-
-            checkFields();
-        });
+        super.initialize();
     }
 
-
-
     @FXML
-    private void openFileChooser() {
+    protected void openFileChooser() {
     	
         Stage stage = (Stage) uploadPane.getScene().getWindow(); 
         FileChooser fileChooser = new FileChooser();
@@ -172,30 +83,6 @@ public class InvoiceUploadController {
         
     }
 
-   private void showAlert(String title, String content) {
-       	Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-   
-   private void checkFields() {
-	   String amountText = amountField.getText().trim();
-	   LocalDate date= datePicker.getValue();
-	   boolean isValidDate = isDateValid(date);
-	   boolean isAmountValid = invoiceService.isamaountValid(amountText);
-       boolean isCategorySelected = categoryBox.getValue() != null;
-       boolean isFileUploaded = uploadedFile != null;
-       
-       if (isCategorySelected && isAmountValid) {
-    	   setReimbursementAmount(amountText);
-		}
-       
-       boolean allFieldsFilled = isAmountValid && isValidDate && isCategorySelected && isFileUploaded;
-       submitButton.setDisable(!allFieldsFilled);
-       
-     }
 
     @FXML
     private void addInvoice() {
@@ -227,27 +114,6 @@ public class InvoiceUploadController {
        }
     }
 
-
-  
-   private void updateLabel(Label label, boolean isValid, String errorText, String successText) {
-	   if (!isValid) {
-		   label.setText(errorText);
-		   label.setStyle("-fx-text-fill: red;");
-	   } else {
-		   label.setText(successText);
-		   label.setStyle("-fx-text-fill: green");
-	   }
-   }
-   
-   public File getFile() {
-	   return this.uploadedFile;
-   }
-   
-   private boolean isDateValid(LocalDate date) {
-	   return (date!=null && !date.isBefore(LocalDate.now().withDayOfMonth(1)) && !date.isAfter(LocalDate.now()) && invoiceService.isWorkday(date));
-   }
-   
-
     private void resetForm() {
         datePicker.setValue(null);
         categoryBox.getSelectionModel().clearSelection();
@@ -262,14 +128,6 @@ public class InvoiceUploadController {
         datePickerLabel.setStyle("");
         if (imageUploadLabel!=null) imageUploadLabel.setStyle("");
         reimbursementAmountField.setText("");
-    }
-    
-    private void setReimbursementAmount (String amountText) {
-    	float invoiceAmount = Float.parseFloat(amountText);
-		float limit = reimbursementService.getLimit(categoryBox.getValue());
-		float reimbursementAmount = categoryBox.getValue().calculateReimbursement(invoiceAmount, limit);
-		reimbursementAmountField.setText(String.valueOf(reimbursementAmount));
-		reimbursementService.setReimbursementAmount(reimbursementAmount);
     }
     
     @FXML

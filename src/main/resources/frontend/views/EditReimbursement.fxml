@@ -16,10 +16,10 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controller.InvoiceUploadController">
+<AnchorPane fx:id="editReimbursementPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controller.EditReimbursementController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#42b35b" height="832.0" layoutX="1002.0" stroke="#42b35b" strokeType="INSIDE" width="278.0" AnchorPane.rightAnchor="0.0" />
-      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="1120.0" layoutY="650.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0">
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="1120.0" layoutY="650.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="32.0" AnchorPane.rightAnchor="10.0">
          <image>
             <Image url="@../images/logo.png" />
          </image>
@@ -28,7 +28,7 @@
       <Accordion layoutX="128.0" layoutY="428.0" />
       <DatePicker fx:id="datePicker" layoutX="109.0" layoutY="336.0" prefHeight="54.0" prefWidth="250.0" promptText="Datum" />
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="120.0" layoutX="195.0" layoutY="40.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="445.0" />
-      <Text layoutX="227.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rechnung einreichen">
+      <Text layoutX="227.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rechnung bearbeiten">
          <font>
             <Font size="41.0" />
          </font>
@@ -54,7 +54,7 @@
                   <Image url="@../images/camera_light.png" />
                </image>
             </ImageView>
-            <Text fx:id="uploadText" strokeType="OUTSIDE" strokeWidth="0.0" text="Foto hochladen">
+            <Text fx:id="uploadText" strokeType="OUTSIDE" strokeWidth="0.0" text="Foto ändern">
                <font>
                   <Font size="32.0" />
                </font>
@@ -66,25 +66,25 @@
             </ImageView>
          </children>
       </StackPane>
-      <ImageView fx:id="uploadedImageView" fitHeight="434.0" fitWidth="336.0" layoutX="640.0" layoutY="232.0" onMouseClicked="#handleImageClick" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="uploadedImageView" fitHeight="434.0" fitWidth="336.0" layoutX="640.0" layoutY="232.0" pickOnBounds="true" preserveRatio="true" />
       <Text fx:id="previewText" layoutX="662.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" " />
-      <Button fx:id="submitButton" layoutX="478.0" layoutY="695.0" mnemonicParsing="false" onMouseClicked="#addInvoice" prefHeight="60.0" prefWidth="258.0" style="-fx-background-color: #42b35b;" text="Rechnung einreichen" textFill="WHITE">
+      <Button fx:id="submitButton" layoutX="478.0" layoutY="695.0" mnemonicParsing="false" onMouseClicked="#showConfirmationDialog" prefHeight="60.0" prefWidth="258.0" style="-fx-background-color: #42b35b;" text="Änderung speichern" textFill="WHITE">
          <font>
             <Font size="21.0" />
          </font>
       </Button>
-      <Label fx:id="datePickerLabel" layoutX="109.0" layoutY="390.0" text="Datum eingeben" />
-      <Label fx:id="amountLabel" layoutX="109.0" layoutY="470.0" text="Rechnungsbetrag eingeben" />
+      <Label fx:id="datePickerLabel" layoutX="109.0" layoutY="390.0" text="Datum bearbeiten" />
+      <Label fx:id="amountLabel" layoutX="109.0" layoutY="470.0" text="Rechnungsbetrag bearbeiten" />
       <Label layoutX="109.0" layoutY="641.0" text="Rückerstattungsbetrag wird automatisch berechnet" />
       <StackPane layoutX="673.0" layoutY="219.0" prefHeight="150.0" prefWidth="200.0" />
-      <StackPane fx:id="backButton" layoutX="64.0" layoutY="54.0" onMouseClicked="#handleBackToDashboard" prefHeight="82.0" prefWidth="89.0">
+      <StackPane fx:id="backButton" layoutX="64.0" layoutY="54.0" onMouseClicked="#handleBackToCurrReimb" prefHeight="82.0" prefWidth="89.0">
          <children>
             <ImageView fitHeight="90.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/arrow.png" />
                </image>
             </ImageView>
-            <Circle fx:id="backArrow" fill="#eceeef00" onMouseClicked="#handleBackToDashboard" radius="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
+            <Circle fx:id="backArrow" fill="#eceeef00" onMouseClicked="#handleBackToCurrReimb" radius="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
          </children>
       </StackPane>
    </children>

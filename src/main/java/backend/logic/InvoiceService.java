@@ -1,6 +1,10 @@
 package backend.logic;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -16,11 +20,8 @@ import java.util.List;
 import backend.interfaces.ConnectionProvider;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
-import backend.model.ReimbursementState;
+import backend.model.Reimbursement;
 import backend.model.User;
-import database.DatabaseConnection;
-
-//TODO not finished - still working on it
 
 
 public class InvoiceService {
@@ -47,11 +48,18 @@ public class InvoiceService {
     }
 	
 	public boolean invoiceDateAlreadyUsed (LocalDate date, User user) {
-	   for (Invoice invoice: invoices) {
-		   if (invoice.getDate().equals(date)) return true;
-	   }
-	   return false;
+	return invoiceDateAlreadyUsed(date, user, -1);
    }
+	
+	public boolean invoiceDateAlreadyUsed(LocalDate date, User user, long excludeInvoiceId) { //created by AI
+		for (Invoice invoice : invoices) {
+	        if (invoice.getDate().equals(date)
+	            && (excludeInvoiceId == -1 || invoice.getId() != excludeInvoiceId)) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
 	
 	public boolean isValidDate(LocalDate date) {
 		if(date == null) {
@@ -147,5 +155,107 @@ public class InvoiceService {
 	    }
 	    return false; // Falls etwas schiefgeht
 	}
+	
+	public Invoice loadInvoice(Reimbursement reimbursement) {
+	    String sql = "SELECT i.* FROM Invoices i " +
+	                 "JOIN Reimbursements r ON i.id = r.invoice_id " +
+	                 "WHERE r.id = ?";
 
+	    try (Connection conn = connectionProvider.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setInt(1, reimbursement.getId());
+
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            if (rs.next()) {
+	                int id = rs.getInt("id");
+	                LocalDate date = rs.getDate("date").toLocalDate();
+	                float amount = rs.getFloat("amount");
+	                String category = rs.getString("category");
+	                int userId = rs.getInt("user_id");
+	                InputStream fileStream = rs.getBinaryStream("file");
+
+	                Invoice invoice = new Invoice();
+	                invoice.setId(id);
+	                invoice.setDate(date);
+	                invoice.setAmount(amount);
+	                invoice.setCategory(InvoiceCategory.valueOf(category));
+
+	                User user = new User();
+	                user.setId(userId);
+	                invoice.setUser(user);
+
+	                if (fileStream != null) {
+	                    // Temporäre Datei erzeugen
+	                    File tempFile = File.createTempFile("invoice_", ".tmp");
+	                    tempFile.deleteOnExit(); // Löscht sich automatisch beim Beenden
+
+	                    try (FileOutputStream outputStream = new FileOutputStream(tempFile)) {
+	                        byte[] buffer = new byte[1024];
+	                        int bytesRead;
+	                        while ((bytesRead = fileStream.read(buffer)) != -1) {
+	                            outputStream.write(buffer, 0, bytesRead);
+	                        }
+	                    }
+
+	                    invoice.setFile(tempFile);
+	                } else {
+	                    System.out.println("Keine Datei vorhanden.");
+	                }
+
+	                return invoice;
+	            }
+	        }
+	    } catch (SQLException | IOException e) {
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
+	
+	public boolean updateInvoiceIfChanged(Invoice oldInvoice, Invoice newInvoice) {
+		boolean updated = false;
+		
+		try (Connection conn = connectionProvider.getConnection()) {
+			
+			if (!oldInvoice.getDate().equals(newInvoice.getDate())) {
+	            PreparedStatement stmt = conn.prepareStatement("UPDATE invoices SET date = ? WHERE id = ?");
+	            stmt.setDate(1, Date.valueOf(newInvoice.getDate()));
+	            stmt.setInt(2, oldInvoice.getId());
+	            stmt.executeUpdate();
+	            updated = true;
+	        }
+
+	        if (oldInvoice.getAmount() != newInvoice.getAmount()) {
+	            PreparedStatement stmt = conn.prepareStatement("UPDATE invoices SET amount = ? WHERE id = ?");
+	            stmt.setFloat(1, newInvoice.getAmount());
+	            stmt.setInt(2, oldInvoice.getId());
+	            stmt.executeUpdate();
+	            updated = true;
+	        }
+
+	        if (oldInvoice.getCategory() != newInvoice.getCategory()) {
+	            PreparedStatement stmt = conn.prepareStatement("UPDATE invoices SET category = ? WHERE id = ?");
+	            stmt.setObject(1, newInvoice.getCategory(), Types.OTHER);
+	            stmt.setInt(2, oldInvoice.getId());
+	            stmt.executeUpdate();
+	            updated = true;
+	        }
+
+	        if (newInvoice.getFile() != null) {
+	            try (PreparedStatement stmt = conn.prepareStatement("UPDATE invoices SET file = ? WHERE id = ?")) {
+	                stmt.setBinaryStream(1, new FileInputStream(newInvoice.getFile()), (int) newInvoice.getFile().length());
+	                stmt.setInt(2, oldInvoice.getId());
+	                stmt.executeUpdate();
+	                updated = true;
+	            } catch (FileNotFoundException e) {
+	                e.printStackTrace();
+	            }
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return updated;
+	}
 }
