@@ -56,12 +56,12 @@
          </font>
       </Text>
       <Rectangle fx:id="searchRectangle" arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="440.0" layoutY="310.0" onMouseReleased="#openSearch" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
-      <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="505.0" layoutY="324.0" onMouseClicked="#openSearch" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="505.0" layoutY="324.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#openSearch">
          <image>
             <Image url="@../images/magnifiying_glass.png" />
          </image>
       </ImageView>
-      <Text layoutX="524.0" layoutY="447.0" onMouseClicked="#openSearch" strokeType="OUTSIDE" strokeWidth="0.0" text="Suche">
+      <Text layoutX="524.0" layoutY="447.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Suche" onMouseClicked="#openSearch">
          <font>
             <Font size="20.0" />
          </font>
@@ -78,17 +78,16 @@
          </font>
       </Text>
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="110.0" layoutY="510.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
-      <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="130.0" layoutY="524.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="175.0" layoutY="524.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/user.png" />
          </image>
       </ImageView>
-      <Text layoutX="137.0" layoutY="655.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Benutzer / Beträge">
+      <Text layoutX="132.0" layoutY="642.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Benutzerverwaltung">
          <font>
             <Font size="20.0" />
          </font>
       </Text>
-      <Rectangle fx:id="modifyUsersButton" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="160.0" layoutX="110.0" layoutY="510.0" onMouseClicked="#openModifyUsers" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="109.0" />
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="440.0" layoutY="510.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="505.0" layoutY="524.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -117,6 +116,12 @@
          </image>
       </ImageView>
       <Rectangle fx:id="openInvoiceUploadButton" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="160.0" layoutX="110.0" layoutY="110.0" onMouseClicked="#onklickOpenInvoiceSubmissionWindow" stroke="#ffffff00" strokeType="INSIDE" width="220.0" />
+      <Rectangle fx:id="openModifyReimbursmentAmountButton" arcHeight="5.0" arcWidth="5.0" fill="#ff0707" height="30.0" layoutX="28.0" layoutY="785.0" onMouseClicked="#onClickOpenModifyReimbursementWindow" stroke="#ffffff00" strokeType="INSIDE" width="69.0" />
+      <Text layoutX="28.0" layoutY="778.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rückerstattungsbetrag ändern">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="440.0" layoutY="110.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="505.0" layoutY="124.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -130,11 +135,6 @@
       </Text>
       <Rectangle fx:id="openCurrReimbursements" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="160.0" layoutX="440.0" layoutY="112.0" onMouseClicked="#openCurrentReimbursement" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="220.0" />
       <Rectangle fx:id="reimbursementHistoryButton" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="160.0" layoutX="760.0" layoutY="110.0" onMouseClicked="#openReimbursementHistory" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="220.0" />
-      <Rectangle fx:id="openModifyReimbursmentAmountButton" arcHeight="5.0" arcWidth="5.0" fill="#ff080800" height="168.0" layoutX="220.0" layoutY="506.0" onMouseClicked="#onClickOpenModifyReimbursementWindow" stroke="#ffffff00" strokeType="INSIDE" width="115.0" />
-      <ImageView fitHeight="70.0" fitWidth="69.0" layoutX="242.0" layoutY="535.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/pen.png" />
-         </image>
-      </ImageView>
+      <Rectangle fx:id="modifyUsersButton" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="160.0" layoutX="110.0" layoutY="510.0" onMouseClicked="#openModifyUsers" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="220.0" />
    </children>
 </AnchorPane>
