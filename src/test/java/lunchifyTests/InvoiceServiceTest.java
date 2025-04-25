@@ -3,12 +3,16 @@ package lunchifyTests;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -28,6 +32,7 @@ import backend.interfaces.ConnectionProvider;
 import backend.logic.InvoiceService;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
+import backend.model.Reimbursement;
 import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
@@ -215,5 +220,47 @@ public class InvoiceServiceTest {
         verify(mockStmt).setNull(5, Types.BINARY); // weil file == null
         verify(mockStmt).setBoolean(6, false);
     }
+    
+    @Test
+    public void testLoadInvoice() throws Exception {
+        // Arrange
+        Reimbursement reimbursement = mock(Reimbursement.class);
+        when(reimbursement.getId()).thenReturn(1);
 
+        // Mock Datenbank-Interaktionen
+        ConnectionProvider mockProvider = mock(ConnectionProvider.class);
+        Connection mockConnection = mock(Connection.class);
+        PreparedStatement mockStatement = mock(PreparedStatement.class);
+        ResultSet mockResultSet = mock(ResultSet.class);
+
+        when(mockProvider.getConnection()).thenReturn(mockConnection);
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+
+        when(mockResultSet.next()).thenReturn(true, false);
+        when(mockResultSet.getInt("id")).thenReturn(1);
+        when(mockResultSet.getFloat("amount")).thenReturn(99.99f);
+        when(mockResultSet.getString("category")).thenReturn("RESTAURANT");
+        when(mockResultSet.getDate("date")).thenReturn(Date.valueOf("2024-04-01"));
+
+        // Setze den mockProvider in der Serviceklasse
+        InvoiceService.setConnectionProvider(mockProvider);
+
+        // Act
+        Invoice result = invoiceService.loadInvoice(reimbursement);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1, result.getId());
+        assertEquals(99.99f, result.getAmount());
+        assertEquals(InvoiceCategory.RESTAURANT, result.getCategory());
+        assertEquals(LocalDate.of(2024, 4, 1), result.getDate());
+    }
+       
+    @Test
+    public void testIsValidDate_withNullDate() {
+        LocalDate nullDate = null;
+
+        assertFalse(invoiceService.isValidDate(nullDate));
+    }
 }

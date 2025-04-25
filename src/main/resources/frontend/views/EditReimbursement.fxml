@@ -19,7 +19,7 @@
 <AnchorPane fx:id="editReimbursementPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controller.EditReimbursementController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#42b35b" height="832.0" layoutX="1002.0" stroke="#42b35b" strokeType="INSIDE" width="278.0" AnchorPane.rightAnchor="0.0" />
-      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="1120.0" layoutY="650.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0">
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="1120.0" layoutY="650.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="32.0" AnchorPane.rightAnchor="10.0">
          <image>
             <Image url="@../images/logo.png" />
          </image>

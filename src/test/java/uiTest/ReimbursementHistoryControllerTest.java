@@ -1,28 +1,19 @@
 package uiTest;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.*;
-
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.testfx.framework.junit5.ApplicationTest;
 
 import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
 import backend.logic.UserService;
-import backend.model.Invoice;
-import backend.model.InvoiceCategory;
 import backend.model.Reimbursement;
 import backend.model.ReimbursementState;
 import backend.model.User;
@@ -30,8 +21,6 @@ import backend.model.UserRole;
 import backend.model.UserState;
 import frontend.Main;
 import frontend.controller.ReimbursementHistoryController;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -42,6 +31,7 @@ public class ReimbursementHistoryControllerTest extends ApplicationTest {
 
 	private ReimbursementHistoryController controller;
 	private ReimbursementService mockService;
+	private UserService mockUserService;
    
 	@Override
     public void start(Stage stage) throws Exception {
@@ -53,8 +43,12 @@ public class ReimbursementHistoryControllerTest extends ApplicationTest {
     @BeforeEach
     void openReimbursementView() {
     	mockService = mock(ReimbursementService.class);
+    	mockUserService = mock(UserService.class);
+    	
 		controller = new ReimbursementHistoryController();
 		controller.setReimbursementService(mockService);
+		controller.setUserService(mockUserService);
+		
     	clickOn("#reimbursementHistoryButton");
     }
     
@@ -185,6 +179,18 @@ public class ReimbursementHistoryControllerTest extends ApplicationTest {
         
         Assertions.assertNull(monthFilter.getValue());
         Assertions.assertNull(statusFilter.getValue());
+    }
+    
+    @Test
+    void testUserFilterComboBoxVisibleForAdmin() {
+        verifyThat("#userFilterBox", isVisible());
+        verifyThat("#userFilterLabel", isVisible());
+    }
+    
+    @Test
+    void testUserFilterComboBoxPreselectsCurrentUser() {
+        ComboBox<String> userFilterBox = lookup("#userFilterBox").query();
+        assertTrue(userFilterBox.getValue().equals("max@mustermann.at"));
     }
 }
 

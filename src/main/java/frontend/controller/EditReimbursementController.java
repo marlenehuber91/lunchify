@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
-import backend.logic.*;
 import backend.model.*;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -27,7 +26,7 @@ public class EditReimbursementController  extends BaseUploadController{
     
     @FXML
     public void initialize() {
-    	super.initialize();        
+    	super.initialize();
         categoryBox.setItems(FXCollections.observableArrayList(InvoiceCategory.values()));
     }
     
@@ -66,6 +65,11 @@ public class EditReimbursementController  extends BaseUploadController{
    private boolean isDateValid(LocalDate date) {
 	   return (date!=null && !date.isBefore(LocalDate.now().withDayOfMonth(1)) && !date.isAfter(LocalDate.now()) && invoiceService.isWorkday(date));
    }
+   
+   protected void openFileChooser() {
+	   super.openFileChooser();
+	   submitButton.setDisable(false);
+   }
     
     @FXML
     private void handleBackToCurrReimb() {
@@ -90,6 +94,7 @@ public class EditReimbursementController  extends BaseUploadController{
 	}
     
 	public void poplulateBoxes() {
+		
 		if (selectedInvoice.getCategory() != null) {
 			categoryBox.setValue(selectedInvoice.getCategory());
 		} else {
@@ -100,10 +105,17 @@ public class EditReimbursementController  extends BaseUploadController{
 		amountField.setText(amount);
 		datePicker.setValue(selectedInvoice.getDate());
 		
-		
 		Image uploadedImage = new Image(selectedInvoice.getFile().toURI().toString());
+		
+		String fileName = selectedInvoice.getFile().getName().toLowerCase();
+		if (fileName.endsWith(".pdf")) {
+			uploadedImageView.setImage(null);
+		}
+		else {
+			uploadedImageView.setImage(uploadedImage);
+		}
+		
 		uploadedFile = selectedInvoice.getFile();
-		uploadedImageView.setImage(uploadedImage);
 
 	}
 	public Reimbursement getReimbursement() {

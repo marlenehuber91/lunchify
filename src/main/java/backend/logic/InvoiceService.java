@@ -235,19 +235,21 @@ public class InvoiceService {
 
 	        if (oldInvoice.getCategory() != newInvoice.getCategory()) {
 	            PreparedStatement stmt = conn.prepareStatement("UPDATE invoices SET category = ? WHERE id = ?");
-	            stmt.setString(1, newInvoice.getCategory().toString());
+	            stmt.setObject(1, newInvoice.getCategory(), Types.OTHER);
 	            stmt.setInt(2, oldInvoice.getId());
 	            stmt.executeUpdate();
 	            updated = true;
 	        }
 
-	        if (newInvoice.getFile() != null && !newInvoice.getFile().equals(oldInvoice.getFile())) {
-	            // Optional: Datei-Handling je nach Speicherung
-	            PreparedStatement stmt = conn.prepareStatement("UPDATE invoices SET file_path = ? WHERE id = ?");
-	            stmt.setString(1, newInvoice.getFile().getAbsolutePath());
-	            stmt.setInt(2, oldInvoice.getId());
-	            stmt.executeUpdate();
-	            updated = true;
+	        if (newInvoice.getFile() != null) {
+	            try (PreparedStatement stmt = conn.prepareStatement("UPDATE invoices SET file = ? WHERE id = ?")) {
+	                stmt.setBinaryStream(1, new FileInputStream(newInvoice.getFile()), (int) newInvoice.getFile().length());
+	                stmt.setInt(2, oldInvoice.getId());
+	                stmt.executeUpdate();
+	                updated = true;
+	            } catch (FileNotFoundException e) {
+	                e.printStackTrace();
+	            }
 	        }
 
 	    } catch (SQLException e) {

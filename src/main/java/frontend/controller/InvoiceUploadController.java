@@ -36,7 +36,6 @@ public class InvoiceUploadController extends BaseUploadController {
     @FXML
     protected void openFileChooser() {
     	
-    	super.openFileChooser();
         Stage stage = (Stage) uploadPane.getScene().getWindow(); 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Bild oder PDF hochladen");

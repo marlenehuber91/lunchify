@@ -66,7 +66,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <ImageView fx:id="uploadedImageView" fitHeight="434.0" fitWidth="336.0" layoutX="640.0" layoutY="232.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="uploadedImageView" fitHeight="434.0" fitWidth="336.0" layoutX="640.0" layoutY="232.0" onMouseClicked="#handleImageClick" pickOnBounds="true" preserveRatio="true" />
       <Text fx:id="previewText" layoutX="662.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" " />
       <Button fx:id="submitButton" layoutX="478.0" layoutY="695.0" mnemonicParsing="false" onMouseClicked="#addInvoice" prefHeight="60.0" prefWidth="258.0" style="-fx-background-color: #42b35b;" text="Rechnung einreichen" textFill="WHITE">
          <font>

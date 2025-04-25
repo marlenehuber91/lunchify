@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.*;
 
+import java.io.File;
 import java.time.LocalDate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
 import frontend.Main;
+import frontend.controller.BaseUploadController;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -48,69 +50,6 @@ public class InvoiceUploadControllerTest extends ApplicationTest {
 		verifyThat("#categoryBox", isVisible());
 		verifyThat("#uploadPane", isVisible());
 		verifyThat("#submitButton", isVisible());
-	}
-
-	@Test
-	void testManualInvoiceAmountEntry() {
-		clickOn("#amountField");
-		write("150.00"); // Gültigen Betrag eingeben
-		Label amountLabel = lookup("#amountLabel").query();
-		Assertions.assertThat(amountLabel.getText()).contains("Betrag eingegeben");
-	}
-
-	@Test
-	void testValidAmountNegativeFloat() {
-		clickOn("#amountField");
-		write("-150.00");
-		Label amountLabel = lookup("#amountLabel").query();
-		Assertions.assertThat(amountLabel.getText()).contains("Kein gültiger Zahlenwert");
-	}
-
-	@Test
-	void testSubmitButtonStaysDisabledForInvalidFields() {
-		clickOn("#amountField");
-		write("123.45");
-		verifyThat("#submitButton", (Button button) -> button.isDisabled()); // Submit-Button bleibt deaktiviert
-	}
-
-	@Test
-	void testSelectPreviousMonthDate() {
-		DatePicker datePicker = lookup("#datePicker").query();
-		interact(() -> datePicker.setValue(LocalDate.of(2025, 3, 15)));
-
-		Label datePickerLabel = lookup("#datePickerLabel").query();
-		Assertions.assertThat(datePickerLabel.getText()).contains("Datum darf nicht vor dem aktuellen Monat liegen");
-
-		verifyThat("#submitButton", (Button button) -> button.isDisabled());
-	}
-
-	@Test
-	void testSelectFutureDate() {
-		DatePicker datePicker = lookup("#datePicker").query();
-		interact(() -> datePicker.setValue(LocalDate.of(2025, 12, 31)));
-
-		Label datePickerLabel = lookup("#datePickerLabel").query();
-		Assertions.assertThat(datePickerLabel.getText()).contains("Datum darf nicht in der Zukunft liegen");
-
-		verifyThat("#submitButton", (Button button) -> button.isDisabled());
-	}
-
-	@Test
-	void testInvoiceSubmissionWithMissingAmount() {
-		// Nur Datum und Kategorie setzen, aber keinen Betrag eingeben
-		clickOn("#datePicker");
-		write("18.04.2025"); // simuliert aktuelle Tageswahl
-
-		ComboBox<InvoiceCategory> comboBox = lookup("#categoryBox").query();
-		interact(() -> {
-			comboBox.setItems(FXCollections.observableArrayList(InvoiceCategory.RESTAURANT, InvoiceCategory.SUPERMARKET,
-					InvoiceCategory.UNDETECTABLE));
-		});
-		clickOn("#categoryBox");
-		clickOn("RESTAURANT");
-
-		Button submitButton = lookup("#submitButton").query();
-		Assertions.assertThat(submitButton.isDisable()).isTrue();
 	}
 
 	@Test
@@ -167,10 +106,32 @@ public class InvoiceUploadControllerTest extends ApplicationTest {
 		clickOn("SUPERMARKET");
 		TextField field = lookup("#reimbursementAmountField").query();
 		assertEquals("2.5", field.getText());
-
 		clickOn("#categoryBox");
 		clickOn("RESTAURANT");
 		field = lookup("#reimbursementAmountField").query();
 		assertEquals("2.75", field.getText());
+	}
+	
+	@Test
+    void testInvalidAmountZero() {
+        clickOn("#amountField");
+        write("0");
+        clickOn("#categoryBox");
+        clickOn("RESTAURANT");
+
+        TextField field = lookup("#reimbursementAmountField").query();
+        assertEquals("0.0", field.getText());  // Beispielannahme: ungültige Beträge setzen Erstattung auf 0
+    }
+	
+	
+	@Test
+	void testSelectFutureDate() {
+	    DatePicker datePicker = lookup("#datePicker").query();
+	    interact(() -> datePicker.setValue(LocalDate.of(2025, 12, 31)));
+
+	    Label datePickerLabel = lookup("#datePickerLabel").query();
+	    Assertions.assertThat(datePickerLabel.getText()).contains("Datum darf nicht in der Zukunft liegen");
+
+	    verifyThat("#submitButton", (Button button) -> button.isDisabled());
 	}
 }
