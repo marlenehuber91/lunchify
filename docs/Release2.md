@@ -21,6 +21,7 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 - Best-of PMD Findings
   - UnterstricheInDen_Namen
   - System.out.println("Debugging");
+  - avoid FileStreams
 
 ### Projektdokus (System, Benutzerdoku)
 ---

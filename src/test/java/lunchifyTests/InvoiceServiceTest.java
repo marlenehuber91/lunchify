@@ -258,7 +258,7 @@ public class InvoiceServiceTest {
     }
        
     @Test
-    public void testIsValidDate_withNullDate() {
+    public void testIsValidDateWithNullDate() {
         LocalDate nullDate = null;
 
         assertFalse(invoiceService.isValidDate(nullDate));

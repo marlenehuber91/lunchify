@@ -1,32 +1,23 @@
 package frontend.controller;
 import java.io.IOException;
 
-import backend.logic.InvoiceService;
-import backend.logic.ReimbursementService;
+
 import backend.logic.SessionManager;
 import backend.model.User;
-import database.DatabaseConnection;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.MenuButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 
-import javax.swing.event.MenuEvent;
 
 public class AdminDashboardController {
 
     @FXML
     private Text userNameText;
-    @FXML
-    private UserDropDownController dropDown;
-    @FXML
-    private MenuButton userDropDown;
 
 
     @FXML

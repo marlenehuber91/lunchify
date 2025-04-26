@@ -9,7 +9,6 @@ import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
-import backend.model.Reimbursement;
 import backend.model.User;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -25,7 +24,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -106,7 +104,6 @@ public class BaseUploadController {
 
 				LocalDate today = LocalDate.now();
 				LocalDate firstDayOfMonth = today.withDayOfMonth(1);
-				LocalDate lastDayOfMonth = today.withDayOfMonth(today.lengthOfMonth());
 
 				boolean isDisabled = date.isBefore(firstDayOfMonth) || date.isAfter(today);
 

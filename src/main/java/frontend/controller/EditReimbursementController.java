@@ -54,8 +54,7 @@ public class EditReimbursementController  extends BaseUploadController{
     	    	   handleBackToCurrReimb();
     	       }
     	   }
-       });;
-       
+       });
    }
   
    public File getFile() {
@@ -90,10 +89,10 @@ public class EditReimbursementController  extends BaseUploadController{
     public void loadData() {
 		selectedInvoice = invoiceService.loadInvoice(reimbursement);
 		reimbursement.setInvoice(selectedInvoice);
-		poplulateBoxes();
+		populateBoxes();
 	}
     
-	public void poplulateBoxes() {
+	public void populateBoxes() {
 		
 		if (selectedInvoice.getCategory() != null) {
 			categoryBox.setValue(selectedInvoice.getCategory());
