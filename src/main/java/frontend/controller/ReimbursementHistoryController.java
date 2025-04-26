@@ -44,56 +44,33 @@ public class ReimbursementHistoryController {
 	int currUserId;
 
 	@FXML
-	private Circle backArrow;
-
-	@FXML
-	private StackPane backButton;
-
-	@FXML
 	private TableView<Reimbursement> reimbursementHistoryTable;
-
 	@FXML
 	private TableColumn<Reimbursement, String> invoiceDate;
-
 	@FXML
 	private TableColumn<Reimbursement, String> invoiceCategory;
-
 	@FXML
 	private TableColumn<Reimbursement, Float> invoiceAmount;
-
 	@FXML
 	private TableColumn<Reimbursement, Float> reimbursementAmount;
-
 	@FXML
 	private TableColumn<Reimbursement, String> reimbursementState;
-	
 	@FXML 
 	private TableColumn<Reimbursement, String> userEmailColumn;
-
 	@FXML
 	private Label totalReimbursementAmountLabel;
-
 	@FXML
 	private ComboBox<String> monthFilterBox;
-
 	@FXML
 	private ComboBox<String> categoryFilterBox;
-
 	@FXML
 	private ComboBox<String> statusFilterBox;
-
 	@FXML
 	private ComboBox<String> yearFilterBox;
-	
 	@FXML 
 	private ComboBox<String> userFilterBox;
-	
 	@FXML
 	private Text textTotalReimb;
-	
-	@FXML
-	private Rectangle resetFilterButton;
-	
 	@FXML
 	private Label userFilterLabel;
 
@@ -302,7 +279,6 @@ public class ReimbursementHistoryController {
 	//for testing
 	public void setReimbursementService(ReimbursementService service) {
 		this.reimbursementService = service;
-		
 	}
 	
 	public void setUserService (UserService service) {
