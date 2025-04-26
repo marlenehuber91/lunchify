@@ -56,6 +56,9 @@ public class ReimbursementHistoryController {
 	private TableColumn<Reimbursement, String> invoiceDate;
 
 	@FXML
+	private TableColumn<Reimbursement, String> processedDate;
+
+	@FXML
 	private TableColumn<Reimbursement, String> invoiceCategory;
 
 	@FXML
@@ -167,6 +170,9 @@ public class ReimbursementHistoryController {
 
 		invoiceDate.setCellValueFactory(
 				cellData -> new SimpleStringProperty(cellData.getValue().getInvoice().getDate().toString()));
+
+		processedDate.setCellValueFactory(
+				cellData -> new SimpleStringProperty(cellData.getValue().getProcessedDate().toString()));
 
 		invoiceCategory.setCellValueFactory(
 				cellData -> new SimpleStringProperty(cellData.getValue().getInvoice().getCategory().toString()));

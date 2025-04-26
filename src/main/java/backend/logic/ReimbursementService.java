@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +72,7 @@ public class ReimbursementService {
 
 			stmt.setInt(1, invoice.getId());
 			stmt.setFloat(2, amount);
-			stmt.setDate(3, Date.valueOf(invoice.getDate()));
+			stmt.setDate(3, Date.valueOf(LocalDate.now()));
 
 			int affectedRows = stmt.executeUpdate(); // SQL ausführen
 			if (affectedRows > 0) {
