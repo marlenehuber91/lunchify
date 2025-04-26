@@ -13,7 +13,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -45,11 +44,7 @@ public class ModifyUsersController {
     @FXML
     private TextField nameNewField;
     @FXML
-    private Text previewText;
-    @FXML
     private TextField eMailNewField;
-    @FXML
-    private Button saveNewButton;
 
     //edit User
     @FXML
@@ -66,8 +61,6 @@ public class ModifyUsersController {
     private TextField passwordEditField;
     @FXML
     private TextField eMailEditField;
-    @FXML
-    private Button saveEditButton;
 
 
 
@@ -89,7 +82,7 @@ public class ModifyUsersController {
 
 
     private User user;
-    private UserService userService = new UserService();
+    private final UserService userService = new UserService();
 
 
     @FXML

@@ -27,7 +27,6 @@ public class UserDashboardController {
     public void openInvoiceSubmissionWindow(MouseEvent event) {
         adminController.onklickOpenInvoiceSubmissionWindow(event);
     }
-
     
     public void openCurrentReimbursement(MouseEvent event) {
     	adminController.openCurrentReimbursement(event);
@@ -37,8 +36,4 @@ public class UserDashboardController {
     	adminController.openReimbursementHistory(event);
     }
 
-    @FXML //@Silvia: ist das im UserDashboar notwendig?
-    public void onClickOpenModifyReimbursementWindow(MouseEvent mouseEvent) {
-        adminController.onClickOpenModifyReimbursementWindow(mouseEvent);
-    }
 }

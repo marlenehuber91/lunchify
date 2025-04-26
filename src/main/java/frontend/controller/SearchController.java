@@ -1,7 +1,6 @@
 package frontend.controller;
 
 import backend.logic.SearchService;
-import backend.logic.SessionManager;
 import backend.model.User;
 import backend.logic.UserService;
 import database.DatabaseConnection;
@@ -13,14 +12,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public class SearchController {
