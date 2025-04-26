@@ -31,14 +31,14 @@
             <Font size="41.0" />
          </font>
       </Text>
-      <TableView fx:id="currReimbursementTable" layoutX="108.0" layoutY="276.0" onMouseClicked="#handleUserChoice" prefHeight="200.0" prefWidth="650.0">
+      <TableView fx:id="currReimbursementTable" layoutX="108.0" layoutY="276.0" onMouseClicked="#handleUserChoice" prefHeight="200.0" prefWidth="743.0">
         <columns>
           <TableColumn fx:id="invoiceDate" prefWidth="120.0" text="Rechnungsdatum" />
+           <TableColumn fx:id="processedDate" prefWidth="120.0" text="Einreichdatum" />
           <TableColumn fx:id="invoiceCategory" prefWidth="91.20001220703125" text="Kategorie" />
             <TableColumn fx:id="invoiceAmount" prefWidth="129.5999755859375" text="Rechnungsbetrag" />
-            <TableColumn fx:id="reimbursementAmount" prefWidth="166.40005493164062" text="Rückerstattungsbetrag" />
-            <TableColumn fx:id="reimbursementState" prefWidth="143.20001220703125" text="Status" />
-            <TableColumn fx:id="reimbursementId" prefWidth="120.0" text="Rückerstattungsnummer" />
+            <TableColumn fx:id="reimbursementAmount" prefWidth="142.39990234375" text="Rückerstattung" />
+            <TableColumn fx:id="reimbursementState" prefWidth="130.4000244140625" text="Status" />
         </columns>
       </TableView>
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="60.0" layoutX="108.0" layoutY="516.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="307.0" />

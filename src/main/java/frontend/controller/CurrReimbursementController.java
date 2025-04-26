@@ -8,7 +8,6 @@ import java.util.Locale;
 
 import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
-import backend.logic.UserService;
 import backend.model.Reimbursement;
 import backend.model.User;
 import backend.model.UserRole;
@@ -27,50 +26,35 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class CurrReimbursementController {
-	
+
 	User user;
 	ReimbursementService reimbursementService;
 
     @FXML
-    private Circle backArrow;
-
-    @FXML
-    private StackPane backButton;
-
-    @FXML
     private TableView<Reimbursement> currReimbursementTable;
-    
-
 	@FXML
 	private TableColumn<Reimbursement, String> invoiceDate;
-	
+	@FXML
+	private TableColumn<Reimbursement, String> processedDate;
 	@FXML
 	private TableColumn<Reimbursement, String> invoiceCategory;
-	
 	@FXML
 	private TableColumn<Reimbursement, Float> invoiceAmount;
-    
 	@FXML
 	private TableColumn<Reimbursement, Float> reimbursementAmount;
-
 	@FXML
 	private TableColumn<Reimbursement, String> reimbursementState;
-	
-	@FXML
-	private TableColumn<Reimbursement, Integer> reimbursementId;
-	
+
 	@FXML
 	private Label totalReimbursementAmountLabel;
 	
 	@FXML
 	private Text currentMonthText;
-	
+
 	public void setReimbursementService(ReimbursementService reimbursementService) {
 		this.reimbursementService = reimbursementService;
 	}
@@ -146,6 +130,8 @@ public class CurrReimbursementController {
 
     	    invoiceDate.setCellValueFactory(
     	            cellData -> new SimpleStringProperty(cellData.getValue().getInvoice().getDate().toString()));
+
+			processedDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProcessedDate().toString()));
 
     	    invoiceCategory.setCellValueFactory(
     	            cellData -> new SimpleStringProperty(cellData.getValue().getInvoice().getCategory().toString()));

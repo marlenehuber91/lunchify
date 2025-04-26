@@ -83,7 +83,7 @@
             <Image url="@../images/user.png" />
          </image>
       </ImageView>
-      <Text layoutX="137.0" layoutY="655.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Benutzer / Beträge">
+      <Text layoutX="137.0" layoutY="642.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Benutzer / Beträge">
          <font>
             <Font size="20.0" />
          </font>
@@ -130,7 +130,7 @@
       </Text>
       <Rectangle fx:id="openCurrReimbursements" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="160.0" layoutX="440.0" layoutY="112.0" onMouseClicked="#openCurrentReimbursement" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="220.0" />
       <Rectangle fx:id="reimbursementHistoryButton" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="160.0" layoutX="760.0" layoutY="110.0" onMouseClicked="#openReimbursementHistory" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="220.0" />
-      <Rectangle fx:id="openModifyReimbursmentAmountButton" arcHeight="5.0" arcWidth="5.0" fill="#ff080800" height="168.0" layoutX="220.0" layoutY="506.0" onMouseClicked="#onClickOpenModifyReimbursementWindow" stroke="#ffffff00" strokeType="INSIDE" width="115.0" />
+      <Rectangle fx:id="openModifyReimbursmentAmountButton" arcHeight="5.0" arcWidth="5.0" fill="#ff080800" height="168.0" layoutX="219.0" layoutY="506.0" onMouseClicked="#onClickOpenModifyReimbursementWindow" stroke="#ffffff00" strokeType="INSIDE" width="115.0" />
       <ImageView fitHeight="70.0" fitWidth="69.0" layoutX="242.0" layoutY="535.0" onMouseClicked="#onClickOpenModifyReimbursementWindow" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/pen.png" />
