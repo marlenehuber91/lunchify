@@ -32,7 +32,7 @@ public class UserDropDownController {
     }
 
     //TODO: decide, if these 2 Methods are needed
-    /*
+
     @FXML
     public void changePassword(ActionEvent event) {
         //TODO implement logic
@@ -42,7 +42,7 @@ public class UserDropDownController {
     public void changeRole(ActionEvent event) {
         //TODO implement logic
     }
-    */
+
 
     @FXML
     public void handleLogout(ActionEvent event) {
