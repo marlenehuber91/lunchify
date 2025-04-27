@@ -15,14 +15,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
@@ -49,7 +48,6 @@ public class ReimbursementHistoryController {
 	private TableColumn<Reimbursement, String> invoiceDate;
 	@FXML
 	private TableColumn<Reimbursement, String> processedDate;
-
 	@FXML
 	private TableColumn<Reimbursement, String> invoiceCategory;
 	@FXML
@@ -60,6 +58,10 @@ public class ReimbursementHistoryController {
 	private TableColumn<Reimbursement, String> reimbursementState;
 	@FXML 
 	private TableColumn<Reimbursement, String> userEmailColumn;
+	@FXML
+	private TableColumn<Reimbursement, Image> editColumn;
+	@FXML
+	private TableColumn<Reimbursement, Image> deleteColumn;
 	@FXML
 	private Label totalReimbursementAmountLabel;
 	@FXML
@@ -74,6 +76,9 @@ public class ReimbursementHistoryController {
 	private ComboBox<String> userFilterBox;
 	@FXML
 	private Text textTotalReimb;
+
+	@FXML
+	private Rectangle resetFilterButton;
 	@FXML
 	private Label userFilterLabel;
 
@@ -89,6 +94,9 @@ public class ReimbursementHistoryController {
 		if (user.getRole()!= UserRole.ADMIN) {
 			userFilterBox.setVisible(false);
 			userFilterLabel.setVisible(false);
+
+			editColumn.setVisible(false);
+			deleteColumn.setVisible(false);
 		}
 		
 		populateBoxes();
@@ -131,7 +139,7 @@ public class ReimbursementHistoryController {
 	private void handleFilter(MouseEvent event) {
 		getFilterInput();		
 		loadList();
-		textTotalReimb.setText("Summe Rückerstattungen: '" + translateStauts(status)+ "'" );
+		textTotalReimb.setText("Summe Rückerstattungen: '" + translateStatus(status)+ "'" );
 	}
 	
 	@FXML
@@ -201,6 +209,75 @@ public class ReimbursementHistoryController {
 			        }
 			    });
 
+		editColumn.setCellFactory(column -> new TableCell<>() {
+			private final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/frontend/images/pen.png")));
+
+			{
+				imageView.setFitWidth(20);
+				imageView.setFitHeight(20);
+				imageView.setPreserveRatio(true);
+				imageView.setCursor(Cursor.HAND);
+			}
+
+			@Override
+			protected void updateItem(Image item, boolean empty) {
+				super.updateItem(item, empty);
+
+				if (empty) {
+					setGraphic(null);
+					setOnMouseClicked(null); // wichtig: alten Handler entfernen!
+				} else {
+					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
+					if (selectedReimbursement != null && selectedReimbursement.isReimbursementEditable()) {
+						setGraphic(imageView);
+						setOnMouseClicked(event -> {
+							//TODO: goTo editReimbursement
+							System.out.println("Method editColumn, reimbursement: ");
+							System.out.println(selectedReimbursement.toString());
+							loadList();
+						});
+					} else {
+						setGraphic(null);
+						setOnMouseClicked(null);
+					}
+				}
+			}
+		});
+
+
+		deleteColumn.setCellFactory(column -> new TableCell<>() {
+			private final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/frontend/images/delete.png")));
+
+			{
+				imageView.setFitWidth(20);
+				imageView.setFitHeight(20);
+				imageView.setPreserveRatio(true);
+				imageView.setCursor(Cursor.HAND);
+			}
+
+			@Override
+			protected void updateItem(Image item, boolean empty) {
+				super.updateItem(item, empty);
+
+				if (empty) {
+					setGraphic(null);
+					setOnMouseClicked(null);
+				} else {
+					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
+					if (selectedReimbursement != null && selectedReimbursement.isReimbursementEditable()) {
+						setGraphic(imageView);
+						setOnMouseClicked(event -> {
+							showDeleteConfirmationDialog(selectedReimbursement);
+							loadList();
+						});
+					} else {
+						setGraphic(null);
+						setOnMouseClicked(null);
+					}
+				}
+			}
+		});
+
 		reimbursementHistoryTable.setItems(reimbursementList);
 		calculateTotalReimbursement();
 	}
@@ -269,7 +346,7 @@ public class ReimbursementHistoryController {
 	    };
 	}
 	
-	private String translateStauts(String status) {
+	private String translateStatus(String status) {
 		if (status == null) return "alle";
 		else {
 			return switch (status.toUpperCase()) {
@@ -297,5 +374,37 @@ public class ReimbursementHistoryController {
 			List<Reimbursement> reimbursements = reimbursementService.getAllReimbursements(selectedUser.getId());
 			reimbursementHistoryTable.getItems().setAll(reimbursements);
 		}
+	}
+
+	private void showDeleteConfirmationDialog(Reimbursement toDeleteReimb) {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Bestätigung");
+		alert.setHeaderText(null);
+		String date = String.valueOf(toDeleteReimb.getInvoice().getDate());
+		String user = String.valueOf(toDeleteReimb.getInvoice().toString());
+		alert.setContentText("Wollen Sie diesen Rückerstattungsantrag vom " +
+						date + " löschen?");
+
+		ButtonType buttonSave = new ButtonType("Ja");
+		ButtonType buttonCancel = new ButtonType("Nein", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+		alert.getButtonTypes().setAll(buttonSave, buttonCancel);
+		alert.showAndWait().ifPresent(response -> {
+			if (response == buttonSave) {
+				boolean isReimbDeleted = reimbursementService.deleteReimbursement(toDeleteReimb);
+
+				if (isReimbDeleted) {
+					showAlert("Erfolg", "Rückerstattungsantrag gelöscht.");
+				}
+			}
+		});
+	}
+
+	protected void showAlert(String title, String content) {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setTitle(title);
+		alert.setHeaderText(null);
+		alert.setContentText(content);
+		alert.showAndWait();
 	}
 }

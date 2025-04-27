@@ -1,4 +1,5 @@
 package backend.model;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Reimbursement {
@@ -70,4 +71,7 @@ public class Reimbursement {
 			return s;
 	}
 
+    public boolean isReimbursementEditable() {
+        return this.getInvoice().getDate().getMonthValue() == LocalDate.now().getMonthValue();
+    }
 }
