@@ -42,7 +42,6 @@ public class ReimbursementHistoryController {
 	String totalReimbursement;
 	int currUserId;
 
-
 	@FXML
 	private TableView<Reimbursement> reimbursementHistoryTable;
 	@FXML
@@ -77,6 +76,7 @@ public class ReimbursementHistoryController {
 	private ComboBox<String> userFilterBox;
 	@FXML
 	private Text textTotalReimb;
+
 	@FXML
 	private Rectangle resetFilterButton;
 	@FXML
@@ -362,7 +362,6 @@ public class ReimbursementHistoryController {
 	//for testing
 	public void setReimbursementService(ReimbursementService service) {
 		this.reimbursementService = service;
-		
 	}
 	
 	public void setUserService (UserService service) {
