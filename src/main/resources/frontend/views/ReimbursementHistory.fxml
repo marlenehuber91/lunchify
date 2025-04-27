@@ -32,15 +32,17 @@
             <Font size="41.0" />
          </font>
       </Text>
-      <TableView fx:id="reimbursementHistoryTable" layoutX="108.0" layoutY="276.0" prefHeight="200.0" prefWidth="797.0">
+      <TableView fx:id="reimbursementHistoryTable" layoutX="108.0" layoutY="276.0" prefHeight="200.0" prefWidth="800">
         <columns>
-          <TableColumn fx:id="invoiceDate" prefWidth="104.80001831054688" text="Rechnungsdatum" />
-           <TableColumn fx:id="processedDate" prefWidth="107.19998168945312" text="Einreichdatum" />
-          <TableColumn fx:id="invoiceCategory" prefWidth="112.0" text="Kategorie" />
-           <TableColumn fx:id="invoiceAmount" prefWidth="109.60003662109375" text="Rechnungsbetrag" />
+          <TableColumn fx:id="invoiceDate" prefWidth="117" text="Rechnungsdatum" />
+           <TableColumn fx:id="processedDate" prefWidth="117" text="Einreichdatum" />
+          <TableColumn fx:id="invoiceCategory" prefWidth="109" text="Kategorie" />
+           <TableColumn fx:id="invoiceAmount" prefWidth="109" text="Rechnungsbetrag" />
             <TableColumn fx:id="reimbursementAmount" prefWidth="100.0" text="Rückerstattung" />
-            <TableColumn fx:id="reimbursementState" prefWidth="95.20001220703125" text="Status" />
-            <TableColumn fx:id="userEmailColumn" maxWidth="70000.0" minWidth="0.0" prefWidth="167.19997558593752" text="Benutzer" />
+            <TableColumn fx:id="reimbursementState" prefWidth="100" text="Status" />
+           <TableColumn fx:id="userEmailColumn" maxWidth="70.0" minWidth="0.0" prefWidth="167.19997558593752" text="Benutzer" />
+           <TableColumn fx:id="editColumn"  prefWidth="32" text="edit" />
+           <TableColumn fx:id="deleteColumn"  prefWidth="32" text="del" />
         </columns>
       </TableView>
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="60.0" layoutX="108.0" layoutY="516.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="325.0" />
