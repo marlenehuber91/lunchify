@@ -358,4 +358,31 @@ public class ReimbursementService {
 
 	    return updated;
 	}
+
+	public boolean deleteReimbursement(Reimbursement toDeleteReimb) {
+		boolean deleted = false;
+
+		try (Connection conn = connectionProvider.getConnection()) {
+			int invoiceId = toDeleteReimb.getInvoice().getId();
+			int reimbId = toDeleteReimb.getId();
+
+			if (invoiceId != 0 && reimbId != 0) {
+				PreparedStatement stmtReimb = conn.prepareStatement("DELETE FROM reimbursements WHERE id = ?");
+				stmtReimb.setInt(1, reimbId);
+				stmtReimb.executeUpdate();
+
+				PreparedStatement stmtInvoice = conn.prepareStatement("DELETE FROM invoices WHERE id = ?");
+				stmtInvoice.setInt(1, invoiceId);
+				stmtInvoice.executeUpdate();
+
+				deleted = true;
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return deleted;
+	}
 }
