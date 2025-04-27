@@ -68,7 +68,12 @@
       </StackPane>
       <ImageView fx:id="uploadedImageView" fitHeight="434.0" fitWidth="336.0" layoutX="640.0" layoutY="232.0" pickOnBounds="true" preserveRatio="true" />
       <Text fx:id="previewText" layoutX="662.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" " />
-      <Button fx:id="submitButton" layoutX="478.0" layoutY="695.0" mnemonicParsing="false" onMouseClicked="#showConfirmationDialog" prefHeight="60.0" prefWidth="258.0" style="-fx-background-color: #42b35b;" text="Änderung speichern" textFill="WHITE">
+      <Button fx:id="submitButton" layoutX="112.0" layoutY="694.0" mnemonicParsing="false" onMouseClicked="#showEditConfirmationDialog" prefHeight="60.0" prefWidth="258.0" style="-fx-background-color: #42b35b;" text="Änderung speichern" textFill="WHITE">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Button>
+      <Button fx:id="deleteButton" layoutX="452.0" layoutY="695.0" mnemonicParsing="false" onMouseClicked="#showDeleteConfirmationDialog" prefHeight="60.0" prefWidth="258.0" style="-fx-background-color: #42b35b;" text="Löschen" textFill="RED">
          <font>
             <Font size="21.0" />
          </font>

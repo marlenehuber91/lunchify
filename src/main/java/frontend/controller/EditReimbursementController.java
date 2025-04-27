@@ -32,7 +32,7 @@ public class EditReimbursementController  extends BaseUploadController{
     
     
    @FXML
-   private void showConfirmationDialog () {
+   private void showEditConfirmationDialog() {
 	   
 	   Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
        alert.setTitle("Bestätigung");
@@ -56,7 +56,31 @@ public class EditReimbursementController  extends BaseUploadController{
     	   }
        });
    }
-  
+
+   @FXML
+   private void showDeleteConfirmationDialog() {
+	   Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+	   alert.setTitle("Bestätigung");
+	   alert.setHeaderText(null);
+	   alert.setContentText("Wollen Sie diesen Rückerstattungsantrag löschen?");
+
+	   ButtonType buttonSave = new ButtonType("Ja");
+	   ButtonType buttonCancel = new ButtonType("Nein", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+	   alert.getButtonTypes().setAll(buttonSave, buttonCancel);
+	   alert.showAndWait().ifPresent(response -> {
+		   if (response == buttonSave) {
+			   Reimbursement toDeleteReimb = reimbursement;
+			   boolean isReimbDeleted = reimbursementService.deleteReimbursement(toDeleteReimb);
+
+			   if (isReimbDeleted) {
+				   showAlert("Erfolg", "Rückerstattungsantrag gelöscht.");
+				   handleBackToCurrReimb();
+			   }
+		   }
+	   });
+   }
+
    public File getFile() {
 	   return this.uploadedFile;
    }
