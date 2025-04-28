@@ -1,9 +1,6 @@
 package backend.model;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.util.List;
-
-
 public class User {
     private int id;
     private String name;

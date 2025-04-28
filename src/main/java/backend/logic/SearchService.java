@@ -1,14 +1,15 @@
 package backend.logic;
 
 import backend.interfaces.ConnectionProvider;
-import database.DatabaseConnection;
-
-import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchService {
+
+    public SearchService() {
+    }
+
     private static ConnectionProvider connectionProvider;
 
     public static void setConnectionProvider(ConnectionProvider provider) {

@@ -11,7 +11,7 @@ public class UserDashboardController {
     private Text userNameText;
 
     @FXML
-    void initialize() {
+    public void initialize() {
 
         User user = SessionManager.getCurrentUser();
         if (user != null) {
@@ -22,7 +22,7 @@ public class UserDashboardController {
         }
     }
 
-    AdminDashboardController adminController = new AdminDashboardController();
+    public AdminDashboardController adminController = new AdminDashboardController();
 
     public void openInvoiceSubmissionWindow(MouseEvent event) {
         adminController.onklickOpenInvoiceSubmissionWindow(event);

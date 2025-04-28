@@ -20,7 +20,7 @@ public class DatabaseConnectionTest {
     private static final String USER = "postgres";
     private static final String PASSWORD = "!!Lunch4";
 
-    Connection mockConnection;
+    public Connection mockConnection;
 
     @BeforeEach
     void setup() {
