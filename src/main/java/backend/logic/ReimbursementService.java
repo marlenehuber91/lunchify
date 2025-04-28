@@ -345,7 +345,7 @@ public class ReimbursementService {
 	    try (Connection conn = connectionProvider.getConnection()) {
 
 	        if (oldReimb.getApprovedAmount() != newReimb.getApprovedAmount()) {
-	            PreparedStatement stmt = conn.prepareStatement("UPDATE reimbursements SET amount = ? WHERE id = ?");
+	            PreparedStatement stmt = conn.prepareStatement("UPDATE reimbursements SET approved_amount = ? WHERE id = ?");
 	            stmt.setFloat(1, newReimb.getApprovedAmount());
 	            stmt.setInt(2, oldReimb.getId());
 	            stmt.executeUpdate();

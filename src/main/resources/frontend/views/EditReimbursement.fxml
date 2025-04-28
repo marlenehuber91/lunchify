@@ -98,4 +98,5 @@
          </children>
       </StackPane>
    </children>
+   <fx:include source="UserDropDown.fxml" />
 </AnchorPane>
