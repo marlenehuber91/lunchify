@@ -87,4 +87,5 @@
          </image>
       </ImageView>
    </children>
+   <fx:include source="UserDropDown.fxml" />
 </AnchorPane>

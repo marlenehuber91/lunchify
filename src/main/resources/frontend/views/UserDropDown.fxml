@@ -16,7 +16,7 @@
         </MenuButton>
         <ImageView fx:id="userImageView" accessibleRole="COMBO_BOX" fitHeight="72.0" fitWidth="69.0" layoutX="92.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@../images/userAvatar.png" />
+                <Image url="@../images/avatarDrawing.png" />
             </image>
         </ImageView>
     </children>
