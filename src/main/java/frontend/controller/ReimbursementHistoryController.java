@@ -23,8 +23,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Circle;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -225,16 +224,26 @@ public class ReimbursementHistoryController {
 
 				if (empty) {
 					setGraphic(null);
-					setOnMouseClicked(null); // wichtig: alten Handler entfernen!
+					setOnMouseClicked(null);
 				} else {
 					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
-					if (selectedReimbursement != null && selectedReimbursement.isReimbursementEditable()) {
+					if (selectedReimbursement != null && selectedReimbursement.isReimbursementEditable() && user.getRole() == UserRole.ADMIN) {
 						setGraphic(imageView);
 						setOnMouseClicked(event -> {
-							//TODO: goTo editReimbursement
-							System.out.println("Method editColumn, reimbursement: ");
-							System.out.println(selectedReimbursement.toString());
-							loadList();
+							try {
+								FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/views/AdminEditReimbursement.fxml"));
+								AnchorPane anchorPane = loader.load();
+								AdminEditReimbursementController controller = loader.getController();
+								controller.setReimbursement(selectedReimbursement);
+
+								Stage stage = (Stage) reimbursementHistoryTable.getScene().getWindow();
+								stage.setScene(new Scene(anchorPane));
+								stage.show();
+
+							} catch (IOException e) {
+								e.printStackTrace();
+								showAlert("Fehler", "Seite konnte nicht geladen werden.");
+							}
 						});
 					} else {
 						setGraphic(null);

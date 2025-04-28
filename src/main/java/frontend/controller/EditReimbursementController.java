@@ -14,10 +14,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-public class EditReimbursementController  extends BaseUploadController{
-	
-	private Reimbursement reimbursement;
-	private Invoice selectedInvoice;
+public class EditReimbursementController extends BaseUploadController{
+
+	protected Reimbursement reimbursement;
+	protected Invoice selectedInvoice;
     
     public void setReimbursement (Reimbursement reimb) {
     	this.reimbursement = reimb;
@@ -51,7 +51,7 @@ public class EditReimbursementController  extends BaseUploadController{
     		   
     		   if (isReimbAltered || isInvoiceAltered) {
     	    	   showAlert("Erfolg", "Änderungen wurden gespeichert");
-    	    	   handleBackToCurrReimb();
+    	    	   handleBack();
     	       }
     	   }
        });
@@ -75,7 +75,7 @@ public class EditReimbursementController  extends BaseUploadController{
 
 			   if (isReimbDeleted) {
 				   showAlert("Erfolg", "Rückerstattungsantrag gelöscht.");
-				   handleBackToCurrReimb();
+				   handleBack();
 			   }
 		   }
 	   });
@@ -93,7 +93,12 @@ public class EditReimbursementController  extends BaseUploadController{
 	   super.openFileChooser();
 	   submitButton.setDisable(false);
    }
-    
+
+   public void handleBack() {
+		handleBackToCurrReimb();
+   }
+
+
     @FXML
     private void handleBackToCurrReimb() {
     	try {

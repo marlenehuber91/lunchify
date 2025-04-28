@@ -14,7 +14,8 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 
 ### Tests
 - Testabdeckung
-- Merge Tests (Database)
+- Merge Tests (Database) 
+- Wie sinnvoll ist Mocking?
 
 ### Analyse der Codequalität
 - Beispiele analyiserter Codestellen

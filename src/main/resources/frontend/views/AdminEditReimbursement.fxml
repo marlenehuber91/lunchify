@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="editReimbursementPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controller.EditReimbursementController">
+<AnchorPane fx:id="adminEditReimbursementPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controller.AdminEditReimbursementController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#42b35b" height="832.0" layoutX="1002.0" stroke="#42b35b" strokeType="INSIDE" width="278.0" AnchorPane.rightAnchor="0.0" />
       <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="1120.0" layoutY="650.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="32.0" AnchorPane.rightAnchor="10.0">
@@ -26,26 +26,29 @@
       </ImageView>
       <Accordion layoutX="109.0" layoutY="341.0" />
       <Accordion layoutX="128.0" layoutY="428.0" />
-      <DatePicker fx:id="datePicker" layoutX="109.0" layoutY="336.0" prefHeight="54.0" prefWidth="250.0" promptText="Datum" />
+      <DatePicker fx:id="datePicker" layoutX="109.0" layoutY="304.0" prefHeight="54.0" prefWidth="250.0" promptText="Datum" />
+      <Label fx:id="datePickerLabel" layoutX="109.0" layoutY="358.0" text="Datum bearbeiten" />
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="120.0" layoutX="195.0" layoutY="40.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="445.0" />
       <Text layoutX="227.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rechnung bearbeiten">
          <font>
             <Font size="41.0" />
          </font>
       </Text>
+      <Label fx:id="amountLabel" layoutX="109.0" layoutY="437.0" text="Rechnungsbetrag bearbeiten" />
+      <ComboBox fx:id="categoryBox" layoutX="109.0" layoutY="464.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Kategorie" />
+      <ComboBox fx:id="statusBox" layoutX="110.0" layoutY="610.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Status" />
+      <TextField fx:id="reimbursementAmountField" editable="false" layoutX="109.0" layoutY="531.0" prefHeight="54.0" prefWidth="252.0" promptText="Rückerstattungsbetrag" />
       <TextArea fx:id="infoText" editable="false" layoutX="1015.0" layoutY="40.0" prefHeight="368.0" prefWidth="250.0" promptText="Information" text="Pro Arbeitstag kann eine Rechnung eingereicht werden.&#10;&#10;maximale Rückerstattung pro Arbeitstag:&#10;&#10;" wrapText="true" AnchorPane.rightAnchor="15.0">
          <font>
             <Font size="22.0" />
          </font>
       </TextArea>
-      <TextField fx:id="amountField" layoutX="109.0" layoutY="416.0" prefHeight="54.0" prefWidth="252.0" promptText="Rechnungsbetrag" />
-      <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="315.0" layoutY="428.0" pickOnBounds="true" preserveRatio="true">
+      <TextField fx:id="amountField" layoutX="109.0" layoutY="383.0" prefHeight="54.0" prefWidth="252.0" promptText="Rechnungsbetrag" />
+      <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="315.0" layoutY="395.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/pen.png" />
          </image>
       </ImageView>
-      <TextField fx:id="reimbursementAmountField" editable="false" layoutX="109.0" layoutY="584.0" prefHeight="54.0" prefWidth="252.0" promptText="Rückerstattungsbetrag" />
-      <ComboBox fx:id="categoryBox" layoutX="109.0" layoutY="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" promptText="Kategorie" />
       <StackPane fx:id="uploadPane" layoutX="109.0" layoutY="197.0" onMouseClicked="#openFileChooser" prefHeight="90.0" prefWidth="445.0">
          <children>
             <Rectangle fx:id="fileUploadButton" arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="90.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="460.0" />
@@ -78,23 +81,21 @@
             <Font size="21.0" />
          </font>
       </Button>
-      <ImageView fitHeight="43.0" fitWidth="35.0" layoutX="623.0" layoutY="707.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#showDeleteConfirmationDialog">
+      <ImageView fitHeight="43.0" fitWidth="35.0" layoutX="623.0" layoutY="707.0" onMouseClicked="#showDeleteConfirmationDialog" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/delete.png" />
          </image>
       </ImageView>
-      <Label fx:id="datePickerLabel" layoutX="109.0" layoutY="390.0" text="Datum bearbeiten" />
-      <Label fx:id="amountLabel" layoutX="109.0" layoutY="470.0" text="Rechnungsbetrag bearbeiten" />
-      <Label layoutX="109.0" layoutY="641.0" text="Rückerstattungsbetrag wird automatisch berechnet" />
+      <Label layoutX="109.0" layoutY="584.0" text="Rückerstattungsbetrag wird automatisch berechnet" />
       <StackPane layoutX="673.0" layoutY="219.0" prefHeight="150.0" prefWidth="200.0" />
-      <StackPane fx:id="backButton" layoutX="64.0" layoutY="54.0" onMouseClicked="#handleBackToCurrReimb" prefHeight="82.0" prefWidth="89.0">
+      <StackPane fx:id="backButton" layoutX="64.0" layoutY="54.0" onMouseClicked="#handleBackToReimbursementHistoryController" prefHeight="82.0" prefWidth="89.0">
          <children>
             <ImageView fitHeight="90.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/arrow.png" />
                </image>
             </ImageView>
-            <Circle fx:id="backArrow" fill="#eceeef00" onMouseClicked="#handleBackToCurrReimb" radius="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
+            <Circle fx:id="backArrow" fill="#eceeef00" onMouseClicked="#handleBackToReimbursementHistoryController" radius="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
          </children>
       </StackPane>
    </children>
