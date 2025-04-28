@@ -1,0 +1,89 @@
+@startuml
+package frontend {
+  class UserDashboard
+  class AdminDashboard
+  class LoginPage
+  class InvoiceUpload
+  class AdminEditReimbursement
+  class CurrReimbursements
+  class EditReimbursement
+  class ModifyReimbursement
+  class ModifyUsers
+  class ReimbursementHistory
+  class Search
+  class UserDropDown
+}
+
+package model {
+  class User
+  class Admin
+  class Invoice
+  class Reimbursement
+  enum UserRole
+  enum UserState
+  enum InvoiceCategory
+  enum ReimbursementState
+}
+
+package logic {
+  class SessionManager
+  class UserService
+  class InvoiceService
+  class OCRService
+  class ReimbursementService
+  class SearchService
+}
+
+package database {
+  class DatabaseConnection
+  interface ConnectionProvider
+}
+
+package controller {
+  class LoginPageController
+  class SearchController
+  class UserDashboardController
+  class AdminDashboardController
+  class InvoiceUploadController
+  class BaseUploadController
+  class EditReimbursementController
+  class AdminEditReimbursementController
+  class CurrReimbursementController
+  class ModifyReimbursementController
+  class ModifyUsersController
+  class ReimbursementHistoryController
+}
+
+' Beziehungen
+User <|-- Admin
+User "*"--"1" UserRole
+User "*"--"1" UserState
+Invoice "*"--"1" InvoiceCategory
+Invoice "*"--"1" User
+Reimbursement "1"--"1" Invoice
+Reimbursement "*"--"1" ReimbursementState
+
+UserService --> SessionManager :  uebergibt
+UserService --> User : authentifiziert
+InvoiceService --> Invoice : verwaltet
+InvoiceService --> OCRService : nutzt
+ReimbursementService --> Reimbursement : verwaltet
+SessionManager --> InvoiceService :  uebergibt User
+InvoiceService --> ReimbursementService : aktiviert
+
+logic <--> database : interagiert mit
+controller <--> frontend : interagiert mit
+
+DatabaseConnection --> ConnectionProvider : implementiert
+
+LoginPageController --> UserService : nutzt
+AdminDashboardController <-- SessionManager :  uebergibt
+UserDashboardController <-- SessionManager :  uebergibt
+InvoiceUploadController <-- InvoiceService : nutzt
+SearchController --> SearchService : nutzt
+AdminEditReimbursementController --> ReimbursementService : nutzt
+EditReimbursementController --> ReimbursementService : nutzt
+CurrReimbursementController --> ReimbursementService : nutzt
+ModifyReimbursementController --> ReimbursementService : nutzt
+ModifyUsersController --> UserService : nutzt
+@enduml

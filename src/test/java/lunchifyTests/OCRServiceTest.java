@@ -1,6 +1,5 @@
 package lunchifyTests;
 
-import backend.logic.CategoryAnalyzer;
 import backend.logic.OCRService;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;

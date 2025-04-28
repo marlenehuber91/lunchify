@@ -5,6 +5,14 @@ package frontend {
   class AdminDashboard {}
   class LoginPage {}
   class InvoiceUplaod {}
+  class AdminEditReimbursement {}
+  class currReimbursements {}
+  class EditReimbursement {}
+  class ModifyReimbursement {}
+  class ModifyUsers {}
+  class ReimbusementHistory {}
+  class Search {}
+  class UserDropDown {}
 }
 
 package model {
@@ -84,12 +92,9 @@ package logic {
 
   class OCRService {
     tesseract: Tesseract
+    OCRService.CategoryAnalyzer
     ---
     +extractText()
-  }
-
-  class CategoryAnalyzer{
-
   }
 
   class ReimbursementService{
@@ -101,6 +106,11 @@ package logic {
     +getReimbursementAmount()
     +getLimit()
     +setReimbursementAmount()
+  }
+
+  class SearchService {
+    provider: ConnectionProvider
+    searchUsers();
   }
 
 }
@@ -129,6 +139,18 @@ package controller {
     +hideErrorElems()
     +isValidEmail()
   }
+
+  class SearchController {
+          +TextField searchField
+          +ListView<String> listOfMatches
+          +Label userNotFoundLabel
+
+          +initialize(): void
+          +handleBackToDashboard(event: MouseEvent): void
+          +handleUserChoice(event: MouseEvent): void
+      }
+
+
   class UserDashboardController {
      adminController: AdminDashboardController
      ----
@@ -155,6 +177,75 @@ package controller {
     +resetForm()
     +setReimbursementAmount()
   }
+
+  class BaseUploadController {
+          user: User
+          invoiceService: InvoiceService
+          reimbursementService: ReimbursementService
+          invoices: List<Invoice>
+          ---
+          setReimbursementAmount(amountText: String)
+          checkFields()
+          updateLabel(label: Label, isValid: boolean, errorText: String, successText: String)
+      }
+
+   class EditReimbursementController extends BaseUploadController {
+          reimbursement: Reimbursement
+          selectedInvoice: Invoice
+          ---
+          setReimbursement(reimb: Reimbursement)
+          showEditConfirmationDialog()
+          showDeleteConfirmationDialog()
+      }
+
+
+  class AdminEditReimbursementController extends EditReimbursementController {
+     ComboBox<ReimbursementState> statusBox
+     initialize(): void
+     handleBack(): void
+     populateBoxes(): void
+     handleBackToReimbursementHistoryController(): void
+  }
+
+  class CurrReimbursementController {
+          user: User
+          reimbursementService: ReimbursementService
+          ---
+          setReimbursementService(reimbursementService: ReimbursementService)
+          setCurrentMonthLabel()
+          getTotalReimbursementAmountLabel(): Label
+  }
+
+   class ModifyReimbursementController {
+          user: User
+          reimbursementService: ReimbursementService
+          ---
+          resetForm()
+          setReimbursementAmount(amountText: String)
+    }
+
+    class ModifyUsersController {
+            user: User
+            userService: UserService
+            ---
+            handleUserModeChange(actionEvent: ActionEvent)
+            loadUserToEdit()
+            loadUserList()
+    }
+
+    class ReimursementHistoryController {
+            user: User
+            reimbursementService: ReimbursementService
+            userService: UserService
+            reimbursements: List<Reimbursement>
+           ...
+            ---
+            update()
+            delete()
+            filter()
+  }
+
+
 }
 
 
@@ -179,10 +270,16 @@ InvoiceService --> ReimbursementService : aktiviert
 
 logic <--> database : interagiert mit
 controller <--> frontend : interagiert mit
+DatabaseConnection --> ConnectionProvider : implementiert
 
 LoginPageController --> UserService : nutzt
 AdminDashboardController <-- SessionManager :  uebergibt
 UserDashboardController <-- SessionManager:  uebergibt
 InvoiceUploadController <-- InvoiceService : nutzt
-
+SearchController --> SearchService : nutzt
+AdminEditReimbursementController --> ReimbursementService : nutzt
+EditReimbursementController --> ReimbursementService : nutzt
+CurrReimbursementController --> ReimbursementService : nutzt
+ModifyReimbursementController --> ReimbursementService : nutzt
+ModifyUsersController --> UserService : nutzt
 @enduml
