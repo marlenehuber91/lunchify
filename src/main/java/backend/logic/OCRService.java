@@ -6,14 +6,9 @@ import backend.model.Invoice;
 import backend.model.InvoiceCategory;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-
 import net.sourceforge.tess4j.ITesseract;
-import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.TesseractException;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -145,7 +140,35 @@ public class OCRService {
         return lastValue;
     }
 
-    //for tests
+    private static class CategoryAnalyzer {
+        private static final Set<String> SUPERMARKT_KEYWORDS = Set.of(
+                "billa", "spar", "hofer", "aldi", "rewe", "edeka", "lidl", "penny", "kaufland", "tegut", "migros", "coop"
+        );
+        private static final Set<String> RESTAURANT_KEYWORDS = Set.of(
+                "restaurant", "café", "bar", "bistro", "gaststätte", "tisch nr.", "bedienung", "speisen", "getränke", "trinkgeld"
+        );
+
+        private static InvoiceCategory getCategory(String ocrText) {
+            if (ocrText == null || ocrText.isBlank()) {
+                return null;
+            }
+            String lowerText = ocrText.toLowerCase(Locale.ROOT);
+
+            for (String keyword : SUPERMARKT_KEYWORDS) {
+                if (lowerText.contains(keyword)) {
+                    return InvoiceCategory.SUPERMARKET;
+                }
+            }
+            for (String keyword : RESTAURANT_KEYWORDS) {
+                if (lowerText.contains(keyword)) {
+                    return InvoiceCategory.RESTAURANT;
+                }
+            }
+            return InvoiceCategory.UNDETECTABLE; //if undetectale -> Flag it!
+        }
+    }
+
+        //for tests
     public ITesseract getTesseract() {
         return tesseract;
     }

@@ -19,7 +19,7 @@ import backend.model.User;
 
 public class ReimbursementService {
 	public static ConnectionProvider connectionProvider;
-	private User user;
+	private User user; //is used but still marked as unused.. interesting - ignore in PMD!
 	private float reimbursementAmount;
 	private float supermarketLimit = 2.5f;
 	private float restaurantLimit = 3.0f;

@@ -19,9 +19,8 @@ public class AdminDashboardController {
     @FXML
     private Text userNameText;
 
-
     @FXML
-    void initialize() {
+    public void initialize() {
     	User user = SessionManager.getCurrentUser();
         if (user != null) {
             String username = user.getName();
@@ -31,8 +30,9 @@ public class AdminDashboardController {
         }
     }
 
+
     @FXML
-    void onklickOpenInvoiceSubmissionWindow(MouseEvent event) { //created by AI
+    public void onklickOpenInvoiceSubmissionWindow(MouseEvent event) { //created by AI
     	try {
             // Lade die Upload.fxml Datei
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/InvoiceUpload.fxml"));

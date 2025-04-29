@@ -26,7 +26,7 @@ import backend.model.User;
 
 public class InvoiceService {
 	public static ConnectionProvider connectionProvider;
-	private User user;
+	private User user; // is marekd as unused even if its used -> ignore PMD!
 	public List<Invoice> invoices;
 	
 	public static void setConnectionProvider(ConnectionProvider provider) {
