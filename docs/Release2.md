@@ -17,11 +17,11 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 - Wie sinnvoll ist Mocking oder sollen die Tests ausgenommen werden?
 
 ### Analyse der Codequalität
-- Beispiele analyiserter Codestellen
+- Richtiger Workflow bei PMD?
 - Best-of PMD Findings
   - UnterstricheInDen_Namen
   - System.out.println("Debugging");
-  - avoid FileStreams
+  - avoid FileStreams (Performance-Thema)
 
 ### Projektdokus (System, Benutzerdoku)
 ---
@@ -30,9 +30,13 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 - 137 (280 gesamt) gebuchte Stunden 9.-29.4.
 - gröbere Probleme: Testing
 - Learnings für Sprint 3
+  - Planung ist wichtig
 
 ## Einsatz von KI
 - für Codesnippets, immer schwieriger, je weiter fortgeschritten
+- Testing
+- Dummy-Daten in Datenbank
+- Tesseract
 - Dokumentationen
 
 ## Planung Release 3
