@@ -14,7 +14,7 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 ### Tests
 - Testabdeckung
 - Merge Tests (Database) 
-- Wie sinnvoll ist Mocking?
+- Wie sinnvoll ist Mocking oder sollen die Tests ausgenommen werden?
 
 ### Analyse der Codequalität
 - Beispiele analyiserter Codestellen
@@ -27,7 +27,7 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 ---
 
 ## Sprint Retro
-- 137 gebuchte Stunden 9.-29.4.
+- 137 (280 gesamt) gebuchte Stunden 9.-29.4.
 - gröbere Probleme: Testing
 - Learnings für Sprint 3
 
@@ -36,4 +36,5 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 - Dokumentationen
 
 ## Planung Release 3
--->Issues
+- was tun, wenn die 450h aufgebraucht sind?
+- -->Issues
