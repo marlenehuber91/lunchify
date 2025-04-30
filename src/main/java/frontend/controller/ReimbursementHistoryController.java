@@ -31,6 +31,7 @@ import javafx.stage.Stage;
 public class ReimbursementHistoryController {
 
 	User user;
+	User selectedUser;
 	ReimbursementService reimbursementService;
 	UserService userService;
 	List<Reimbursement> reimbursements;
@@ -81,6 +82,16 @@ public class ReimbursementHistoryController {
 	@FXML
 	private Label userFilterLabel;
 
+	/**
+	 * Initializes the reimbursement view.
+	 * - Retrieves the current user from the session if not already set.
+	 * - Instantiates the ReimbursementService with the current user.
+	 * - Loads all reimbursements for the current user.
+	 * - Hides UI elements (filter box, edit/delete columns) if the user is not an admin.
+	 * - Populates dropdown boxes (e.g., filters).
+	 * - Loads the reimbursement list into the view.
+	 * - Sets event handlers for filter boxes to trigger list filtering when changed.
+	 */
 	@FXML
 	void initialize() {
 		if (user == null) {
@@ -101,7 +112,6 @@ public class ReimbursementHistoryController {
 		populateBoxes();
 		loadList();
 		
-		//falls immer geupdatet werden soll
 		monthFilterBox.setOnAction(e -> handleFilter(null));
 	    yearFilterBox.setOnAction(e -> handleFilter(null));
 	    categoryFilterBox.setOnAction(e -> handleFilter(null));
@@ -302,7 +312,11 @@ public class ReimbursementHistoryController {
 		emailUser.add("alle");
 		
 		userFilterBox.setItems(FXCollections.observableArrayList(emailUser));
-		userFilterBox.setValue(user.getEmail());
+		if (selectedUser!= null) {
+			userFilterBox.setValue(selectedUser.getEmail());
+		} else {
+			userFilterBox.setValue(user.getEmail());
+		}
 	}
 
 	public void getFilterInput() {
@@ -415,5 +429,15 @@ public class ReimbursementHistoryController {
 		alert.setHeaderText(null);
 		alert.setContentText(content);
 		alert.showAndWait();
+	}
+	
+	protected void initializeForSelectedUser(User user) {
+		this.selectedUser = user;
+		this.user = SessionManager.getCurrentUser();
+		this.reimbursementService = new ReimbursementService(user);
+		this.reimbursements = reimbursementService.getAllReimbursements(user.getId());
+		
+		populateBoxes();
+		loadList();
 	}
 }

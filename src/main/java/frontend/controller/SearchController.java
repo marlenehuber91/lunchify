@@ -95,7 +95,7 @@ public class SearchController {
                     AnchorPane historyPane = loader.load();
 
                     ReimbursementHistoryController controller = loader.getController();
-                    controller.loadReimbursementsForUser(user);
+                    controller.initializeForSelectedUser(user);
 
                     Stage stage = (Stage) listOfMatches.getScene().getWindow();
                     stage.setScene(new Scene(historyPane));
