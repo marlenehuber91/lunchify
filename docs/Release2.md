@@ -6,10 +6,9 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 ---
 ## aktueller Stand
 ### Implementierung inkl. Demo
-- bisher umgesetzt
-- Aufteilung
-- neue Userstories: zB Logout
-- neue Tasks: new Table in Database, alter Tables  
+- release-v0.1.0  5 User Stories umgesetzt, 5 weitere Issues umgesetzt (Tasks, Bug fixes,..), Datenbankprobleme, Buildprobleme, Testprobleme, Issues auf Sprint 2 verschoben
+- release-v0.2.0  13 User Stories umgesetzt, zusätzlich 17 weitere Issues (Tasks, Bug fixes etc.) umgesetzt, Probleme im Testbereich, Sprint 2 abgeschlossen, keine Issues verschoben
+- Aufteilung sehr gut   
 --> Demo Applikation
 
 ### Tests
@@ -28,8 +27,8 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 ---
 
 ## Sprint Retro
-- gebuchte Stunden 9.-29.4.
-- gröbere Probleme
+- 137 gebuchte Stunden 9.-29.4.
+- gröbere Probleme: Testing
 - Learnings für Sprint 3
 
 ## Einsatz von KI
