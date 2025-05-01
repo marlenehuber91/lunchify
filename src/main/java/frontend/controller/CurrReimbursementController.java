@@ -99,7 +99,7 @@ public class CurrReimbursementController {
 	public void handleUserChoice() {
 		Reimbursement selectedReimbursement = currReimbursementTable.getSelectionModel().getSelectedItem();
 		
-		if (selectedReimbursement != null) {
+		if (selectedReimbursement != null && selectedReimbursement.isReimbursementUserEditable(user.getId())) {
 
             if (user != null) {
                 try {
