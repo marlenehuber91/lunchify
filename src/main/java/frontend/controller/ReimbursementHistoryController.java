@@ -101,7 +101,6 @@ public class ReimbursementHistoryController {
 		populateBoxes();
 		loadList();
 		
-		//falls immer geupdatet werden soll
 		monthFilterBox.setOnAction(e -> handleFilter(null));
 	    yearFilterBox.setOnAction(e -> handleFilter(null));
 	    categoryFilterBox.setOnAction(e -> handleFilter(null));

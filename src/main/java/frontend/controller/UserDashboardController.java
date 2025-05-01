@@ -35,5 +35,8 @@ public class UserDashboardController {
     public void openReimbursementHistory(MouseEvent event) {
     	adminController.openReimbursementHistory(event);
     }
-
+    
+    public void openStatistics(MouseEvent event) {
+    	adminController.openStatistics(event);
+    }
 }

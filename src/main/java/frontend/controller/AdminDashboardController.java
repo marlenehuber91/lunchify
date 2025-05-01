@@ -132,4 +132,21 @@ public class AdminDashboardController {
         }
 
     }
+    
+    @FXML
+    public void openStatistics(MouseEvent event) {
+    	 try {
+             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/Statistics.fxml"));
+             Parent root = fxmlLoader.load();
+
+             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+             stage.setTitle("Search");
+             stage.setScene(new Scene(root));
+             stage.show();
+
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+    }
 }
