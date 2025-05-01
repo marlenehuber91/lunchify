@@ -24,7 +24,6 @@
             <Image url="@../images/logo.png" />
          </image>
       </ImageView>
-      <fx:include source="UserDropDown.fxml" />
       <Accordion layoutX="109.0" layoutY="341.0" />
       <Accordion layoutX="128.0" layoutY="428.0" />
       <DatePicker fx:id="datePicker" layoutX="109.0" layoutY="336.0" prefHeight="54.0" prefWidth="250.0" promptText="Datum" />

@@ -78,7 +78,7 @@
             <Font size="21.0" />
          </font>
       </Button>
-      <ImageView fitHeight="43.0" fitWidth="35.0" layoutX="623.0" layoutY="707.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#showDeleteConfirmationDialog">
+      <ImageView fitHeight="43.0" fitWidth="35.0" layoutX="623.0" layoutY="707.0" onMouseClicked="#showDeleteConfirmationDialog" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/delete.png" />
          </image>
@@ -98,5 +98,4 @@
          </children>
       </StackPane>
    </children>
-   <fx:include source="UserDropDown.fxml" />
 </AnchorPane>

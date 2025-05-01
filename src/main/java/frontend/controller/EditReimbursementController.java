@@ -12,10 +12,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class EditReimbursementController extends BaseUploadController{
-
+	
 	protected Reimbursement reimbursement;
 	protected Invoice selectedInvoice;
     
@@ -110,6 +111,8 @@ public class EditReimbursementController extends BaseUploadController{
             stage.setTitle("aktuelle Rechnungen");
             stage.setScene(new Scene(root));
             stage.show();
+        } catch(NullPointerException e) {
+        	
         } catch (IOException e) {
             e.printStackTrace();
         }
