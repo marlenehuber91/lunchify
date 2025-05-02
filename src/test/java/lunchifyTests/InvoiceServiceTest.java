@@ -141,7 +141,7 @@ public class InvoiceServiceTest {
     
     @Test
     public void testGetAllInvoicesReturnsInvoices() throws Exception {
-        // Arrange
+        
         User mockUser = mock(User.class);
         when(mockUser.getId()).thenReturn(42);
 
