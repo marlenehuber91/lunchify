@@ -50,12 +50,12 @@ public class ModifyReimbursementControllerTest extends ApplicationTest {
         verifyThat("#amountLabel", isVisible());
     }
 
-    @Test //done
+    @Test 
     void testComboBoxCategory() {
         ComboBox<InvoiceCategory> categoryBox = lookup("#categoryBox").query();
-        clickOn("#categoryFilterBox");
-        clickOn("Supermarket");
-        
+        clickOn("#categoryBox");
+        clickOn("SUPERMARKET");
+      
         verifyThat("#currentAmountField", isVisible());
     }
 

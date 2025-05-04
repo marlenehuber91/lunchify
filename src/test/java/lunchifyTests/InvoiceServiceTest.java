@@ -129,9 +129,9 @@ public class InvoiceServiceTest {
 
     @Test
     public void testIsAmountValid() {
-        assertTrue(invoiceService.isamaountValid("15.00"));
-        assertFalse(invoiceService.isamaountValid("notANumber"));
-        assertFalse(invoiceService.isamaountValid(null));
+        assertTrue(invoiceService.isAmountValid("15.00"));
+        assertFalse(invoiceService.isAmountValid("notANumber"));
+        assertFalse(invoiceService.isAmountValid(null));
     }
 
     @Test

@@ -87,7 +87,7 @@ public class InvoiceService {
 		return text.matches("^\\d+(\\.\\d+)?$");
 	}
 	
-	public boolean isamaountValid(String text) {
+	public boolean isAmountValid(String text) {
 		return (text!=null && isValidFloat(text));	
 	}
 	

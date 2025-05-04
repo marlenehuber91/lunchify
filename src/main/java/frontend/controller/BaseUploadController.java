@@ -226,7 +226,7 @@ public class BaseUploadController {
 		String amountText = amountField.getText().trim();
 		LocalDate date = datePicker.getValue();
 		boolean isValidDate = isDateValid(date);
-		boolean isAmountValid = invoiceService.isamaountValid(amountText);
+		boolean isAmountValid = invoiceService.isAmountValid(amountText);
 		boolean isCategorySelected = categoryBox.getValue() != null;
 		boolean isFileUploaded = uploadedFile != null;
 
