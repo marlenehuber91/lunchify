@@ -244,6 +244,7 @@ public class ReimbursementService {
 		}
 
 		// Jahr filtern
+		
 		if (selectedYear != null && !selectedYear.isEmpty()) {
 			condition.append(" AND EXTRACT(YEAR FROM i.date) = ").append(selectedYear);
 		}

@@ -3,11 +3,11 @@ package frontend.controller;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
@@ -17,6 +17,7 @@ import backend.model.Reimbursement;
 import backend.model.ReimbursementState;
 import backend.model.User;
 import backend.model.UserRole;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,6 +31,8 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -41,11 +44,11 @@ public class StatisticsController {
 
 	User user;
 	List<Reimbursement> reimbursements;
-	StatisticsService statisticService;
+	List<Reimbursement> allReimbursements;
+	StatisticsService statisticsService;
+	StatisticsService adminStatisticsService;
 	ReimbursementService reimbursementService;
-	String selectedMonth;
-	String selectedYear;
-	String selectedType;
+	String selectedMonth, selectedType, selectedYear, report, timeRange;
 
 	@FXML
 	private Circle backArrow;
@@ -55,9 +58,15 @@ public class StatisticsController {
 
 	@FXML
 	private PieChart pieChart;
-	
+
+	@FXML
+	private PieChart adminPieChart;
+
 	@FXML
 	private BarChart<String, Number> statusBarChart;
+
+	@FXML
+	private BarChart<String, Number> adminBarChart;
 
 	@FXML
 	private AnchorPane statistscPane;
@@ -67,14 +76,29 @@ public class StatisticsController {
 
 	@FXML
 	private ComboBox<String> yearFilterComboBox;
+
+	@FXML
+	private ComboBox<String> typeFilterComboBox;
+
+	@FXML
+	private ComboBox<String> reportTypeComboBox;
 	
 	@FXML
-    private ComboBox<String> typeFilterComboBox;
+	private ComboBox<String> reportTimeRangeComboBox;
 	
+	@FXML
+	private Tab adminTab;
+	
+	@FXML
+	private TabPane statisticsTabPane;
+
 	@FXML
 	private Label noDataLabel;
 	
-	@FXML 
+	@FXML
+	private Label detailLabel;
+
+	@FXML
 	private CheckBox rejectedCheckBox;
 
 	@FXML
@@ -82,26 +106,23 @@ public class StatisticsController {
 		if (user == null) {
 			user = SessionManager.getCurrentUser();
 		}
-		reimbursementService = new ReimbursementService(user);
-		statisticService= new StatisticsService();
-
+		
+		if (user.getRole() != UserRole.ADMIN) {
+			adminTab.setDisable(true);
+			adminTab.setText("");
+		}
+		
+		setServices();
 		populateBoxes();
 		setIntialValues();
+		setEventhandlers();
 		handleFilter(null);
-		
-		monthFilterComboBox.setOnAction(e -> handleFilter(null));
-	    yearFilterComboBox.setOnAction(e -> handleFilter(null));
-	    typeFilterComboBox.setOnAction(e -> handleFilter(null));
-	    rejectedCheckBox.setOnAction(e -> handleFilter(null));
+		handleAdminFilter(null);
 	}
 
 	@FXML
 	void handleBackToDashboard(MouseEvent event) {
-		String role;
-		if (user.getRole() == UserRole.ADMIN)
-			role = "AdminDashboard";
-		else
-			role = "UserDashboard";
+		String role = (user.getRole() == UserRole.ADMIN) ? "AdminDashboard" : "UserDashboard";
 
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/" + role + ".fxml"));
@@ -124,83 +145,148 @@ public class StatisticsController {
 	private void handleFilter(MouseEvent e) {
 		getFilterInput();
 
-		List<Reimbursement> filtered = reimbursementService.getFilteredReimbursements(selectedMonth, selectedYear,
-				null, null, user.getId());
+		List<Reimbursement> filtered = reimbursementService.getFilteredReimbursements(
+		        selectedMonth, 
+		        selectedYear, 
+		        null, //all categories
+		        null, //all states
+		        user.getId()
+		);
 		
 		
-		List<Reimbursement> pieData = rejectedCheckBox.isSelected()
-				? filtered
-				: filtered.stream()
-						  .filter(r -> r.getStatus() != ReimbursementState.REJECTED)
-						  .toList();
+		List<Reimbursement> pieData = rejectedCheckBox.isSelected() ? filtered
+				: filtered.stream().filter(r -> r.getStatus() != ReimbursementState.REJECTED).toList();
+		
 		
 		if (pieData.isEmpty()) {
 			noDataLabel.setVisible(true);
 			pieChart.getData().clear();
 			pieChart.setTitle("");
 			return;
-		} else {
-			noDataLabel.setVisible(false);
-			loadPieChart(pieData);
+		} 
+		
+		noDataLabel.setVisible(false);
+		
+		Platform.runLater(() -> {
+		    // Update des Diagramms nach der Berechnung
+		    loadStatusBarChart(filtered);
+		    loadPieChart(filtered, pieChart);
+		});
+	}
+
+	private void handleAdminFilter(MouseEvent event) {
+		//resetCharts();
+		getFilterInput();
+		
+		adminBarChart.getData().clear();
+		adminPieChart.getData().clear();
+		adminBarChart.setVisible(false);
+		adminPieChart.setVisible(false);
+		detailLabel.setVisible(false);
+		reportTimeRangeComboBox.setVisible(false);
+	
+		switch (report) {
+	        case "Anzahl pro Monat" -> {
+	            adminBarChart.setVisible(true);
+	            loadAvgMonthChart();
+	        }
+	        case "Rechnungen pro Nutzer" -> {
+	            adminBarChart.setVisible(true);
+	            loadAvgEmp();
+	        }
+	        case "Erstattungsbetrag" -> {
+	            adminBarChart.setVisible(true);
+	            loadMonthlyReimbursementSumChart();
+	        }
+	        case "Kategorien - Summe" -> {
+	            adminPieChart.setVisible(true);
+	            if ((timeRange).contains("12")) {
+	            	List<Reimbursement> filtered = adminStatisticsService.getReimbursementsFromLast12Months();
+	            	adminStatisticsService.setReimbursements(filtered);
+	            }
+	            
+	            loadChartWithData(adminStatisticsService.getSumByCategory(), adminPieChart, false);
+	            reportTimeRangeComboBox.setVisible(true);
+	        }
+	        case "Kategorien - Anzahl" -> {
+	        	
+	        	if ((timeRange).contains("12")) {
+	            	List<Reimbursement> filtered = adminStatisticsService.getReimbursementsFromLast12Months();
+	            	adminStatisticsService.setReimbursements(filtered);
+	            }
+	        	
+	            adminPieChart.setVisible(true);
+	            loadChartWithData(adminStatisticsService.getCountByCategory(), adminPieChart, true);
+	            reportTimeRangeComboBox.setVisible(true);
+	        }			
 		}
 		
-		loadStatusBarChart(filtered);
 	}
-	//created by AI
-	private void loadPieChart(List<Reimbursement> reimbursements) {
-		pieChart.getData().clear();
+
+	// created by AI changed by the team
+	private void loadPieChart(List<Reimbursement> reimbursements, PieChart chart) {
+		chart.getData().clear();
+		statisticsService.setReimbursements(reimbursements);
 		String type = typeFilterComboBox.getValue();
 
 		if ("Anzahl".equals(type)) {
-			Map<InvoiceCategory, Integer> countByCategory = getCountByCategory(reimbursements);
+			Map<InvoiceCategory, Double> countByCategory = statisticsService.getCountByCategory();
 			for (var entry : countByCategory.entrySet()) {
 				String label = formatCategoryName(entry.getKey()) + " (" + entry.getValue() + ")";
-				pieChart.getData().add(new PieChart.Data(label, entry.getValue()));
+				chart.getData().add(new PieChart.Data(label, entry.getValue()));
 			}
-			pieChart.setTitle("Anzahl der Rückerstattungsbeträge");
+			chart.setTitle("Anzahl der Rückerstattungsbeträge");
 		} else {
-			Map<InvoiceCategory, Double> sumByCategory = getSumByCategory(reimbursements);
+			Map<InvoiceCategory, Double> sumByCategory = statisticsService.getSumByCategory();
 			for (var entry : sumByCategory.entrySet()) {
-				String label = formatCategoryName(entry.getKey()) + " (" + String.format("%.2f €", entry.getValue()) + ")";
-				pieChart.getData().add(new PieChart.Data(label, entry.getValue()));
+				String label = formatCategoryName(entry.getKey()) + " (" + String.format("%.2f €", entry.getValue())
+						+ ")";
+				chart.getData().add(new PieChart.Data(label, entry.getValue()));
 			}
-			pieChart.setTitle("Summe Rückerstattungsbeträge");
+			chart.setTitle("Summe Rückerstattungsbeträge");
 		}
 	}
-	
-	//created by AI
-	public void loadChartWithData(Map<InvoiceCategory, Double> categorySums) {
-		pieChart.getData().clear();
+
+	// created by AI
+	public void loadChartWithData(Map<InvoiceCategory, Double> categorySums, PieChart chart, boolean isCount) {
+		chart.getData().clear();
+		chart.setTitle(null);
+		chart.setLabelsVisible(true);
+		chart.setLegendVisible(true);
+		chart.applyCss();
+		chart.layout();
 
 		for (Map.Entry<InvoiceCategory, Double> entry : categorySums.entrySet()) {
 			String categoryName = formatCategoryName(entry.getKey());
 			double amount = entry.getValue();
+			
+			String label = isCount
+					? categoryName + " (" + String.format("%.0f", amount) + ")"
+					: categoryName + " (" + String.format("%.2f €", amount) + ")";
 
-			PieChart.Data slice = new PieChart.Data(categoryName + " (" + String.format("%.2f €", amount) + ")",
-					amount);
-			pieChart.getData().add(slice);
+			PieChart.Data slice = new PieChart.Data(label, amount);
+			chart.getData().add(slice);
 		}
-		pieChart.setTitle("Summe der Rückerstattungen");
+		String title = isCount ? "Anzahl der Rückerstattungen" : "Summe der Rückerstattungen";
+		chart.setTitle(title);
 	}
 	
-	//created by AI
+	// created by AI
 	private void loadStatusBarChart(List<Reimbursement> reimbursements) {
-		Map<String, Integer> statusCount = new LinkedHashMap<>(Map.of(
-			"Offen", 0, "Genehmigt", 0, "Abgelehnt", 0
-		));
+		Map<String, Integer> statusCount = new LinkedHashMap<>(Map.of("Offen", 0, "Genehmigt", 0, "Abgelehnt", 0));
 
 		for (Reimbursement r : reimbursements) {
 			String status = switch (r.getStatus()) {
-				case PENDING -> "Offen";
-				case APPROVED -> "Genehmigt";
-				case REJECTED -> "Abgelehnt";
-				default -> throw new IllegalArgumentException("Unexpected value: " + r.getStatus());
+			case PENDING -> "Offen";
+			case APPROVED -> "Genehmigt";
+			case REJECTED -> "Abgelehnt";
+			default -> throw new IllegalArgumentException("Unexpected value: " + r.getStatus());
 			};
 			statusCount.merge(status, 1, Integer::sum);
 		}
 
 		statusBarChart.getData().clear();
-	
+
 		int maxValue = statusCount.values().stream().max(Integer::compareTo).orElse(0);
 		int upperBound = Math.max(maxValue + 1, 10);
 
@@ -220,10 +306,10 @@ public class StatisticsController {
 
 		NumberAxis yAxis = (NumberAxis) statusBarChart.getYAxis();
 		yAxis.setLowerBound(0); // Setze den minimalen Wert
-	    yAxis.setUpperBound(upperBound);
-	    yAxis.setTickUnit(1); // Setzt den Schrittwert auf 1
-	    yAxis.setMinorTickVisible(false);
-	    yAxis.setAutoRanging(false);
+		yAxis.setUpperBound(upperBound);
+		yAxis.setTickUnit(1); // Setzt den Schrittwert auf 1
+		yAxis.setMinorTickVisible(false);
+		yAxis.setAutoRanging(false);
 		yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis) {
 			@Override
 			public String toString(Number object) {
@@ -236,6 +322,65 @@ public class StatisticsController {
 		statusBarChart.getXAxis().setOpacity(0);
 	}
 
+	private void loadAvgMonthChart() {
+		Map<String, Integer> counts = adminStatisticsService.getInvoiceCountLastYear();
+		
+		XYChart.Series<String, Number> series = new XYChart.Series<>();
+		series.setName("Rechnungen pro Monat");
+		
+		int sum = 0;
+
+		for (Map.Entry<String, Integer> entry : counts.entrySet()) {
+			series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+			sum += entry.getValue();
+		}
+	
+		detailLabel.setText("Gesamt eingereicht Rechnungen für\ndie letzten 12 Monate : " + sum);
+		detailLabel.setVisible(true);
+		adminBarChart.getData().add(series);
+	}
+
+	private void loadAvgEmp() {
+		Map<String, Double> counts = adminStatisticsService.getAverageInvoicesPerUserLastYear();
+		XYChart.Series<String, Number> series = new XYChart.Series<>();
+		
+		 NumberAxis yAxis = (NumberAxis) adminBarChart.getYAxis();
+		yAxis.setAutoRanging(true);
+		
+		series.setName("Durchschnitt pro Nutzer");
+
+		for (Entry<String, Double> entry : counts.entrySet()) {
+			series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+		}
+		
+		double total = counts.values().stream().mapToDouble(Double::doubleValue).sum();
+		double average = counts.size() > 0 ? total/counts.size() : 0;
+		
+		detailLabel.setText(String.format("Durschnittliche Anzahl Rechnungen \npro Nutzer (12 Monate):  %.2f",  average));
+		detailLabel.setVisible(true);
+		
+		adminBarChart.getData().add(series);
+	}
+
+	private void loadMonthlyReimbursementSumChart() {
+		Map<String, Double> sums = adminStatisticsService.getReimbursementSumPerMonthLastYear();
+		XYChart.Series<String, Number> series = new XYChart.Series<>();
+		series.setName("Erstattungen pro Monat (€)");
+		
+		double totalSum = 0;
+
+		for (Map.Entry<String, Double> entry : sums.entrySet()) {
+			XYChart.Data<String, Number> data = new XYChart.Data<>(entry.getKey(), entry.getValue());
+			series.getData().add(data);
+			totalSum += entry.getValue();
+		}
+
+		adminBarChart.getData().clear();
+		adminBarChart.getData().add(series);
+		
+		detailLabel.setText(String.format("Gesamtsumme (12 Monate): %.2f € ", totalSum));
+		detailLabel.setVisible(true);
+	}
 
 	private String formatCategoryName(InvoiceCategory category) {
 		String name = category.name().toLowerCase();
@@ -248,39 +393,79 @@ public class StatisticsController {
 		monthFilterComboBox.setItems(FXCollections.observableArrayList("alle", "Jänner", "Februar", "März", "April",
 				"Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"));
 		yearFilterComboBox.setItems(FXCollections.observableArrayList("2024", "2025", "alle"));
-	}
-
-	public Map<InvoiceCategory, Double> getSumByCategory(List<Reimbursement> reimbursements) {
-		statisticService.setReimbursements(reimbursements);
-		return statisticService.getSumByCategory();
-	}
-	
-	public Map<InvoiceCategory, Integer> getCountByCategory(List<Reimbursement> reimbursements) {
-		Map<InvoiceCategory, Integer> result = new HashMap<>();
-		for (Reimbursement r : reimbursements) {
-			result.merge(r.getInvoice().getCategory(), 1, Integer::sum);
-		}
-		return result;
+		reportTypeComboBox.setItems(FXCollections.observableArrayList("Anzahl pro Monat", "Rechnungen pro Nutzer",
+				"Kategorien - Anzahl", "Kategorien - Summe", "Erstattungsbetrag"));
+		reportTimeRangeComboBox.setItems(FXCollections.observableArrayList("Alle Zeiträume", "letzten 12 Monate"));
 	}
 
 	private void getFilterInput() {
-		selectedType = typeFilterComboBox.getValue();
-		selectedMonth = "alle".equals(monthFilterComboBox.getValue()) ? null : monthFilterComboBox.getValue();
-		selectedYear = "alle".equals(yearFilterComboBox.getValue()) ? null : yearFilterComboBox.getValue();
+		 selectedType = typeFilterComboBox.getValue() != null ? typeFilterComboBox.getValue() : "Summe";
+	     selectedMonth = "alle".equals(monthFilterComboBox.getValue()) || monthFilterComboBox.getValue() == null ? null : monthFilterComboBox.getValue();
+	     selectedYear = "alle".equals(yearFilterComboBox.getValue()) || yearFilterComboBox.getValue() == null ? null : yearFilterComboBox.getValue();
+	     report = reportTypeComboBox.getValue();
+	     timeRange = reportTimeRangeComboBox.getValue();
 	}
 
-	//created by AI
-	private void setIntialValues() {
-		LocalDate currDate = LocalDate.now();
-		
-		String monthName = currDate.getMonth().getDisplayName(TextStyle.FULL, Locale.GERMAN);
-		monthName = Character.toUpperCase(monthName.charAt(0)) + monthName.substring(1);
-		
-		selectedMonth = monthName;
-		selectedYear = String.valueOf(currDate.getYear());
-		
-		monthFilterComboBox.setValue(selectedMonth);
-		yearFilterComboBox.setValue(selectedYear);
+	private void setEventhandlers() {
+		monthFilterComboBox.setOnAction(e -> handleFilter(null));
+		yearFilterComboBox.setOnAction(e -> handleFilter(null));
+		typeFilterComboBox.setOnAction(e -> handleFilter(null));
+		rejectedCheckBox.setOnAction(e -> handleFilter(null));
+		reportTypeComboBox.setOnAction(e -> handleAdminFilter(null));
+		reportTimeRangeComboBox.setOnAction(e -> handleAdminFilter(null));
 	}
 	
+	private void setServices () {
+		reimbursementService = new ReimbursementService(user);
+		statisticsService = new StatisticsService();
+		reimbursements = reimbursementService.getAllReimbursements(user.getId());
+		statisticsService.setReimbursements(reimbursements);
+		
+		adminStatisticsService = new StatisticsService();
+		allReimbursements = reimbursementService.getAllReimbursements(null);
+		adminStatisticsService.setReimbursements(allReimbursements);
+	}
+
+	// created by AI, enhanced by the team
+	private void setIntialValues() {
+		LocalDate currDate = LocalDate.now();
+
+		String monthName = currDate.getMonth().getDisplayName(TextStyle.FULL, Locale.GERMAN);
+		monthName = Character.toUpperCase(monthName.charAt(0)) + monthName.substring(1);
+
+		selectedMonth = monthName;
+		selectedYear = String.valueOf(currDate.getYear());
+
+		monthFilterComboBox.setValue(selectedMonth);
+		yearFilterComboBox.setValue(selectedYear);
+		reportTypeComboBox.setValue("Anzahl pro Monat");
+		reportTimeRangeComboBox.setValue("alle Zeiträume");
+	}
+	
+	private void resetCharts() {
+	    // Leere alle Diagrammdaten
+	    statusBarChart.getData().clear();
+	    adminBarChart.getData().clear();
+	    pieChart.getData().clear();
+	    adminPieChart.getData().clear();
+	    
+	    // Setze die Achsen zurück, um Überlappungen zu vermeiden
+	    resetBarChartAxes(statusBarChart);
+	    resetBarChartAxes(adminBarChart);
+	}
+
+	private void resetBarChartAxes(BarChart<String, Number> chart) {
+	    // Zurücksetzen der X-Achse (Verbergen der Ticks und Beschriftungen)
+	    chart.getXAxis().setOpacity(0);
+	    chart.getXAxis().setTickLabelsVisible(false);
+	    chart.getXAxis().setTickMarkVisible(false);
+
+	    // Zurücksetzen der Y-Achse
+	    NumberAxis yAxis = (NumberAxis) chart.getYAxis();
+	    yAxis.setLowerBound(0);
+	    yAxis.setUpperBound(10);
+	    yAxis.setTickUnit(1);
+	    yAxis.setMinorTickVisible(false);
+	    yAxis.setAutoRanging(false);
+	}
 }
