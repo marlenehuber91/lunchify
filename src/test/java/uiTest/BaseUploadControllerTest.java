@@ -120,7 +120,7 @@ public class BaseUploadControllerTest extends ApplicationTest {
 		clickOn("#amountField").write("20.00");
 
 		DatePicker datePicker = lookup("#datePicker").query();
-		interact(() -> datePicker.setValue(LocalDate.now()));
+		interact(() -> datePicker.setValue(LocalDate.of(2025, 05, 02)));
 
 		ComboBox<InvoiceCategory> comboBox = lookup("#categoryBox").query();
 		interact(() -> {
@@ -135,7 +135,12 @@ public class BaseUploadControllerTest extends ApplicationTest {
 		// Simuliere Dateiupload durch direkten Aufruf (UI-unabhängig)
 		interact(() -> {
 			TextField field = lookup("#reimbursementAmountField").query();
-			field.setText("20.00");
+			field.setText("3.00");
+		});
+		
+		interact (()-> {
+			TextField field = lookup("#amountField").query();
+			field.setText("3.00");
 		});
 
 		verifyThat("#submitButton", isEnabled());
