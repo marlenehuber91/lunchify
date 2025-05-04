@@ -8,6 +8,8 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -44,28 +46,59 @@
             <Circle fx:id="backArrow" fill="#eceeef00" onMouseClicked="#handleBackToDashboard" radius="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
          </children>
       </StackPane>
-      <PieChart fx:id="pieChart" layoutX="92.0" layoutY="261.0" prefHeight="335.0" prefWidth="395.0" title="Statistik" />
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="388.0" layoutX="1016.0" layoutY="30.0" stroke="WHITE" strokeType="INSIDE" width="250.0" />
-      <ComboBox fx:id="monthFilterComboBox" layoutX="303.0" layoutY="631.0" prefHeight="38.0" prefWidth="185.0" />
-      <ComboBox fx:id="yearFilterComboBox" layoutX="92.0" layoutY="631.0" prefHeight="38.0" prefWidth="185.0" />
-      <Label layoutX="92.0" layoutY="684.0" text="Jahr" />
-      <Label layoutX="313.0" layoutY="684.0" text="Monat" />
-      <ComboBox fx:id="typeFilterComboBox" layoutX="706.0" layoutY="40.0" prefHeight="38.0" prefWidth="185.0" />
-      <Label fx:id="noDataLabel" layoutX="121.0" layoutY="349.0" prefHeight="32.0" prefWidth="384.0" text="keine Rechnungen für den ausgewählten Zeitraum">
-         <font>
-            <Font size="22.0" />
-         </font>
-      </Label>
-      <BarChart fx:id="statusBarChart" layoutX="595.0" layoutY="304.0" prefHeight="292.0" prefWidth="346.0">
-        <xAxis>
-          <CategoryAxis side="BOTTOM" />
-        </xAxis>
-        <yAxis>
-          <NumberAxis side="LEFT" />
-        </yAxis>
-      </BarChart>
-      <Text layoutX="92.0" layoutY="730.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hinweis: abgelehnte Rechnungen werden nicht automatisch einbezogen." />
-      <Text layoutX="92.0" layoutY="765.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-      <CheckBox fx:id="rejectedCheckBox" layoutX="92.0" layoutY="751.0" mnemonicParsing="false" text="Abgelehnte Rechnungen mit einbeziehen?" />
+      <TabPane fx:id="statisticsTabPane" layoutX="70.0" layoutY="192.0" prefHeight="596.0" prefWidth="901.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab fx:id="employeeTab" text="meine Statistiken">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <CheckBox fx:id="rejectedCheckBox" layoutX="18.0" layoutY="544.0" mnemonicParsing="false" text="Abgelehnte Rechnungen mit einbeziehen?" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+                        <BarChart fx:id="statusBarChart" layoutX="523.0" layoutY="114.0" prefHeight="292.0" prefWidth="346.0">
+                          <xAxis>
+                            <CategoryAxis label="Kategorien" side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis label="Anzahl" side="LEFT" />
+                          </yAxis>
+                        </BarChart>
+                        <Text layoutX="18.0" layoutY="528.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hinweis: abgelehnte Rechnungen werden nicht automatisch einbezogen." />
+                        <Label fx:id="noDataLabel" layoutX="55.0" layoutY="206.0" prefHeight="32.0" prefWidth="384.0" text="keine Rechnungen für den ausgewählten Zeitraum">
+                           <font>
+                              <Font size="22.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="20.0" layoutY="480.0" text="Monat" />
+                        <Label layoutX="246.0" layoutY="480.0" text="Jahr" />
+                        <ComboBox fx:id="yearFilterComboBox" layoutX="246.0" layoutY="435.0" prefHeight="38.0" prefWidth="185.0" />
+                        <ComboBox fx:id="monthFilterComboBox" layoutX="20.0" layoutY="435.0" prefHeight="38.0" prefWidth="185.0" />
+                        <PieChart fx:id="pieChart" layoutX="12.0" layoutY="54.0" prefHeight="335.0" prefWidth="395.0" title="Statistik" />
+                        <ComboBox fx:id="typeFilterComboBox" layoutX="666.0" layoutY="14.0" prefHeight="38.0" prefWidth="185.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab fx:id="adminTab" text="Adminstatistiken">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <PieChart fx:id="adminPieChart" layoutX="95.0" layoutY="95.0" />
+                        <ComboBox fx:id="reportTypeComboBox" layoutX="681.0" layoutY="35.0" prefHeight="35.0" prefWidth="185.0" />
+                        <BarChart fx:id="adminBarChart" layoutX="95.0" layoutY="95.0">
+                           <xAxis>
+                              <CategoryAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </BarChart>
+                        <Label fx:id="detailLabel" layoutX="691.0" layoutY="161.0" text="Label" visible="false" />
+                        <ComboBox fx:id="reportTimeRangeComboBox" layoutX="681.0" layoutY="95.0" prefHeight="35.0" prefWidth="185.0" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
    </children>
 </AnchorPane>
