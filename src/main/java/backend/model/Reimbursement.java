@@ -75,4 +75,20 @@ public class Reimbursement {
     public boolean isReimbursementEditable() {
         return this.getInvoice().getDate().getMonthValue() == LocalDate.now().getMonthValue();
     }
+
+    public boolean isReimbursementAcceptable() {
+        boolean acceptable = (this.getStatus() == ReimbursementState.PENDING || this.getStatus() == ReimbursementState.REJECTED);
+        return (acceptable && this.isReimbursementEditable());
+    }
+
+    public boolean isReimbursementRejectable() {
+        boolean rejectable = (this.getStatus() == ReimbursementState.PENDING || this.getStatus() == ReimbursementState.FLAGGED || this.getStatus() == ReimbursementState.APPROVED);
+        return (rejectable && this.isReimbursementEditable());
+    }
+
+    public boolean isReimbursementUserEditable(int userId) {
+        return (isReimbursementEditable() &&
+                this.getStatus() == ReimbursementState.PENDING &&
+                this.getInvoice().getUser().getId() == userId);
+    }
 }

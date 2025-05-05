@@ -386,4 +386,49 @@ public class ReimbursementService {
 
 		return deleted;
 	}
+
+    public boolean approveReimbursement(Reimbursement toApproveReimb) {
+		boolean approved = false;
+
+		try (Connection conn = connectionProvider.getConnection()) {
+			int reimbId = toApproveReimb.getId();
+
+			if (reimbId != 0) {
+				PreparedStatement stmtReimb = conn.prepareStatement("UPDATE reimbursements SET status = 'APPROVED' WHERE id = ?");
+				stmtReimb.setInt(1, reimbId);
+				stmtReimb.executeUpdate();
+
+				approved = true;
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return approved;
+    }
+
+	public boolean rejectReimbursement(Reimbursement toRejectReimb) {
+		boolean rejected = false;
+
+		try (Connection conn = connectionProvider.getConnection()) {
+			int reimbId = toRejectReimb.getId();
+
+			if (reimbId != 0) {
+				PreparedStatement stmtReimb = conn.prepareStatement("UPDATE reimbursements SET status = 'REJECTED' WHERE id = ?");
+				stmtReimb.setInt(1, reimbId);
+				stmtReimb.executeUpdate();
+
+				rejected = true;
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return rejected;
+	}
+
 }

@@ -63,6 +63,10 @@ public class ReimbursementHistoryController {
 	@FXML
 	private TableColumn<Reimbursement, Image> deleteColumn;
 	@FXML
+	private TableColumn<Reimbursement, Image> approveColumn;
+	@FXML
+	private TableColumn<Reimbursement, Image> rejectColumn;
+	@FXML
 	private Label totalReimbursementAmountLabel;
 	@FXML
 	private ComboBox<String> monthFilterBox;
@@ -72,7 +76,7 @@ public class ReimbursementHistoryController {
 	private ComboBox<String> statusFilterBox;
 	@FXML
 	private ComboBox<String> yearFilterBox;
-	@FXML 
+	@FXML
 	private ComboBox<String> userFilterBox;
 	@FXML
 	private Text textTotalReimb;
@@ -97,21 +101,27 @@ public class ReimbursementHistoryController {
 		if (user == null) {
 			user = SessionManager.getCurrentUser();
 		}
-		
+
+		if (selectedUser == null) {
+			selectedUser = SessionManager.getCurrentUser();
+		}
+
 		reimbursementService = new ReimbursementService(user);
 		reimbursements = reimbursementService.getAllReimbursements(user.getId());
-		
+
 		if (user.getRole()!= UserRole.ADMIN) {
 			userFilterBox.setVisible(false);
 			userFilterLabel.setVisible(false);
 
 			editColumn.setVisible(false);
 			deleteColumn.setVisible(false);
+			approveColumn.setVisible(false);
+			rejectColumn.setVisible(false);
 		}
-		
+
 		populateBoxes();
 		loadList();
-		
+
 		monthFilterBox.setOnAction(e -> handleFilter(null));
 	    yearFilterBox.setOnAction(e -> handleFilter(null));
 	    categoryFilterBox.setOnAction(e -> handleFilter(null));
@@ -146,11 +156,11 @@ public class ReimbursementHistoryController {
 
 	@FXML
 	private void handleFilter(MouseEvent event) {
-		getFilterInput();		
+		getFilterInput();
 		loadList();
 		textTotalReimb.setText("Summe Rückerstattungen: '" + translateStatus(status)+ "'" );
 	}
-	
+
 	@FXML
 	private void handleResetFilter(MouseEvent event) {
 		monthFilterBox.setValue(null);
@@ -208,7 +218,7 @@ public class ReimbursementHistoryController {
 				}
 			}
 		});
-		
+
 		userEmailColumn.setCellValueFactory(
 			    cellData -> {
 			        if (cellData.getValue().getInvoice().getUser() != null) {
@@ -287,6 +297,75 @@ public class ReimbursementHistoryController {
 						setGraphic(imageView);
 						setOnMouseClicked(event -> {
 							showDeleteConfirmationDialog(selectedReimbursement);
+							reimbursements = reimbursementService.getAllReimbursements(user.getId());
+							loadList();
+						});
+					} else {
+						setGraphic(null);
+						setOnMouseClicked(null);
+					}
+				}
+			}
+		});
+
+		approveColumn.setCellFactory(column -> new TableCell<>() {
+			private final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/frontend/images/accept.png")));
+
+			{
+				imageView.setFitWidth(20);
+				imageView.setFitHeight(20);
+				imageView.setPreserveRatio(true);
+				imageView.setCursor(Cursor.HAND);
+			}
+
+			@Override
+			protected void updateItem(Image item, boolean empty) {
+				super.updateItem(item, empty);
+
+				if (empty) {
+					setGraphic(null);
+					setOnMouseClicked(null);
+				} else {
+					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
+					if (selectedReimbursement != null && selectedReimbursement.isReimbursementAcceptable()) {
+						setGraphic(imageView);
+						setOnMouseClicked(event -> {
+							showApproveConfirmationDialog(selectedReimbursement);
+							reimbursements = reimbursementService.getAllReimbursements(user.getId());
+							loadList();
+						});
+					} else {
+						setGraphic(null);
+						setOnMouseClicked(null);
+					}
+				}
+			}
+		});
+
+		rejectColumn.setCellFactory(column -> new TableCell<>() {
+			private final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/frontend/images/cross.png")));
+
+			{
+				imageView.setFitWidth(20);
+				imageView.setFitHeight(20);
+				imageView.setPreserveRatio(true);
+				imageView.setCursor(Cursor.HAND);
+			}
+
+			@Override
+			protected void updateItem(Image item, boolean empty) {
+				super.updateItem(item, empty);
+
+				if (empty) {
+					setGraphic(null);
+					setOnMouseClicked(null);
+				} else {
+					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
+					if (selectedReimbursement != null && selectedReimbursement.isReimbursementRejectable()) {
+						setGraphic(imageView);
+						setOnMouseClicked(event -> {
+							showRejectConfirmationDialog(selectedReimbursement);
+							reimbursements = reimbursementService.getAllReimbursements(user.getId());
 							loadList();
 						});
 					} else {
@@ -310,7 +389,7 @@ public class ReimbursementHistoryController {
 				FXCollections.observableArrayList("abgelehnt", "genehmigt", "offen", "zur Kontrolle", "alle"));
 		List<String> emailUser = UserService.getAllUsersEmail();
 		emailUser.add("alle");
-		
+
 		userFilterBox.setItems(FXCollections.observableArrayList(emailUser));
 		if (selectedUser!= null) {
 			userFilterBox.setValue(selectedUser.getEmail());
@@ -324,7 +403,7 @@ public class ReimbursementHistoryController {
 		year = "alle".equals(yearFilterBox.getValue()) ? null : yearFilterBox.getValue();
 		category = mapCategory(categoryFilterBox.getValue());
 		status = mapStatus (statusFilterBox.getValue());
-		
+
 		String selectedUserEmail = userFilterBox.getValue();
 		int targetUserId;
 
@@ -334,10 +413,10 @@ public class ReimbursementHistoryController {
 			targetUserId = UserService.getUserIdByEmail(selectedUserEmail);
 			reimbursements = reimbursementService.getFilteredReimbursements(month, year, category, status, targetUserId);
 		}
-		
+
 		loadList();
 	}
-	
+
 	private void calculateTotalReimbursement () {
 		if (statusFilterBox.getValue() == null  || statusFilterBox.getValue().equals("alle")) {
 		totalReimbursement = String.valueOf(reimbursementService.getTotalReimbursement(reimbursements));
@@ -348,7 +427,7 @@ public class ReimbursementHistoryController {
 		totalReimbursementAmountLabel.setText("€ " + totalReimbursement);
 		totalReimbursementAmountLabel.setStyle("");
 	}
-	
+
 	private String mapCategory (String category) {
 		if (category == null || category.equals("alle")) return null;
 		 return switch (category) {
@@ -357,7 +436,7 @@ public class ReimbursementHistoryController {
 	        default -> null;
 	    };
 	}
-	
+
 	private String mapStatus(String status) {
 		if (status == null || status.equals("alle")) return null;
 	    return switch (status) {
@@ -368,7 +447,7 @@ public class ReimbursementHistoryController {
 	        default -> null;
 	    };
 	}
-	
+
 	private String translateStatus(String status) {
 		if (status == null) return "alle";
 		else {
@@ -381,12 +460,12 @@ public class ReimbursementHistoryController {
 			};
 		}
 	}
-	
+
 	//for testing
 	public void setReimbursementService(ReimbursementService service) {
 		this.reimbursementService = service;
 	}
-	
+
 	public void setUserService (UserService service) {
 		this.userService = service;
 	}
@@ -423,6 +502,54 @@ public class ReimbursementHistoryController {
 		});
 	}
 
+	private void showApproveConfirmationDialog(Reimbursement toApproveReimb) {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Bestätigung");
+		alert.setHeaderText(null);
+		String date = String.valueOf(toApproveReimb.getInvoice().getDate());
+		String user = String.valueOf(toApproveReimb.getInvoice().toString());
+		alert.setContentText("Wollen Sie diesen Rückerstattungsantrag vom " +
+				date + " genehmigen?");
+
+		ButtonType buttonSave = new ButtonType("Ja");
+		ButtonType buttonCancel = new ButtonType("Nein", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+		alert.getButtonTypes().setAll(buttonSave, buttonCancel);
+		alert.showAndWait().ifPresent(response -> {
+			if (response == buttonSave) {
+				boolean isReimbAccepted = reimbursementService.approveReimbursement(toApproveReimb);
+
+				if (isReimbAccepted) {
+					showAlert("Erfolg", "Rückerstattungsantrag genehmigt.");
+				}
+			}
+		});
+	}
+
+	private void showRejectConfirmationDialog(Reimbursement toRejectReimb) {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Bestätigung");
+		alert.setHeaderText(null);
+		String date = String.valueOf(toRejectReimb.getInvoice().getDate());
+		String user = String.valueOf(toRejectReimb.getInvoice().toString());
+		alert.setContentText("Wollen Sie diesen Rückerstattungsantrag vom " +
+				date + " ablehnen?");
+
+		ButtonType buttonSave = new ButtonType("Ja");
+		ButtonType buttonCancel = new ButtonType("Nein", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+		alert.getButtonTypes().setAll(buttonSave, buttonCancel);
+		alert.showAndWait().ifPresent(response -> {
+			if (response == buttonSave) {
+				boolean isReimbRejeced = reimbursementService.rejectReimbursement(toRejectReimb);
+
+				if (isReimbRejeced) {
+					showAlert("Erfolg", "Rückerstattungsantrag abgelehnt.");
+				}
+			}
+		});
+	}
+
 	protected void showAlert(String title, String content) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle(title);
@@ -430,13 +557,13 @@ public class ReimbursementHistoryController {
 		alert.setContentText(content);
 		alert.showAndWait();
 	}
-	
+
 	protected void initializeForSelectedUser(User user) {
 		this.selectedUser = user;
 		this.user = SessionManager.getCurrentUser();
 		this.reimbursementService = new ReimbursementService(user);
 		this.reimbursements = reimbursementService.getAllReimbursements(user.getId());
-		
+
 		populateBoxes();
 		loadList();
 	}
