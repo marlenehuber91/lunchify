@@ -44,9 +44,12 @@ FOREIGN KEY (invoice_id) REFERENCES Invoices(id) ON DELETE CASCADE
 );
 
 CREATE TABLE AnomalyDetection (
-id SERIAL PRIMARY KEY,
-detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-suspicious_invoices JSONB NOT NULL
+    id SERIAL PRIMARY KEY,
+    detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    invoice_id INT NOT NULL,
+    user_id INT NOT NULL,
+    FOREIGN KEY (invoice_id) REFERENCES Invoices(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE ReimbursementAmount (
