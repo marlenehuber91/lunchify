@@ -5,9 +5,12 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
+import backend.logic.StatisticsService;
+import backend.model.InvoiceCategory;
 import backend.model.Reimbursement;
 import backend.model.User;
 import backend.model.UserRole;
@@ -20,6 +23,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -30,9 +34,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class CurrReimbursementController {
-
+	
 	User user;
 	ReimbursementService reimbursementService;
+	StatisticsService statisticsService;
+
 
     @FXML
     private TableView<Reimbursement> currReimbursementTable;
@@ -50,11 +56,14 @@ public class CurrReimbursementController {
 	private TableColumn<Reimbursement, String> reimbursementState;
 
 	@FXML
-	private Label totalReimbursementAmountLabel;
+	private Label totalReimbursementAmountLabel, chartLabel, sumLabel, totalSumLabel;
 	
 	@FXML
 	private Text currentMonthText;
-
+	
+	@FXML 
+	private PieChart userPieChart, sumChart;
+	
 	public void setReimbursementService(ReimbursementService reimbursementService) {
 		this.reimbursementService = reimbursementService;
 	}
@@ -65,11 +74,18 @@ public class CurrReimbursementController {
 	        user = SessionManager.getCurrentUser();
 	    }
 
-	    setCurrentMonthLabel();
+	    getCurrMonth();
 	    if (reimbursementService == null) {
 	    	 reimbursementService = new ReimbursementService(user);
 	    }
+	    
+	    statisticsService = new StatisticsService();
+	    statisticsService.setReimbursements(reimbursementService.getAllReimbursements(user.getId()));
+	    
 	    loadList();
+	    loadUserPieChart();
+	    loadCategoryPieChart();
+	    
 	}
 	
 	@FXML
@@ -119,12 +135,30 @@ public class CurrReimbursementController {
                 }
             }
 		}   
-	}              
+	}     
+	
+	@FXML
+    public void openStatistics(MouseEvent event) {
+    	 try {
+             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/Statistics.fxml"));
+             Parent root = fxmlLoader.load();
+
+             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+             stage.setTitle("Search");
+             stage.setScene(new Scene(root));
+             stage.show();
+
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+    }
 
     	public void loadList() {
     		List<Reimbursement> reimbursements = reimbursementService.getCurrentReimbursements(user.getId());
     	    String totalReimbursement = String.valueOf(reimbursementService.getTotalReimbursement(reimbursements));
     	    totalReimbursementAmountLabel.setText("€ " + totalReimbursement);
+    	    totalSumLabel.setText("Rückerstattung " + getCurrMonth() +  ": € " + totalReimbursement);
     	    totalReimbursementAmountLabel.setStyle("");
     	    ObservableList<Reimbursement> reimbursementList = FXCollections.observableArrayList(reimbursements);
 
@@ -175,11 +209,12 @@ public class CurrReimbursementController {
     	    currReimbursementTable.setItems(reimbursementList);
     	}
     	
-    	private void setCurrentMonthLabel() {
+    	private String getCurrMonth() {
     		LocalDate currDate = LocalDate.now();
     		Locale germanLocale = new Locale("de", "DE");		
     		String currMonth = currDate.getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault());
     		currentMonthText.setText("Rechnungen "  + currMonth);
+    		return currMonth;
     	}
 
 		public Label getTotalReimbursementAmountLabel() {
@@ -189,6 +224,68 @@ public class CurrReimbursementController {
 		public Object loadCurrentReimbursements() {
 			// TODO Auto-generated method stub
 			return null;
+		}
+		
+		private void loadUserPieChart() {
+		    // Hole nur Erstattungen der letzten 12 Monate
+		    List<Reimbursement> last12Months = statisticsService.getReimbursementsFromLast12Months();
+		    
+		    // Erstelle Verteilung der Kategorien
+		    Map<String, Integer> distribution = statisticsService.getCategoryDistribution(last12Months);
+		    
+
+		    // Konvertiere zur ObservableList für das PieChart
+		    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+		    int total = distribution.values().stream().mapToInt(Integer::intValue).sum();
+		    String labelContent = "";
+
+		    for (java.util.Map.Entry<String, Integer> entry : distribution.entrySet()) {
+		        String category = entry.getKey();
+		        int value = entry.getValue();
+		        double percent = (double) value / total * 100;
+
+		        PieChart.Data data = new PieChart.Data(
+		            String.format("%s: %.1f%% (%d)", category, percent, value),
+		            value
+		        );
+		        if (entry.getKey().equals("SUPERMARKET")) {
+		        	labelContent += "SUPERMARKT: " + entry.getValue() + "\n";
+		        } else {
+		        	labelContent += entry.getKey() + ": " + entry.getValue() + "\n";
+		        }
+		        pieChartData.add(data);
+		    }
+		    chartLabel.setText(labelContent);
+
+		    userPieChart.setData(pieChartData);
+
+		    userPieChart.setTitle("Rechnungen pro Kategorie (letzte 12 Monate)");
+		    userPieChart.lookup(".chart-title").setStyle("-fx-font-size: 10px;"); // kleinere Überschrift
+		}
+		
+		private void loadCategoryPieChart() {
+		    Map<InvoiceCategory, Double> categorySumMap = statisticsService.getSumByCategory();
+
+		    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+		    String labelContent = "";
+
+		    for (Map.Entry<InvoiceCategory, Double> entry : categorySumMap.entrySet()) {
+		    	if (entry.getKey().equals("SUPERMARKET")) {
+		    		labelContent += "SUPERMARKT: € " + String.format("%.2f", entry.getValue()) + "\n";
+		    	} else {
+		    		labelContent += entry.getKey().name() + ": € " + String.format("%.2f", entry.getValue()) + "\n";	
+		    	}
+		        pieChartData.add(new PieChart.Data(entry.getKey().name(), entry.getValue()));
+		    }
+
+		    sumLabel.setText(labelContent);
+
+		    sumChart.setData(pieChartData);
+
+		    sumChart.setTitle("Verteilung der genehmigten Rückerstattungsbeträge je Kategorie (letzte 12 Monate)");
+		    sumChart.lookup(".chart-title").setStyle("-fx-font-size: 10px;");
 		}
 }
 
