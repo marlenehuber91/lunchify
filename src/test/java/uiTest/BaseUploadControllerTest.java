@@ -12,11 +12,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 
-import backend.logic.SessionManager;
 import backend.model.InvoiceCategory;
-import backend.model.User;
-import backend.model.UserRole;
-import backend.model.UserState;
 import frontend.Main;
 import frontend.controller.BaseUploadController;
 import javafx.collections.FXCollections;

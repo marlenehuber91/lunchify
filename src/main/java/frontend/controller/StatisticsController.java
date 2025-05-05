@@ -184,7 +184,7 @@ public class StatisticsController {
 		adminPieChart.setVisible(false);
 		detailLabel.setVisible(false);
 		reportTimeRangeComboBox.setVisible(false);
-	
+		
 		switch (report) {
 	        case "Anzahl pro Monat" -> {
 	            adminBarChart.setVisible(true);
@@ -271,6 +271,7 @@ public class StatisticsController {
 		chart.setTitle(title);
 	}
 	
+	
 	// created by AI
 	private void loadStatusBarChart(List<Reimbursement> reimbursements) {
 		Map<String, Integer> statusCount = new LinkedHashMap<>(Map.of("Offen", 0, "Genehmigt", 0, "Abgelehnt", 0));
@@ -344,7 +345,7 @@ public class StatisticsController {
 		Map<String, Double> counts = adminStatisticsService.getAverageInvoicesPerUserLastYear();
 		XYChart.Series<String, Number> series = new XYChart.Series<>();
 		
-		 NumberAxis yAxis = (NumberAxis) adminBarChart.getYAxis();
+		NumberAxis yAxis = (NumberAxis) adminBarChart.getYAxis();
 		yAxis.setAutoRanging(true);
 		
 		series.setName("Durchschnitt pro Nutzer");
@@ -367,6 +368,9 @@ public class StatisticsController {
 		XYChart.Series<String, Number> series = new XYChart.Series<>();
 		series.setName("Erstattungen pro Monat (€)");
 		
+		NumberAxis yAxis = (NumberAxis) adminBarChart.getYAxis();
+		yAxis.setAutoRanging(true);
+		
 		double totalSum = 0;
 
 		for (Map.Entry<String, Double> entry : sums.entrySet()) {
@@ -374,12 +378,11 @@ public class StatisticsController {
 			series.getData().add(data);
 			totalSum += entry.getValue();
 		}
-
-		adminBarChart.getData().clear();
-		adminBarChart.getData().add(series);
 		
 		detailLabel.setText(String.format("Gesamtsumme (12 Monate): %.2f € ", totalSum));
 		detailLabel.setVisible(true);
+		
+		adminBarChart.getData().add(series);
 	}
 
 	private String formatCategoryName(InvoiceCategory category) {
@@ -393,8 +396,8 @@ public class StatisticsController {
 		monthFilterComboBox.setItems(FXCollections.observableArrayList("alle", "Jänner", "Februar", "März", "April",
 				"Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"));
 		yearFilterComboBox.setItems(FXCollections.observableArrayList("2024", "2025", "alle"));
-		reportTypeComboBox.setItems(FXCollections.observableArrayList("Anzahl pro Monat", "Rechnungen pro Nutzer",
-				"Kategorien - Anzahl", "Kategorien - Summe", "Erstattungsbetrag"));
+		reportTypeComboBox.setItems(FXCollections.observableArrayList("Anzahl pro Monat", "Erstattungsbetrag", "Rechnungen pro Nutzer",
+				"Kategorien - Anzahl", "Kategorien - Summe"));
 		reportTimeRangeComboBox.setItems(FXCollections.observableArrayList("Alle Zeiträume", "letzten 12 Monate"));
 	}
 
@@ -440,32 +443,5 @@ public class StatisticsController {
 		yearFilterComboBox.setValue(selectedYear);
 		reportTypeComboBox.setValue("Anzahl pro Monat");
 		reportTimeRangeComboBox.setValue("alle Zeiträume");
-	}
-	
-	private void resetCharts() {
-	    // Leere alle Diagrammdaten
-	    statusBarChart.getData().clear();
-	    adminBarChart.getData().clear();
-	    pieChart.getData().clear();
-	    adminPieChart.getData().clear();
-	    
-	    // Setze die Achsen zurück, um Überlappungen zu vermeiden
-	    resetBarChartAxes(statusBarChart);
-	    resetBarChartAxes(adminBarChart);
-	}
-
-	private void resetBarChartAxes(BarChart<String, Number> chart) {
-	    // Zurücksetzen der X-Achse (Verbergen der Ticks und Beschriftungen)
-	    chart.getXAxis().setOpacity(0);
-	    chart.getXAxis().setTickLabelsVisible(false);
-	    chart.getXAxis().setTickMarkVisible(false);
-
-	    // Zurücksetzen der Y-Achse
-	    NumberAxis yAxis = (NumberAxis) chart.getYAxis();
-	    yAxis.setLowerBound(0);
-	    yAxis.setUpperBound(10);
-	    yAxis.setTickUnit(1);
-	    yAxis.setMinorTickVisible(false);
-	    yAxis.setAutoRanging(false);
 	}
 }
