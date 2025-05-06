@@ -1,5 +1,9 @@
 package backend.logic;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -20,15 +24,16 @@ import backend.model.User;
 public class ReimbursementService {
 	public static ConnectionProvider connectionProvider;
 	private User user; //is used but still marked as unused.. interesting - ignore in PMD!
+	private static UserService userService;
 	private float reimbursementAmount;
 	private float supermarketLimit = 2.5f;
 	private float restaurantLimit = 3.0f;
 	private float undetectableLimit = 2.5f;
-	
+
 	public static void setConnectionProvider(ConnectionProvider provider) {
-        connectionProvider = provider;
-    }
-	
+		connectionProvider = provider;
+	}
+
 	public ReimbursementService() {
 		if (connectionProvider != null) {
 			loadLimitsFromDatabase();
@@ -64,11 +69,11 @@ public class ReimbursementService {
 		if (connectionProvider == null) {
 			throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
 		}
-		
+
 		String sql = "INSERT INTO reimbursements (invoice_id, approved_amount, processed_date) VALUES (?, ?, ?)";
 
 		try (Connection conn = connectionProvider.getConnection();
-				PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+			 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
 			stmt.setInt(1, invoice.getId());
 			stmt.setFloat(2, amount);
@@ -102,15 +107,15 @@ public class ReimbursementService {
 			throw new IllegalArgumentException("Limit should be a positive number.");
 		else {
 			try {
- 				String sql = "UPDATE reimbursementAmount SET amount = ? WHERE category = ?::invoicecategory";
- 				Connection conn = connectionProvider.getConnection();
- 				PreparedStatement stmt = conn.prepareStatement(sql);
- 				stmt.setFloat(1, newLimit);
- 				stmt.setString(2, category.name());
- 
- 				int rowsUpdated = stmt.executeUpdate();
- 
- 				// Update cached value
+				String sql = "UPDATE reimbursementAmount SET amount = ? WHERE category = ?::invoicecategory";
+				Connection conn = connectionProvider.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				stmt.setFloat(1, newLimit);
+				stmt.setString(2, category.name());
+
+				int rowsUpdated = stmt.executeUpdate();
+
+				// Update cached value
 				if (rowsUpdated > 0) {
 					switch (category) {
 						case SUPERMARKET:
@@ -128,35 +133,35 @@ public class ReimbursementService {
 					setReimbursementAmount(newLimit);
 					return true;
 				}
- 				return false;
- 			} catch (SQLException e) {
- 				e.printStackTrace();
- 			}
+				return false;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return false;
 	}
 
 	//created with help from AI
 	private void loadLimitsFromDatabase() {
- 		try {
- 			Connection conn = connectionProvider.getConnection();
- 
- 			String query = "SELECT amount FROM reimbursementAmount WHERE category = ?::invoicecategory";
- 			PreparedStatement stmt = conn.prepareStatement(query);
- 
- 			// Load supermarket limit
- 			stmt.setString(1, InvoiceCategory.SUPERMARKET.name());
- 			ResultSet rsSupermarket = stmt.executeQuery();
- 			if (rsSupermarket.next()) {
- 				supermarketLimit = rsSupermarket.getFloat("amount");
- 			}
- 
- 			// Load restaurant limit
- 			stmt.setString(1, InvoiceCategory.RESTAURANT.name());
- 			ResultSet rsRestaurant = stmt.executeQuery();
- 			if (rsRestaurant.next()) {
- 				restaurantLimit = rsRestaurant.getFloat("amount");
- 			}
+		try {
+			Connection conn = connectionProvider.getConnection();
+
+			String query = "SELECT amount FROM reimbursementAmount WHERE category = ?::invoicecategory";
+			PreparedStatement stmt = conn.prepareStatement(query);
+
+			// Load supermarket limit
+			stmt.setString(1, InvoiceCategory.SUPERMARKET.name());
+			ResultSet rsSupermarket = stmt.executeQuery();
+			if (rsSupermarket.next()) {
+				supermarketLimit = rsSupermarket.getFloat("amount");
+			}
+
+			// Load restaurant limit
+			stmt.setString(1, InvoiceCategory.RESTAURANT.name());
+			ResultSet rsRestaurant = stmt.executeQuery();
+			if (rsRestaurant.next()) {
+				restaurantLimit = rsRestaurant.getFloat("amount");
+			}
 
 			stmt.setString(1, InvoiceCategory.UNDETECTABLE.name());
 			ResultSet rsUndetactable = stmt.executeQuery();
@@ -164,27 +169,27 @@ public class ReimbursementService {
 				undetectableLimit = rsUndetactable.getFloat("amount");
 			}
 
- 			rsSupermarket.close();
- 			rsRestaurant.close();
+			rsSupermarket.close();
+			rsRestaurant.close();
 			rsUndetactable.close();
- 			stmt.close();
+			stmt.close();
 		} catch (SQLException e) {
- 			e.printStackTrace();
- 		}
+			e.printStackTrace();
+		}
 	}
 
 	public List<Reimbursement> getReimbursements(String condition, int userId) {
 		List<Reimbursement> reimbursements = new ArrayList<>();
 
 		String sql = "SELECT r.id AS reimbId, approved_amount, processed_date, date, r.status AS status, user_id,"
-				+ "i.id AS invoice_id, i.amount AS invoiceAmount, i.category AS category, u.email AS userEmail " 
+				+ "i.id AS invoice_id, i.amount AS invoiceAmount, i.category AS category, u.email AS userEmail "
 				+ "FROM Reimbursements r "
-				+ "JOIN Invoices i ON r.invoice_id = i.id " 
+				+ "JOIN Invoices i ON r.invoice_id = i.id "
 				+ "JOIN Users u ON  i.user_id = u.id "
 				+ "WHERE " + condition;
 
 		try (Connection conn = connectionProvider.getConnection();
-				 PreparedStatement stmt = conn.prepareStatement(sql))  {
+			 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			ResultSet rs = stmt.executeQuery();
 
@@ -195,7 +200,7 @@ public class ReimbursementService {
 				reimb.setApprovedAmount(rs.getFloat("approved_amount"));
 				reimb.setProcessedDate(rs.getDate("processed_date"));
 				reimb.setStatus(ReimbursementState.valueOf(rs.getString("status")));
-				
+
 				User user = new User();
 				user.setId(rs.getInt("user_Id"));
 				user.setEmail(rs.getString("userEmail"));
@@ -227,16 +232,16 @@ public class ReimbursementService {
 	}
 
 	public List<Reimbursement> getAllReimbursements(int userId) {
-		return getReimbursements(("i.user_id = " + userId) ,userId );
+		return getReimbursements(("i.user_id = " + userId), userId);
 	}
-	
+
 	public List<Reimbursement> getAllReimbursements(String condition) {
 		return getReimbursements(("1 = 1"), 0);
 	}
 
 	public List<Reimbursement> getFilteredReimbursements(String selectedMonth, String selectedYear,
-			String selectedCategory, String selectedStatus, int userId) {
-		
+														 String selectedCategory, String selectedStatus, int userId) {
+
 		StringBuilder condition = new StringBuilder(buildUserFilterCondition(userId));
 		// Monat filtern
 		if (selectedMonth != null && !selectedMonth.isEmpty()) {
@@ -244,7 +249,7 @@ public class ReimbursementService {
 		}
 
 		// Jahr filtern
-		
+
 		if (selectedYear != null && !selectedYear.isEmpty()) {
 			condition.append(" AND EXTRACT(YEAR FROM i.date) = ").append(selectedYear);
 		}
@@ -286,37 +291,37 @@ public class ReimbursementService {
 
 	public String convertMonthToNumber(String month) {
 		switch (month.toLowerCase()) {
-		case "jänner":
-			return "1";
-		case "februar":
-			return "2";
-		case "märz":
-			return "3";
-		case "april":
-			return "4";
-		case "mai":
-			return "5";
-		case "juni":
-			return "6";
-		case "juli":
-			return "7";
-		case "august":
-			return "8";
-		case "september":
-			return "9";
-		case "oktober":
-			return "10";
-		case "november":
-			return "11";
-		case "dezember":
-			return "12";
-		case "alle":
-			return null;
-		default:
-			throw new IllegalArgumentException("Ungültiger Monat: " + month);
+			case "jänner":
+				return "1";
+			case "februar":
+				return "2";
+			case "märz":
+				return "3";
+			case "april":
+				return "4";
+			case "mai":
+				return "5";
+			case "juni":
+				return "6";
+			case "juli":
+				return "7";
+			case "august":
+				return "8";
+			case "september":
+				return "9";
+			case "oktober":
+				return "10";
+			case "november":
+				return "11";
+			case "dezember":
+				return "12";
+			case "alle":
+				return null;
+			default:
+				throw new IllegalArgumentException("Ungültiger Monat: " + month);
 		}
 	}
-	
+
 	private String buildUserFilterCondition(int userId) {
 		return userId > 0 ? "i.user_id = " + userId : "1=1";
 	}
@@ -339,25 +344,25 @@ public class ReimbursementService {
 
 		return info.toString().trim();
 	}
-	
+
 	public boolean updateReimbursementIfChanged(Reimbursement oldReimb, Reimbursement newReimb) {
-	    boolean updated = false;
+		boolean updated = false;
 
-	    try (Connection conn = connectionProvider.getConnection()) {
+		try (Connection conn = connectionProvider.getConnection()) {
 
-	        if (oldReimb.getApprovedAmount() != newReimb.getApprovedAmount()) {
-	            PreparedStatement stmt = conn.prepareStatement("UPDATE reimbursements SET approved_amount = ? WHERE id = ?");
-	            stmt.setFloat(1, newReimb.getApprovedAmount());
-	            stmt.setInt(2, oldReimb.getId());
-	            stmt.executeUpdate();
-	            updated = true;
-	        }
+			if (oldReimb.getApprovedAmount() != newReimb.getApprovedAmount()) {
+				PreparedStatement stmt = conn.prepareStatement("UPDATE reimbursements SET approved_amount = ? WHERE id = ?");
+				stmt.setFloat(1, newReimb.getApprovedAmount());
+				stmt.setInt(2, oldReimb.getId());
+				stmt.executeUpdate();
+				updated = true;
+			}
 
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
-	    return updated;
+		return updated;
 	}
 
 	public boolean deleteReimbursement(Reimbursement toDeleteReimb) {
@@ -387,7 +392,7 @@ public class ReimbursementService {
 		return deleted;
 	}
 
-    public boolean approveReimbursement(Reimbursement toApproveReimb) {
+	public boolean approveReimbursement(Reimbursement toApproveReimb) {
 		boolean approved = false;
 
 		try (Connection conn = connectionProvider.getConnection()) {
@@ -407,7 +412,7 @@ public class ReimbursementService {
 		}
 
 		return approved;
-    }
+	}
 
 	public boolean rejectReimbursement(Reimbursement toRejectReimb) {
 		boolean rejected = false;
@@ -431,4 +436,76 @@ public class ReimbursementService {
 		return rejected;
 	}
 
+	public static Reimbursement getReimbursementByInvoiceId(int invoiceId) {
+		String query = "SELECT r.id AS reimbursement_id, r.approved_amount AS approvedAmount, r.processed_date AS processedDate, r.status, " +
+				"i.id AS invoice_id, i.date, i.amount, i.category, i.user_id, i.flagged " +
+				"FROM Reimbursements r " +
+				"JOIN Invoices i ON r.invoice_id = i.id " +
+				"WHERE r.invoice_id = ?";
+
+		Reimbursement reimbursement = null;
+
+		try (Connection conn = connectionProvider.getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(query)) {
+
+			stmt.setInt(1, invoiceId); // Parameter setzen
+
+			try (ResultSet resultSet = stmt.executeQuery()) {
+				if (resultSet.next()) {
+					int reimbursementId = resultSet.getInt("reimbursement_id");
+					float approvedAmount = resultSet.getFloat("approvedAmount");
+					Date processedDate = resultSet.getDate("processedDate");
+					ReimbursementState state = ReimbursementState.valueOf(resultSet.getString("status"));
+
+					//invoice needed for reimbursement object
+					int id = resultSet.getInt("invoice_id");
+					LocalDate invoiceDate = resultSet.getDate("date").toLocalDate();
+					float amount = resultSet.getFloat("amount");
+					InvoiceCategory category = InvoiceCategory.valueOf(resultSet.getString("category"));
+					int userId = resultSet.getInt("user_id");
+					boolean flag = resultSet.getBoolean("flagged");
+
+					//start 100% AI generated
+					//TODO -> ask Johanna how she´s retrieving the file /where
+					InputStream fileStream = resultSet.getBinaryStream("file");
+					File tempFile = null;
+					if (fileStream != null) {
+						try {
+							// Create temp file with PNG extension
+							tempFile = File.createTempFile("invoice_", ".png");
+							tempFile.deleteOnExit();
+
+							// Stream the data to file
+							try (FileOutputStream outputStream = new FileOutputStream(tempFile)) {
+								byte[] buffer = new byte[4096]; // Larger buffer size
+								int bytesRead;
+								while ((bytesRead = fileStream.read(buffer)) != -1) {
+									outputStream.write(buffer, 0, bytesRead);
+								}
+							}
+						} catch (IOException e) {
+							System.err.println("Error saving invoice file: " + e.getMessage());
+							// Optionally continue without the file
+						} //end 100% AI generated
+
+						User user = userService.getUserById(userId);
+
+						Invoice invoice = new Invoice(invoiceDate, amount, category, tempFile, user);
+						invoice.setId(id); //manually due to serial logic in database necessary
+						if (flag) invoice.setFlag(true);
+
+						reimbursement = new Reimbursement(invoice, approvedAmount, processedDate);
+						reimbursement.setId(reimbursementId);
+						reimbursement.setStatus(state);
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			return reimbursement;
+		} catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

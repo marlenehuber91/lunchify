@@ -89,17 +89,18 @@
          </font>
       </Text>
       <Rectangle fx:id="modifyUsersButton" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="160.0" layoutX="110.0" layoutY="510.0" onMouseClicked="#openModifyUsers" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="109.0" />
-      <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="440.0" layoutY="510.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
-      <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="505.0" layoutY="524.0" pickOnBounds="true" preserveRatio="true">
+      <Rectangle fx:id="anomalyButton" arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="440.0" layoutY="510.0" onMouseClicked="#openAnomalyDetection" stroke="WHITE" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
+      <ImageView fx:id="anomalyImage" fitHeight="90.0" fitWidth="90.0" layoutX="505.0" layoutY="524.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#openAnomalyDetection">
          <image>
             <Image url="@../images/warning.png" />
          </image>
       </ImageView>
-      <Text layoutX="503.0" layoutY="642.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Anomalien">
+      <Text fx:id="anomalyText" layoutX="503.0" layoutY="642.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Anomalien" onMouseClicked="#openAnomalyDetection">
          <font>
             <Font size="20.0" />
          </font>
       </Text>
+
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="160.0" layoutX="760.0" layoutY="510.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="5.0" width="220.0" />
       <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="825.0" layoutY="524.0" pickOnBounds="true" preserveRatio="true">
          <image>

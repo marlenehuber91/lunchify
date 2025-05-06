@@ -117,7 +117,7 @@ public class UserService {
         }
         return users;
     }
-    //TODO: check, if Method can be deleted
+
     public User getUserById(int userId) {
         User user = new User();
 
@@ -143,6 +143,7 @@ public class UserService {
         }
         return user;
     }
+
     public void updateUser(User editedUser) {
         if (connectionProvider == null) {
             throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
@@ -247,5 +248,5 @@ public class UserService {
 
         return user;
     }
-    
+
 }
