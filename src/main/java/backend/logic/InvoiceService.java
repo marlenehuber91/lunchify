@@ -23,6 +23,8 @@ import backend.model.InvoiceCategory;
 import backend.model.Reimbursement;
 import backend.model.User;
 
+import static backend.logic.AnomalyDetectionService.detectAnomaliesAndLog;
+
 
 public class InvoiceService {
 	public static ConnectionProvider connectionProvider;
@@ -119,43 +121,70 @@ public class InvoiceService {
 	public List<Invoice> getInvoices (){
 		return this.invoices;
 	}
-	
+
 	public static boolean addInvoice(Invoice invoice) { //created with AI (ChatGPT)
-	    String sql = "INSERT INTO invoices (date, amount, category, user_id, file, flagged) VALUES (?, ?, ?, ?, ?, ?)";
+		//added manually from marlene - no AI
+		LocalDate ocrDate = OCR.getDate();
+		Float ocrAmount = OCR.getAmount();
+		InvoiceCategory ocrCategory = OCR.getCategory();
 
-	    try (Connection conn = connectionProvider.getConnection();
-	        PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+		//check if ocr amount was altered - if so flag the invoice!
+		//if (ocrDate == null || invoice.getDate() == null || ocrCategory == null || invoice.getCategory() == null) {
 
-	    	stmt.setDate(1, Date.valueOf(invoice.getDate()));
-	    	stmt.setFloat(2, invoice.getAmount());
-	        stmt.setObject(3, invoice.getCategory(), Types.OTHER);
-	        stmt.setInt(4, invoice.getUser().getId()); // Nutzer-ID setzen
+		//}
+		if (ocrDate == null || invoice.getDate() == null || !ocrDate.equals(invoice.getDate()) ||
+				invoice.getAmount() == 0.0f || Math.abs(ocrAmount - invoice.getAmount()) > 0.0001 || // Float-Delta
+				ocrCategory == null || invoice.getCategory() == null || !ocrCategory.equals(invoice.getCategory())) {
+			invoice.setFlag(true);
+		}
+		System.out.println("Vergleichsschleife wurde betreten ");
+		System.out.println("OCR Date: " +ocrDate +"OCR Amount: " +ocrAmount +"OCR Category " + ocrCategory);
+		System.out.println("Invoice Date: " +invoice.getDate() +"Invoice Amount: " +invoice.getAmount()
+				+"Invoice Category " + invoice.getCategory());
+
+		// until here manually added by marlene
+
+		String sql = "INSERT INTO invoices (date, amount, category, user_id, file, flagged) VALUES (?, ?, ?, ?, ?, ?)";
+
+		try (Connection conn = connectionProvider.getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+			stmt.setDate(1, Date.valueOf(invoice.getDate()));
+			stmt.setFloat(2, invoice.getAmount());
+			stmt.setObject(3, invoice.getCategory(), Types.OTHER);
+			stmt.setInt(4, invoice.getUser().getId()); // Nutzer-ID setzen
 			stmt.setBoolean(6, invoice.isFlagged());
-	        
-	        if (invoice.getFile() != null) { // Falls eine Datei vorhanden ist
-	            try {
+
+			if (invoice.getFile() != null) { // Falls eine Datei vorhanden ist
+				try {
 					stmt.setBinaryStream(5, new FileInputStream(invoice.getFile()), (int) invoice.getFile().length());
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
-	        } else {
-	            stmt.setNull(5, Types.BINARY); // Falls keine Datei da ist
+			} else {
+				stmt.setNull(5, Types.BINARY); // Falls keine Datei da ist
 			}
 
 			int affectedRows = stmt.executeUpdate(); // SQL ausführen
-	        if (affectedRows > 0) {
-	            ResultSet generatedKeys = stmt.getGeneratedKeys();
-	            if (generatedKeys.next()) {
-	                invoice.setId(generatedKeys.getInt(1)); // Neue ID setzen
-	            }
-	            return true; // Erfolg
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return false; // Falls etwas schiefgeht
+			if (affectedRows > 0) {
+				ResultSet generatedKeys = stmt.getGeneratedKeys();
+				if (generatedKeys.next()) {
+					invoice.setId(generatedKeys.getInt(1)); // Neue ID setzen
+				}
+
+				if (invoice.isFlagged()) {
+					detectAnomaliesAndLog(invoice);
+				}
+
+				return true; // Erfolg
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false; // Falls etwas schiefgeht
 	}
-	
+
+
 	public Invoice loadInvoice(Reimbursement reimbursement) {
 	    String sql = "SELECT i.* FROM Invoices i " +
 	                 "JOIN Reimbursements r ON i.id = r.invoice_id " +
