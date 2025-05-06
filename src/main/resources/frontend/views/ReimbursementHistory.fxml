@@ -32,19 +32,19 @@
             <Font size="41.0" />
          </font>
       </Text>
-      <TableView fx:id="reimbursementHistoryTable" layoutX="108.0" layoutY="276.0" prefHeight="200.0" prefWidth="830.0">
+      <TableView fx:id="reimbursementHistoryTable" layoutX="89.0" layoutY="276.0" prefHeight="200.0" prefWidth="850.0">
         <columns>
-          <TableColumn fx:id="invoiceDate" prefWidth="110" text="Rechnungsdatum" />
-           <TableColumn fx:id="processedDate" prefWidth="90" text="Einreichdatum" />
-          <TableColumn fx:id="invoiceCategory" prefWidth="80" text="Kategorie" />
-           <TableColumn fx:id="invoiceAmount" prefWidth="112" text="Rechnungsbetrag" />
-            <TableColumn fx:id="reimbursementAmount" prefWidth="105" text="Rückerstattung" />
-            <TableColumn fx:id="reimbursementState" prefWidth="84" text="Status" />
-           <TableColumn fx:id="userEmailColumn" maxWidth="150" minWidth="0.0" prefWidth="99.20001220703125" text="Benutzer" />
-           <TableColumn fx:id="editColumn" prefWidth="32" text="edit" />
-           <TableColumn fx:id="deleteColumn" prefWidth="32" text="del" />
-           <TableColumn fx:id="approveColumn" prefWidth="32" text="ok" />
-           <TableColumn fx:id="rejectColumn" prefWidth="32" text="rej" />
+          <TableColumn fx:id="invoiceDate" prefWidth="96.79998779296875" text="Rechnungsdatum" />
+           <TableColumn fx:id="processedDate" prefWidth="85.59994506835938" text="Einreichdatum" />
+          <TableColumn fx:id="invoiceCategory" prefWidth="63.2000732421875" text="Kategorie" />
+           <TableColumn fx:id="invoiceAmount" prefWidth="87.20001220703125" text="Rechnungsbetrag" />
+            <TableColumn fx:id="reimbursementAmount" prefWidth="104.79998779296875" text="Rückerstattung" />
+            <TableColumn fx:id="reimbursementState" prefWidth="63.20001220703125" text="Status" />
+           <TableColumn fx:id="userEmailColumn" maxWidth="157.5999755859375" minWidth="0.0" prefWidth="100.79998779296875" text="Benutzer" />
+           <TableColumn fx:id="editColumn" prefWidth="65.0" text="bearbeiten" />
+           <TableColumn fx:id="deleteColumn" prefWidth="55.0" text="löschen" />
+           <TableColumn fx:id="approveColumn" prefWidth="65.0" text="genehmigen" />
+           <TableColumn fx:id="rejectColumn" prefWidth="60.0" text="ablehnen" />
         </columns>
       </TableView>
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="60.0" layoutX="108.0" layoutY="516.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="325.0" />
@@ -63,10 +63,10 @@
             <Image url="@../images/logo.png" />
          </image>
       </ImageView>
-      <ComboBox fx:id="monthFilterBox" layoutX="108.0" layoutY="243.0" prefHeight="26.0" prefWidth="101.0" />
-      <ComboBox fx:id="categoryFilterBox" layoutX="342.0" layoutY="243.0" prefHeight="26.0" prefWidth="200.0" />
-      <ComboBox fx:id="statusFilterBox" layoutX="558.0" layoutY="243.0" prefWidth="200.0" />
-      <ComboBox fx:id="yearFilterBox" layoutX="225.0" layoutY="243.0" prefHeight="26.0" prefWidth="101.0" />
+      <ComboBox fx:id="monthFilterBox" layoutX="89.0" layoutY="243.0" prefHeight="26.0" prefWidth="101.0" />
+      <ComboBox fx:id="categoryFilterBox" layoutX="331.0" layoutY="243.0" prefHeight="26.0" prefWidth="200.0" />
+      <ComboBox fx:id="statusFilterBox" layoutX="551.0" layoutY="243.0" prefWidth="200.0" />
+      <ComboBox fx:id="yearFilterBox" layoutX="210.0" layoutY="243.0" prefHeight="26.0" prefWidth="101.0" />
       <Rectangle fx:id="resetFilterButton" arcHeight="20.0" arcWidth="20.0" fill="#42b25ac6" height="60.0" layoutX="442.0" layoutY="516.0" onMouseClicked="#handleResetFilter" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="325.0" />
       <Text fx:id="resetText" layoutX="541.0" layoutY="553.0" onMouseClicked="#handleResetFilter" strokeType="OUTSIDE" strokeWidth="0.0" text="Filter zurücksetzen">
          <font>
@@ -74,10 +74,10 @@
          </font>
       </Text>
       <Label layoutX="107.0" layoutY="590.0" text="Info: abgelehnte Rückerstattungen werden nicht aufsummiert" />
-      <Label layoutX="108.0" layoutY="226.0" text="Monat" />
-      <Label layoutX="225.0" layoutY="226.0" text="Jahr" />
-      <Label layoutX="342.0" layoutY="226.0" text="Kategorie" />
-      <Label layoutX="558.0" layoutY="226.0" text="Status" />
+      <Label layoutX="89.0" layoutY="226.0" text="Monat" />
+      <Label layoutX="210.0" layoutY="226.0" text="Jahr" />
+      <Label layoutX="331.0" layoutY="226.0" text="Kategorie" />
+      <Label layoutX="551.0" layoutY="226.0" text="Status" />
       <ComboBox fx:id="userFilterBox" layoutX="767.0" layoutY="126.0" prefHeight="36.0" prefWidth="210.0" />
       <Label fx:id="userFilterLabel" layoutX="767.0" layoutY="95.0" text="User">
          <font>
