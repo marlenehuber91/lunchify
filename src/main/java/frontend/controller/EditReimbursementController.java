@@ -156,8 +156,9 @@ public class EditReimbursementController extends BaseUploadController{
 		float newAmount = Float.parseFloat(amountField.getText().trim());
 		float newReimbursementAmount = Float.parseFloat(reimbursementAmountField.getText().trim());
 		Invoice newInvoice = new Invoice(newDate, newAmount, newCategory, uploadedFile, user);
-		
-		Reimbursement newReimb = new Reimbursement(newInvoice, newReimbursementAmount, Date.valueOf(LocalDate.now()));
+		newInvoice.setFlag(true);
+
+		Reimbursement newReimb = new Reimbursement(newInvoice, newReimbursementAmount, Date.valueOf(LocalDate.now()), ReimbursementState.FLAGGED);
 		newReimb.setId(reimbursement.getId());
 		return newReimb;
 	}

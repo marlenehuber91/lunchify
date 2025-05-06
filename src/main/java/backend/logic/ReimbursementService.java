@@ -4,12 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +19,6 @@ import backend.model.User;
 public class ReimbursementService {
 	public static ConnectionProvider connectionProvider;
 	private User user; //is used but still marked as unused.. interesting - ignore in PMD!
-	private static UserService userService;
 	private float reimbursementAmount;
 	private float supermarketLimit = 2.5f;
 	private float restaurantLimit = 3.0f;
@@ -70,7 +64,7 @@ public class ReimbursementService {
 			throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
 		}
 
-		String sql = "INSERT INTO reimbursements (invoice_id, approved_amount, processed_date) VALUES (?, ?, ?)";
+		String sql = "INSERT INTO reimbursements (invoice_id, approved_amount, processed_date, status) VALUES (?, ?, ?, ?)";
 
 		try (Connection conn = connectionProvider.getConnection();
 			 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -78,6 +72,11 @@ public class ReimbursementService {
 			stmt.setInt(1, invoice.getId());
 			stmt.setFloat(2, amount);
 			stmt.setDate(3, Date.valueOf(LocalDate.now()));
+			if (invoice.isFlagged()) {
+				stmt.setObject(4, ReimbursementState.FLAGGED, Types.OTHER); // PostgreSQL erfordert häufig Types.OTHER für benutzerdefinierte Enum-Typen
+			} else {
+				stmt.setObject(4, ReimbursementState.PENDING, Types.OTHER);
+			}
 
 			int affectedRows = stmt.executeUpdate(); // SQL ausführen
 			if (affectedRows > 0) {
@@ -437,8 +436,8 @@ public class ReimbursementService {
 	}
 
 	public static Reimbursement getReimbursementByInvoiceId(int invoiceId) {
-		String query = "SELECT r.id AS reimbursement_id, r.approved_amount AS approvedAmount, r.processed_date AS processedDate, r.status, " +
-				"i.id AS invoice_id, i.date, i.amount, i.category, i.user_id, i.flagged " +
+		String query = "SELECT r.id AS reimbursement_id, r.approved_amount AS approvedAmount, r.processed_date AS processedDate, r.status," +
+				"i.id AS invoice_id, i.date, i.amount, i.category, i.user_id, i.flagged, i.file " +
 				"FROM Reimbursements r " +
 				"JOIN Invoices i ON r.invoice_id = i.id " +
 				"WHERE r.invoice_id = ?";
@@ -488,13 +487,14 @@ public class ReimbursementService {
 							// Optionally continue without the file
 						} //end 100% AI generated
 
+						UserService userService = new UserService();
 						User user = userService.getUserById(userId);
 
 						Invoice invoice = new Invoice(invoiceDate, amount, category, tempFile, user);
 						invoice.setId(id); //manually due to serial logic in database necessary
 						if (flag) invoice.setFlag(true);
 
-						reimbursement = new Reimbursement(invoice, approvedAmount, processedDate);
+						reimbursement = new Reimbursement(invoice, approvedAmount, processedDate, state);
 						reimbursement.setId(reimbursementId);
 						reimbursement.setStatus(state);
 					}

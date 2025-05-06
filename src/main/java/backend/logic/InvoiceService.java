@@ -18,10 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import backend.interfaces.ConnectionProvider;
-import backend.model.Invoice;
-import backend.model.InvoiceCategory;
-import backend.model.Reimbursement;
-import backend.model.User;
+import backend.model.*;
 
 import static backend.logic.AnomalyDetectionService.detectAnomaliesAndLog;
 
@@ -129,18 +126,11 @@ public class InvoiceService {
 		InvoiceCategory ocrCategory = OCR.getCategory();
 
 		//check if ocr amount was altered - if so flag the invoice!
-		//if (ocrDate == null || invoice.getDate() == null || ocrCategory == null || invoice.getCategory() == null) {
-
-		//}
 		if (ocrDate == null || invoice.getDate() == null || !ocrDate.equals(invoice.getDate()) ||
 				invoice.getAmount() == 0.0f || Math.abs(ocrAmount - invoice.getAmount()) > 0.0001 || // Float-Delta
 				ocrCategory == null || invoice.getCategory() == null || !ocrCategory.equals(invoice.getCategory())) {
 			invoice.setFlag(true);
 		}
-		System.out.println("Vergleichsschleife wurde betreten ");
-		System.out.println("OCR Date: " +ocrDate +"OCR Amount: " +ocrAmount +"OCR Category " + ocrCategory);
-		System.out.println("Invoice Date: " +invoice.getDate() +"Invoice Amount: " +invoice.getAmount()
-				+"Invoice Category " + invoice.getCategory());
 
 		// until here manually added by marlene
 
@@ -281,7 +271,22 @@ public class InvoiceService {
 	            }
 	        }
 
-	    } catch (SQLException e) {
+			if (!oldInvoice.isFlagged() && updated) {
+				try (PreparedStatement stmt = conn.prepareStatement("UPDATE invoices SET flagged = true WHERE id = ?")) {
+					stmt.setInt(1, oldInvoice.getId());
+					stmt.executeUpdate();
+				}
+
+				try (PreparedStatement stmt = conn.prepareStatement(
+						"UPDATE reimbursements SET state = ? WHERE invoice_id = ?")) {
+					stmt.setString(1, "FLAGGED"); // oder ReimbursementState.IN_REVIEW.name()
+					stmt.setInt(2, oldInvoice.getId());
+					stmt.executeUpdate();
+				}
+			}
+
+
+		} catch (SQLException e) {
 	        e.printStackTrace();
 	    }
 

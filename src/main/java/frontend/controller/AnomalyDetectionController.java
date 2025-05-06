@@ -59,6 +59,11 @@ public class AnomalyDetectionController extends ReimbursementHistoryController {
         List<Anomaly> anomalies = anomalyService.extractAnomalies();
         anomalyTable.setItems(FXCollections.observableArrayList(anomalies));
 
+        addEditButton(editColumn);
+        addDeleteButton(deleteColumn);
+        addApproveButton(approveColumn);
+        addRejectButton(rejectColumn);
+
         // Status-Spalte: Reimbursement-State über invoiceId holen und als String anzeigen
         status.setCellValueFactory(cellData -> {
             int invoiceId = cellData.getValue().getInvoiceId();
@@ -74,35 +79,31 @@ public class AnomalyDetectionController extends ReimbursementHistoryController {
                 };
             }
 
-            return new SimpleStringProperty(statusText);
-        });
+            status.setCellFactory(column -> new TableCell<Anomaly, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
 
-        status.setCellFactory(column -> new TableCell<Anomaly, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (empty || item == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(item);
-
-                    if (item.equals("Zur Kontrolle")) {
-                        setStyle("-fx-background-color: orange; -fx-text-fill: white;");
-                    } else if (item.equals("Genehmigt")) {
-                        setStyle("-fx-background-color: green; -fx-text-fill: white;");
-                    } else if (item.equals("Abgelehnt")) {
-                        setStyle("-fx-background-color: red; -fx-text-fill: white;");
-                    } else {
+                    if (empty || item == null) {
+                        setText(null);
                         setStyle("");
+                    } else {
+                        setText(item);
+
+                        if (item.equals("Zur Kontrolle")) {
+                            setStyle("-fx-background-color: orange; -fx-text-fill: white;");
+                        } else if (item.equals("Genehmigt")) {
+                            setStyle("-fx-background-color: green; -fx-text-fill: white;");
+                        } else if (item.equals("Abgelehnt")) {
+                            setStyle("-fx-background-color: red; -fx-text-fill: white;");
+                        } else {
+                            setStyle("");
+                        }
                     }
                 }
-            }
+            });
+            return new SimpleStringProperty(statusText);
         });
-
-
-        // TODO: editColumn, approveColumn, etc.
     }
 
 
@@ -151,4 +152,114 @@ public class AnomalyDetectionController extends ReimbursementHistoryController {
             }
         });
     }
+
+    private void addEditButton(TableColumn<Anomaly, Void> column) {
+        column.setCellFactory(param -> new TableCell<>() {
+            private final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/frontend/images/pen.png")));
+
+            {
+                imageView.setFitHeight(16);
+                imageView.setFitWidth(16);
+                setGraphic(imageView);
+                setOnMouseClicked(event -> {
+                    Anomaly anomaly = getTableView().getItems().get(getIndex());
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/views/EditReimbursement.fxml"));
+                        Parent root = loader.load();
+                        Stage stage = new Stage();
+                        stage.setScene(new Scene(root));
+                        stage.setTitle("Bearbeiten");
+                        stage.show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : imageView);
+            }
+        });
+    }
+
+    private void addDeleteButton(TableColumn<Anomaly, Void> column) {
+        column.setCellFactory(param -> new TableCell<>() {
+            private final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/frontend/images/delete.png")));
+
+            {
+                imageView.setFitHeight(16);
+                imageView.setFitWidth(16);
+                setGraphic(imageView);
+                setOnMouseClicked(event -> {
+                    Anomaly anomaly = getTableView().getItems().get(getIndex());
+                    reimbursementService.deleteReimbursement(getReimbursementByInvoiceId(anomaly.getInvoiceId()));
+                    anomalyTable.getItems().remove(anomaly); // optional: direkt aus Tabelle löschen
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : imageView);
+            }
+        });
+    }
+
+    private void addApproveButton(TableColumn<Anomaly, Void> column) {
+        column.setCellFactory(param -> new TableCell<>() {
+            private final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/frontend/images/accept.png")));
+
+            {
+                imageView.setFitHeight(16);
+                imageView.setFitWidth(16);
+                setGraphic(imageView);
+                setOnMouseClicked(event -> {
+                    Anomaly anomaly = getTableView().getItems().get(getIndex());
+                    Reimbursement reimbursement = reimbursementService.getReimbursementByInvoiceId(anomaly.getInvoiceId());
+                    if (reimbursement != null) {
+                        reimbursementService.approveReimbursement(reimbursement);
+                        reimbursement.getInvoice().setFlag(false);
+                        anomalyTable.refresh(); // ggf. Status-Zelle aktualisieren
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : imageView);
+            }
+        });
+    }
+
+    private void addRejectButton(TableColumn<Anomaly, Void> column) {
+        column.setCellFactory(param -> new TableCell<>() {
+            private final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/frontend/images/cross.png")));
+
+            {
+                imageView.setFitHeight(16);
+                imageView.setFitWidth(16);
+                setGraphic(imageView);
+                setOnMouseClicked(event -> {
+                    Anomaly anomaly = getTableView().getItems().get(getIndex());
+                    Reimbursement reimbursement = reimbursementService.getReimbursementByInvoiceId(anomaly.getInvoiceId());
+                    if (reimbursement != null) {
+                        reimbursementService.rejectReimbursement(reimbursement);
+                        reimbursement.getInvoice().setFlag(false);
+                        anomalyTable.refresh();
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : imageView);
+            }
+        });
+    }
+
+
 }

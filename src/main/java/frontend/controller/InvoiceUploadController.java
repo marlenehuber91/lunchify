@@ -81,8 +81,6 @@ public class InvoiceUploadController extends BaseUploadController {
         LocalDate date = datePicker.getValue();
         InvoiceCategory category = categoryBox.getValue();
         float amount = Float.parseFloat(amountField.getText().trim());
-        
-
 
         if (invoices != null && invoiceService.invoiceDateAlreadyUsed(date, user)) {
             showAlert("Ungültiges Datum", "Für das gewählte Datum wurde bereits eine Rechnung eingereicht. Bitte wähle ein anderes Datum.");
@@ -96,6 +94,7 @@ public class InvoiceUploadController extends BaseUploadController {
             invoice.setFile(uploadedFile);
 
             boolean success = invoiceService.addInvoice(invoice) && reimbursementService.addReimbursement(invoice, reimbursementService.getReimbursementAmount());
+
             if (success) {
                 invoices.add(invoice);
                 showAlert("Erfolg", "Rechnung wurde erfolgreich hinzugefügt!" + "\n"  + " Kategorie: " + category + "; Rechnungsbetrag: " + reimbursementService.getReimbursementAmount());
