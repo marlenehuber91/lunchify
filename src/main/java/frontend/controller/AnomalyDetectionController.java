@@ -50,7 +50,7 @@ public class AnomalyDetectionController extends ReimbursementHistoryController {
 
 
     @FXML
-    public void initialize() {
+    public void initialize() { //AI generated
         userId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
         userName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUserName()));
         invoiceDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getInvoiceDate()));
@@ -126,7 +126,7 @@ public class AnomalyDetectionController extends ReimbursementHistoryController {
             e.printStackTrace();
         }
     }
-
+//TODO
     private void addImageToColumn(TableColumn<Anomaly, Void> column, String imagePath) {
         column.setCellFactory(param -> new TableCell<>() {
             private final ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(imagePath)));
