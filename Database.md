@@ -59,6 +59,8 @@ amount FLOAT NOT NULL
 );
 
 
+
+
 ALTER TABLE Reimbursements
 ADD CONSTRAINT fk_reimbursement_invoice FOREIGN KEY (invoice_id) REFERENCES Invoices(id) ON DELETE CASCADE;
 
