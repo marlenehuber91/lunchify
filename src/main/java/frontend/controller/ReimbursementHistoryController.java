@@ -2,6 +2,7 @@ package frontend.controller;
 
 import java.io.IOException;
 import java.util.List;
+
 import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
 import backend.logic.UserService;
@@ -41,6 +42,7 @@ public class ReimbursementHistoryController {
 	String status;
 	String totalReimbursement;
 	int currUserId;
+	private boolean selfmade;
 
 	@FXML
 	private TableView<Reimbursement> reimbursementHistoryTable;
@@ -80,12 +82,12 @@ public class ReimbursementHistoryController {
 	private ComboBox<String> userFilterBox;
 	@FXML
 	private Text textTotalReimb;
-
 	@FXML
 	private Rectangle resetFilterButton;
 	@FXML
 	private Label userFilterLabel;
-
+	
+	
 	/**
 	 * Initializes the reimbursement view.
 	 * - Retrieves the current user from the session if not already set.
@@ -127,6 +129,8 @@ public class ReimbursementHistoryController {
 	    categoryFilterBox.setOnAction(e -> handleFilter(null));
 	    statusFilterBox.setOnAction(e -> handleFilter(null));
 	    userFilterBox.setOnAction(e -> handleFilter(null));
+	    
+	    selfmade = user.getId() == selectedUser.getId();
 	}
 
 	@FXML
@@ -159,6 +163,7 @@ public class ReimbursementHistoryController {
 		getFilterInput();
 		loadList();
 		textTotalReimb.setText("Summe Rückerstattungen: '" + translateStatus(status)+ "'" );
+		selfmade = user == selectedUser;
 	}
 
 	@FXML
@@ -247,6 +252,7 @@ public class ReimbursementHistoryController {
 					setOnMouseClicked(null);
 				} else {
 					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
+					selectedUser = selectedReimbursement.getInvoice().getUser();
 					if (selectedReimbursement != null && selectedReimbursement.isReimbursementEditable() && user.getRole() == UserRole.ADMIN) {
 						setGraphic(imageView);
 						setOnMouseClicked(event -> {
@@ -255,6 +261,7 @@ public class ReimbursementHistoryController {
 								AnchorPane anchorPane = loader.load();
 								AdminEditReimbursementController controller = loader.getController();
 								controller.setReimbursement(selectedReimbursement);
+								controller.setSelectedUser(selectedUser);
 
 								Stage stage = (Stage) reimbursementHistoryTable.getScene().getWindow();
 								stage.setScene(new Scene(anchorPane));
@@ -293,10 +300,11 @@ public class ReimbursementHistoryController {
 					setOnMouseClicked(null);
 				} else {
 					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
+					selectedUser = selectedReimbursement.getInvoice().getUser();
 					if (selectedReimbursement != null && selectedReimbursement.isReimbursementEditable()) {
 						setGraphic(imageView);
 						setOnMouseClicked(event -> {
-							showDeleteConfirmationDialog(selectedReimbursement);
+							showDeleteConfirmationDialog(selectedReimbursement, selectedReimbursement.getInvoice().getUser());
 							reimbursements = reimbursementService.getAllReimbursements(user.getId());
 							loadList();
 						});
@@ -327,6 +335,7 @@ public class ReimbursementHistoryController {
 					setOnMouseClicked(null);
 				} else {
 					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
+					selectedUser = selectedReimbursement.getInvoice().getUser();
 					if (selectedReimbursement != null && selectedReimbursement.isReimbursementAcceptable()) {
 						setGraphic(imageView);
 						setOnMouseClicked(event -> {
@@ -361,6 +370,7 @@ public class ReimbursementHistoryController {
 					setOnMouseClicked(null);
 				} else {
 					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
+					selectedUser = selectedReimbursement.getInvoice().getUser();
 					if (selectedReimbursement != null && selectedReimbursement.isReimbursementRejectable()) {
 						setGraphic(imageView);
 						setOnMouseClicked(event -> {
@@ -405,6 +415,7 @@ public class ReimbursementHistoryController {
 		status = mapStatus (statusFilterBox.getValue());
 
 		String selectedUserEmail = userFilterBox.getValue();
+		selectedUser = userService.getUserByEmail(selectedUserEmail);
 		int targetUserId;
 
 		if (selectedUserEmail == null || selectedUserEmail.equals("alle")) {
@@ -478,7 +489,7 @@ public class ReimbursementHistoryController {
 		}
 	}
 
-	private void showDeleteConfirmationDialog(Reimbursement toDeleteReimb) {
+	private void showDeleteConfirmationDialog(Reimbursement toDeleteReimb, User reimbUser) {
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Bestätigung");
 		alert.setHeaderText(null);
@@ -493,7 +504,7 @@ public class ReimbursementHistoryController {
 		alert.getButtonTypes().setAll(buttonSave, buttonCancel);
 		alert.showAndWait().ifPresent(response -> {
 			if (response == buttonSave) {
-				boolean isReimbDeleted = reimbursementService.deleteReimbursement(toDeleteReimb);
+				boolean isReimbDeleted = reimbursementService.deleteReimbursement(toDeleteReimb, reimbUser, selfmade);
 
 				if (isReimbDeleted) {
 					showAlert("Erfolg", "Rückerstattungsantrag gelöscht.");
@@ -517,7 +528,7 @@ public class ReimbursementHistoryController {
 		alert.getButtonTypes().setAll(buttonSave, buttonCancel);
 		alert.showAndWait().ifPresent(response -> {
 			if (response == buttonSave) {
-				boolean isReimbAccepted = reimbursementService.approveReimbursement(toApproveReimb);
+				boolean isReimbAccepted = reimbursementService.approveReimbursement(toApproveReimb, toApproveReimb.getInvoice().getUser(), selfmade);
 
 				if (isReimbAccepted) {
 					showAlert("Erfolg", "Rückerstattungsantrag genehmigt.");
@@ -541,7 +552,7 @@ public class ReimbursementHistoryController {
 		alert.getButtonTypes().setAll(buttonSave, buttonCancel);
 		alert.showAndWait().ifPresent(response -> {
 			if (response == buttonSave) {
-				boolean isReimbRejeced = reimbursementService.rejectReimbursement(toRejectReimb);
+				boolean isReimbRejeced = reimbursementService.rejectReimbursement(toRejectReimb, toRejectReimb.getInvoice().getUser(), selfmade);
 
 				if (isReimbRejeced) {
 					showAlert("Erfolg", "Rückerstattungsantrag abgelehnt.");

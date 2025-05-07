@@ -16,12 +16,12 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 import backend.interfaces.ConnectionProvider;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
 import backend.model.Reimbursement;
 import backend.model.User;
+import backend.model.UserRole;
 
 
 public class InvoiceService {
@@ -212,8 +212,14 @@ public class InvoiceService {
 	    return null;
 	}
 	
-	public boolean updateInvoiceIfChanged(Invoice oldInvoice, Invoice newInvoice) {
+	public boolean updateInvoiceIfChanged(Invoice oldInvoice, Invoice newInvoice, User invoiceUser, boolean selfmade) {
 		boolean updated = false;
+		
+		String fieldChanged = "Foto";
+		String text = "Es wurde ein neues Foto hochgeladen";
+		String oldVal = "";
+		String newVal = "";
+		boolean isAdmin = user.getRole().equals(UserRole.ADMIN);
 		
 		try (Connection conn = connectionProvider.getConnection()) {
 			
@@ -223,6 +229,10 @@ public class InvoiceService {
 	            stmt.setInt(2, oldInvoice.getId());
 	            stmt.executeUpdate();
 	            updated = true;
+	            fieldChanged ="Rechnungsdatum";
+	            text = "Das Rechnungsdatum wurde geändert";
+	            oldVal = Date.valueOf(oldInvoice.getDate()).toString();
+	            newVal = Date.valueOf(newInvoice.getDate()).toString();
 	        }
 
 	        if (oldInvoice.getAmount() != newInvoice.getAmount()) {
@@ -231,6 +241,11 @@ public class InvoiceService {
 	            stmt.setInt(2, oldInvoice.getId());
 	            stmt.executeUpdate();
 	            updated = true;
+	            fieldChanged ="Rechnungsbetrag";
+	            text = "Der Rechnungsbetrag wurde geändert";
+	            oldVal = String.valueOf(oldInvoice.getAmount());
+	            newVal = String.valueOf(newInvoice.getAmount());
+	            
 	        }
 
 	        if (oldInvoice.getCategory() != newInvoice.getCategory()) {
@@ -239,6 +254,10 @@ public class InvoiceService {
 	            stmt.setInt(2, oldInvoice.getId());
 	            stmt.executeUpdate();
 	            updated = true;
+	            fieldChanged ="Kategorie";
+	            text = "Die Kategorie wurde geändert";
+	            oldVal = oldInvoice.getCategory().toString();
+	            newVal = newInvoice.getCategory().toString();
 	        }
 
 	        if (newInvoice.getFile() != null) {
@@ -247,6 +266,7 @@ public class InvoiceService {
 	                stmt.setInt(2, oldInvoice.getId());
 	                stmt.executeUpdate();
 	                updated = true;
+	                
 	            } catch (FileNotFoundException e) {
 	                e.printStackTrace();
 	            }
@@ -255,7 +275,21 @@ public class InvoiceService {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
-
+		
+			NotificationService.createNotification(
+				    invoiceUser.getId(),
+				    "INVOICE",
+				    oldInvoice.getId(),
+				    fieldChanged,
+				    oldVal,
+				    newVal,
+				    text,
+				    oldInvoice.getFile(),
+				    isAdmin,
+				    oldInvoice.getDate(),
+				    selfmade
+				);		
+		
 	    return updated;
 	}
 }

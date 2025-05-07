@@ -114,6 +114,7 @@ public class CurrReimbursementController {
 	@FXML
 	public void handleUserChoice() {
 		Reimbursement selectedReimbursement = currReimbursementTable.getSelectionModel().getSelectedItem();
+		User selectedUser = selectedReimbursement.getInvoice().getUser();
 		
 		if (selectedReimbursement != null && selectedReimbursement.isReimbursementUserEditable(user.getId())) {
 
@@ -123,8 +124,10 @@ public class CurrReimbursementController {
                     AnchorPane editReimbursementPane = loader.load();
 
                     EditReimbursementController controller = loader.getController();
+                    controller.setSelectedUser(selectedUser);
+                    System.out.println("controller.setSelectedUser(selectedUser)" + controller.getSelectedUser().getEmail());
                     controller.setReimbursement(selectedReimbursement);
-
+                    
                     Stage stage = (Stage) currReimbursementTable.getScene().getWindow();
                     stage.setScene(new Scene(editReimbursementPane));
 

@@ -1,15 +1,23 @@
 package frontend.controller;
 
+import java.util.List;
+
+import backend.logic.NotificationService;
 import backend.logic.SessionManager;
+import backend.model.Notification;
 import backend.model.User;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
 public class UserDashboardController {
     @FXML
     private Text userNameText;
-
+    
+    @FXML
+    Circle redDot;
+    
     @FXML
     public void initialize() {
 
@@ -20,6 +28,10 @@ public class UserDashboardController {
         } else {
             userNameText.setText("Nicht eingeloggt");
         }
+        
+        List<Notification> notifications = NotificationService.getNotificationsByUser(user);
+        redDot.setVisible(NotificationService.hasUnreadNotifications(notifications, user.getId()));
+        
     }
 
     public AdminDashboardController adminController = new AdminDashboardController();
@@ -38,5 +50,9 @@ public class UserDashboardController {
     
     public void openStatistics(MouseEvent event) {
     	adminController.openStatistics(event);
+    }
+    
+    public void openNotifications(MouseEvent event) {
+    	adminController.openNotifications(event);
     }
 }

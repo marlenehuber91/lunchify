@@ -1,6 +1,7 @@
 package backend.configs;
 
 import backend.logic.InvoiceService;
+import backend.logic.NotificationService;
 import backend.logic.ReimbursementService;
 import backend.logic.StatisticsService;
 import backend.logic.UserService;
@@ -12,5 +13,6 @@ public class AppContext {
         InvoiceService.setConnectionProvider(DatabaseConnection::connect);
         UserService.setConnectionProvider(DatabaseConnection::connect);
         StatisticsService.setConnectionProvider(DatabaseConnection::connect);
+        NotificationService.setConnectionProvider(DatabaseConnection::connect);
     }
 }
