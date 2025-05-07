@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="notificationPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controller.NotificationsController">
+   <children>
+      <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="120.0" layoutX="195.0" layoutY="40.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="445.0" AnchorPane.leftAnchor="195.0" />
+      <StackPane fx:id="backButton" layoutX="63.0" layoutY="55.0" onMouseClicked="#handleBackToDashboard" prefHeight="87.0" prefWidth="90.0">
+         <children>
+            <ImageView fitHeight="90.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/arrow.png" />
+               </image>
+            </ImageView>
+            <Circle fx:id="backArrow" fill="#eceeef00" onMouseClicked="#handleBackToDashboard" radius="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
+         </children>
+      </StackPane>
+      <Text fx:id="currentMonthText" layoutX="237.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Benachrichtigungen">
+         <font>
+            <Font size="41.0" />
+         </font>
+      </Text>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#42b35b" height="832.0" layoutX="1002.0" stroke="#42b35b" strokeType="INSIDE" width="278.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="1116.0" layoutY="668.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/logo.png" />
+         </image>
+      </ImageView>
+      <TabPane layoutX="40.0" layoutY="237.0" prefHeight="430.0" prefWidth="892.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab fx:id="userNotification" text="meine Benachrichtigungen">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="notificationView" layoutX="18.0" layoutY="36.0" onMouseClicked="#handleUserChoice" prefHeight="306.0" prefWidth="855.0">
+                          <columns>
+                            <TableColumn fx:id="originalInvoiceDate" prefWidth="212.800048828125" text="(ursprüngliches) Rechnungsdatum" />
+                              <TableColumn fx:id="processedDate" prefWidth="133.60003662109375" text="Änderungsdatum" />
+                             <TableColumn fx:id="message" prefWidth="287.1999206542969" text="Änderungen" />
+                            <TableColumn fx:id="oldVal" prefWidth="82.4000244140625" text="alter Wert" />
+                              <TableColumn fx:id="newVal" prefWidth="76.79998779296875" text="neuer Wert" />
+                              <TableColumn fx:id="isRead" prefWidth="58.4000244140625" text="gesehen" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab fx:id="adminNotification" text="Adminbenachrichtigungen">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="402.0" prefWidth="898.0">
+                     <children>
+                        <TableView fx:id="adminNotificationView" layoutX="18.0" layoutY="35.0" onMouseClicked="#handleUserChoice" prefHeight="306.0" prefWidth="855.0">
+                           <columns>
+                              <TableColumn fx:id="adminInvoiceDate" prefWidth="212.800048828125" text="(ursprüngliches) Rechnungsdatum" />
+                              <TableColumn fx:id="adminProcessedDate" prefWidth="133.60003662109375" text="Änderungsdatum" />
+                              <TableColumn fx:id="adminMessage" prefWidth="287.1999206542969" text="Änderungen" />
+                              <TableColumn fx:id="adminOldValue" prefWidth="82.4000244140625" text="alter Wert" />
+                              <TableColumn fx:id="adminNewValue" prefWidth="76.79998779296875" text="neuer Wert" />
+                              <TableColumn fx:id="adminIsRead" prefWidth="58.4000244140625" text="gesehen" />
+                           </columns>
+                        </TableView>
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+      <Circle fx:id="notificationDot" fill="#ff1f1f" layoutX="50.0" layoutY="245.0" radius="7.6" stroke="#ff1f1f" strokeType="INSIDE" />
+      <Circle fx:id="adminNotificationDot" fill="#ff1f1f" layoutX="205.0" layoutY="245.0" radius="7.6" stroke="#ff1f1f" strokeType="INSIDE" />
+   </children>
+</AnchorPane>

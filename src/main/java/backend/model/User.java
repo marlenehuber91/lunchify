@@ -8,7 +8,7 @@ public class User {
     private String password;
     private UserRole role;
     private UserState state;
-
+    
     public User() {};
 
     public User(String name, String email, String password, UserRole role, UserState state) {
@@ -54,6 +54,7 @@ public class User {
     public String getPassword() {
     	return this.password;
     }
+    
 
     public void setPassword(String password) {
         this.password = password;
@@ -74,6 +75,7 @@ public class User {
     public void setState(UserState state) {
         this.state = state;
     }
+
 
     @Override
     public String toString() {
