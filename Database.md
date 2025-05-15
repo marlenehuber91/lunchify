@@ -1,4 +1,5 @@
 DROP TABLE AnomalyDetection;
+DROP TABLE FlaggedUsers;
 DROP TABLE Reimbursements;
 DROP TABLE Invoices;
 DROP TABLE Users;
@@ -59,7 +60,12 @@ category InvoiceCategory NOT NULL,
 amount FLOAT NOT NULL
 );
 
-
+CREATE TABLE FlaggedUsers (
+	user_id INTEGER PRIMARY KEY,
+	no_flaggs INTEGER NOT NULL DEFAULT 1,
+	permanent_flag BOOLEAN NOT NULL DEFAULT FALSE,
+	FOREIGN KEY (user_id) REFERENCES users(id)
+); 
 
 
 ALTER TABLE Reimbursements
