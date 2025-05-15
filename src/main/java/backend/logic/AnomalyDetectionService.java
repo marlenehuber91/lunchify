@@ -4,14 +4,19 @@ import backend.interfaces.ConnectionProvider;
 import backend.model.Anomaly;
 import backend.model.FlaggedUser;
 import backend.model.Invoice;
+
 import database.DatabaseConnection;
+import javafx.scene.control.Alert;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnomalyDetectionService {
+import static backend.logic.InvoiceService.getInvoiceById;
+import static java.sql.DriverManager.getConnection;
+
+public class AnomalyDetectionService  {
 
     private static final String QUERY = """
             SELECT a.id, a.detected_at, i.id AS invoice_id, i.date, i.amount, i.category,
@@ -20,6 +25,7 @@ public class AnomalyDetectionService {
             JOIN Invoices i ON a.invoice_id = i.id
             JOIN Users u ON a.user_id = u.id
             """;
+
 
     public static ConnectionProvider connectionProvider = new ConnectionProvider() {
         @Override
@@ -98,17 +104,66 @@ public class AnomalyDetectionService {
     }
 
 
-    public static void addFlaggedUser(FlaggedUser user) throws SQLException {
-        String sql = "INSERT INTO flaggedUsers (user_id, no_flaggs, permanent_flag) VALUES (?, ?, ?)";
+    public static void addOrUpdateFlaggedUser(FlaggedUser user) throws SQLException {
+        String selectSql = "SELECT no_flaggs FROM FlaggedUsers WHERE user_id = ?";
+        String updateSql = "UPDATE FlaggedUsers SET no_flaggs = ?, permanent_flag = ? WHERE user_id = ?";
+        String insertSql = "INSERT INTO flaggedUsers (user_id, no_flaggs, permanent_flag) VALUES (?, ?, ?)";
+
+        try (Connection conn = connectionProvider.getConnection()) {
+            try (PreparedStatement selectStmt = conn.prepareStatement(selectSql)) {
+                selectStmt.setInt(1, user.getUserId());
+                ResultSet rs = selectStmt.executeQuery();
+
+                if (rs.next()) {
+                    int currentFlags = rs.getInt("no_flaggs");
+                    int newFlags = currentFlags + user.getNoFlaggs();
+
+                    try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                        updateStmt.setInt(1, newFlags);
+                        updateStmt.setBoolean(2, user.isPermanentFlag());
+                        updateStmt.setInt(3, user.getUserId());
+                        updateStmt.executeUpdate();
+                    }
+                } else {
+                    try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+                        insertStmt.setInt(1, user.getUserId());
+                        insertStmt.setInt(2, user.getNoFlaggs());
+                        insertStmt.setBoolean(3, user.isPermanentFlag());
+                        insertStmt.executeUpdate();
+                    }
+                }
+            }
+        }
+    }
+
+
+    public void handleAnomalyDone(Anomaly anomaly) {
+        try {
+            Invoice invoice = getInvoiceById(anomaly.getInvoiceId());
+            invoice.setFlag(false);
+            removeFlag(invoice);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void removeFlag(Invoice invoice) {
+        String sqlInvoice = "UPDATE invoices SET flagged = false WHERE id = ?";
+        String sqlAnomaly = "DELETE FROM AnomalyDetection WHERE invoice_id = ?";
 
         try (Connection conn = connectionProvider.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt1 = conn.prepareStatement(sqlInvoice);
+             PreparedStatement stmt2 = conn.prepareStatement(sqlAnomaly)) {
 
-            stmt.setInt(1, user.getUserId());
-            stmt.setInt(2, user.getNoFlaggs());
-            stmt.setBoolean(3, user.isPermanentFlag());
-            stmt.executeUpdate();
+            stmt1.setInt(1, invoice.getId());
+            stmt1.executeUpdate();
+
+            stmt2.setInt(1, invoice.getId());
+            stmt2.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
     }
+
+
 }

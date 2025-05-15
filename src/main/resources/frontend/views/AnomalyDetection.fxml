@@ -60,4 +60,5 @@
         <Label fx:id="monthLabel" layoutX="108.0" layoutY="226.0" text="Monat" />
         <Label fx:id="yearLabel" layoutX="225.0" layoutY="226.0" text="Jahr" />
     </children>
+    <fx:include source="UserDropDown.fxml" />
 </AnchorPane>

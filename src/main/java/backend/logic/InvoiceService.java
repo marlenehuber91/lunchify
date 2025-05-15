@@ -136,8 +136,6 @@ public class InvoiceService {
 			invoice.setFlag(true);
 
 		}
-
-		String flaggingQuery = "Insert INTO flagged_users (user_id, ) VALUES (?)";
 		// until here manually added by marlene
 
 		String sql = "INSERT INTO invoices (date, amount, category, user_id, file, flagged) VALUES (?, ?, ?, ?, ?, ?)";
@@ -175,7 +173,7 @@ public class InvoiceService {
 					if (!flaggedUser.isPermanentFlag() || flaggedUser.getNoFlaggs() > 9) {
 						flaggedUser.setPermanentFlag(true);
 					}
-					addFlaggedUser(flaggedUser);
+					addOrUpdateFlaggedUser(flaggedUser);
 				}
 
 				return true; // Erfolg
@@ -338,4 +336,30 @@ public class InvoiceService {
 
 	    return updated;
 	}
+	public static Invoice getInvoiceById(int id) {
+		String sql = "SELECT id, date, amount, category, flagged FROM Invoices WHERE id = ?";
+
+		try (Connection conn = connectionProvider.getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, id);
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				Invoice invoice = new Invoice();
+				invoice.setId(rs.getInt("id"));
+				invoice.setDate(rs.getDate("date").toLocalDate());
+				invoice.setAmount(rs.getFloat("amount"));
+				invoice.setCategory(InvoiceCategory.valueOf(rs.getString("category")));
+				invoice.setFlag(rs.getBoolean("flagged"));
+				return invoice;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 }

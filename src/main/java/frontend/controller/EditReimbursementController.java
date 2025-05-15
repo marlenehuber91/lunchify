@@ -16,6 +16,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import static backend.logic.ReimbursementService.getReimbursementByInvoiceId;
+
 public class EditReimbursementController extends BaseUploadController{
 	
 	protected Reimbursement reimbursement;
@@ -23,6 +25,7 @@ public class EditReimbursementController extends BaseUploadController{
 	protected User user;
 	protected User selectedUser;
 	private boolean selfmade;
+	private String origin;
     
     public void setReimbursement (Reimbursement reimb) {
     	this.reimbursement = reimb;
@@ -123,9 +126,16 @@ public class EditReimbursementController extends BaseUploadController{
     @FXML
     private void handleBackToCurrReimb() {
     	try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/currReimbursements.fxml"));
-            Parent root = fxmlLoader.load();
-            
+			Parent root = null;
+            if ("anomaly".equals(origin)) {
+				origin = null;
+				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/AnomalyDetection.fxml"));
+				root = fxmlLoader.load();
+			} else {
+				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/currReimbursements.fxml"));
+				root = fxmlLoader.load();
+			}
+
             Stage stage = (Stage) uploadPane.getScene().getWindow();
 
             stage.setTitle("aktuelle Rechnungen");
@@ -182,4 +192,9 @@ public class EditReimbursementController extends BaseUploadController{
 		newReimb.setId(reimbursement.getId());
 		return newReimb;
 	}
+
+	public void setOrigin(String origin) {
+		this.origin = origin;
+	}
+
 }
