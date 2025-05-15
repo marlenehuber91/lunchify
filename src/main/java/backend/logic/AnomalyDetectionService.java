@@ -104,39 +104,6 @@ public class AnomalyDetectionService  {
     }
 
 
-    public static void addOrUpdateFlaggedUser(FlaggedUser user) throws SQLException {
-        String selectSql = "SELECT no_flaggs FROM FlaggedUsers WHERE user_id = ?";
-        String updateSql = "UPDATE FlaggedUsers SET no_flaggs = ?, permanent_flag = ? WHERE user_id = ?";
-        String insertSql = "INSERT INTO flaggedUsers (user_id, no_flaggs, permanent_flag) VALUES (?, ?, ?)";
-
-        try (Connection conn = connectionProvider.getConnection()) {
-            try (PreparedStatement selectStmt = conn.prepareStatement(selectSql)) {
-                selectStmt.setInt(1, user.getUserId());
-                ResultSet rs = selectStmt.executeQuery();
-
-                if (rs.next()) {
-                    int currentFlags = rs.getInt("no_flaggs");
-                    int newFlags = currentFlags + user.getNoFlaggs();
-
-                    try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
-                        updateStmt.setInt(1, newFlags);
-                        updateStmt.setBoolean(2, user.isPermanentFlag());
-                        updateStmt.setInt(3, user.getUserId());
-                        updateStmt.executeUpdate();
-                    }
-                } else {
-                    try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
-                        insertStmt.setInt(1, user.getUserId());
-                        insertStmt.setInt(2, user.getNoFlaggs());
-                        insertStmt.setBoolean(3, user.isPermanentFlag());
-                        insertStmt.executeUpdate();
-                    }
-                }
-            }
-        }
-    }
-
-
     public void handleAnomalyDone(Anomaly anomaly) {
         try {
             Invoice invoice = getInvoiceById(anomaly.getInvoiceId());

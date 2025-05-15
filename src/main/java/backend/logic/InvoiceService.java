@@ -25,6 +25,7 @@ import backend.model.UserRole;
 import backend.model.*;
 
 import static backend.logic.AnomalyDetectionService.*;
+import static backend.logic.FlaggedUserService.addOrUpdateFlaggedUser;
 
 
 public class InvoiceService {
@@ -123,20 +124,37 @@ public class InvoiceService {
 		return this.invoices;
 	}
 
-	public static boolean addInvoice(Invoice invoice) { //created with AI (ChatGPT)
-		//added manually from marlene - not AI
+	public static boolean addInvoice(Invoice invoice) {
+
 		LocalDate ocrDate = OCR.getDate();
 		Float ocrAmount = OCR.getAmount();
 		InvoiceCategory ocrCategory = OCR.getCategory();
 
-		//check if ocr amount was altered - if so flag the invoice!
-		if (ocrDate == null || invoice.getDate() == null || !ocrDate.equals(invoice.getDate()) ||
-				invoice.getAmount() == 0.0f || Math.abs(ocrAmount - invoice.getAmount()) > 0.0001 || // Float-Delta
-				ocrCategory == null || invoice.getCategory() == null || !ocrCategory.equals(invoice.getCategory())) {
-			invoice.setFlag(true);
+		boolean isUserPermanentFlagged = false;
+		String checkPermFlag = "SELECT permanent_flag FROM FlaggedUsers WHERE user_id = ?";
 
+		try (Connection conn = connectionProvider.getConnection();
+			 PreparedStatement permFlagStmt = conn.prepareStatement(checkPermFlag)) {
+			permFlagStmt.setInt(1, invoice.getUser().getId());
+			try (ResultSet rs = permFlagStmt.executeQuery()) {
+				if (rs.next()) {
+					isUserPermanentFlagged = rs.getBoolean("permanent_flag");
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		// until here manually added by marlene
+
+		if (isUserPermanentFlagged) {
+			invoice.setFlag(true);
+		} else {
+			// check if ocr amount was altered - if so flag the invoice!
+			if (ocrDate == null || invoice.getDate() == null || !ocrDate.equals(invoice.getDate()) ||
+					invoice.getAmount() == 0.0f || Math.abs(ocrAmount - invoice.getAmount()) > 0.0001 || // Float-Delta
+					ocrCategory == null || invoice.getCategory() == null || !ocrCategory.equals(invoice.getCategory())) {
+				invoice.setFlag(true);
+			}
+		}
 
 		String sql = "INSERT INTO invoices (date, amount, category, user_id, file, flagged) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -149,40 +167,41 @@ public class InvoiceService {
 			stmt.setInt(4, invoice.getUser().getId()); // Nutzer-ID setzen
 			stmt.setBoolean(6, invoice.isFlagged());
 
-			if (invoice.getFile() != null) { // Falls eine Datei vorhanden ist
+			if (invoice.getFile() != null) {
 				try {
 					stmt.setBinaryStream(5, new FileInputStream(invoice.getFile()), (int) invoice.getFile().length());
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
 			} else {
-				stmt.setNull(5, Types.BINARY); // Falls keine Datei da ist
+				stmt.setNull(5, Types.BINARY);
 			}
 
-			int affectedRows = stmt.executeUpdate(); // SQL ausführen
+			int affectedRows = stmt.executeUpdate();
 			if (affectedRows > 0) {
 				ResultSet generatedKeys = stmt.getGeneratedKeys();
 				if (generatedKeys.next()) {
-					invoice.setId(generatedKeys.getInt(1)); // Neue ID setzen
+					invoice.setId(generatedKeys.getInt(1));
 				}
 
 				if (invoice.isFlagged()) {
 					detectAnomaliesAndLog(invoice);
 					FlaggedUser flaggedUser = detectFlaggedUser(invoice.getUserId());
-					flaggedUser.setNoFlaggs(flaggedUser.getNoFlaggs()+1); //raise by one, since the invoice was flagged, therfore the user too
+					flaggedUser.setNoFlaggs(flaggedUser.getNoFlaggs() + 1); //raise by one, since the invoice was flagged, therfore the user too
 					if (!flaggedUser.isPermanentFlag() || flaggedUser.getNoFlaggs() > 9) {
 						flaggedUser.setPermanentFlag(true);
 					}
 					addOrUpdateFlaggedUser(flaggedUser);
 				}
 
-				return true; // Erfolg
+				return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return false; // Falls etwas schiefgeht
+		return false;
 	}
+
 
 
 	public Invoice loadInvoice(Reimbursement reimbursement) {
