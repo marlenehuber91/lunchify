@@ -65,4 +65,5 @@
          </font>
       </Text>
     </children>
+    <fx:include source="UserDropDown.fxml" />
 </AnchorPane>
