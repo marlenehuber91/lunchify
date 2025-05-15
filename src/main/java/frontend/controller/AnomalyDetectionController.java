@@ -2,10 +2,8 @@ package frontend.controller;
 
 import backend.logic.AnomalyDetectionService;
 import backend.logic.ReimbursementService;
-import backend.model.Anomaly;
-import backend.model.Reimbursement;
-import backend.model.ReimbursementState;
-import backend.model.UserRole;
+import backend.logic.SessionManager;
+import backend.model.*;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,7 +15,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TableCell;
@@ -28,6 +25,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static backend.logic.ReimbursementService.getReimbursementByInvoiceId;
+
 
 public class AnomalyDetectionController extends ReimbursementHistoryController {
 
@@ -194,8 +192,15 @@ public class AnomalyDetectionController extends ReimbursementHistoryController {
                 setGraphic(imageView);
                 setOnMouseClicked(event -> {
                     Anomaly anomaly = getTableView().getItems().get(getIndex());
-                    reimbursementService.deleteReimbursement(getReimbursementByInvoiceId(anomaly.getInvoiceId()));
-                    anomalyTable.getItems().remove(anomaly); // optional: direkt aus Tabelle löschen
+                    Reimbursement reimbursement = reimbursementService.getReimbursementByInvoiceId(anomaly.getInvoiceId());
+                    if (reimbursement != null) {
+                        User currentUser = SessionManager.getCurrentUser();
+                        User invoiceOwner = reimbursement.getInvoice().getUser();
+                        boolean selfmade = currentUser.getId() == invoiceOwner.getId();
+
+                        reimbursementService.deleteReimbursement(getReimbursementByInvoiceId(anomaly.getInvoiceId()), invoiceOwner, selfmade);
+                        anomalyTable.getItems().remove(anomaly);
+                    }
                 });
             }
 
@@ -218,10 +223,15 @@ public class AnomalyDetectionController extends ReimbursementHistoryController {
                 setOnMouseClicked(event -> {
                     Anomaly anomaly = getTableView().getItems().get(getIndex());
                     Reimbursement reimbursement = reimbursementService.getReimbursementByInvoiceId(anomaly.getInvoiceId());
+
                     if (reimbursement != null) {
-                        reimbursementService.approveReimbursement(reimbursement);
+                    User currentUser = SessionManager.getCurrentUser();
+                    User invoiceOwner = reimbursement.getInvoice().getUser();
+                    boolean selfmade = currentUser.getId() == invoiceOwner.getId();
+
+                        reimbursementService.approveReimbursement(reimbursement, invoiceOwner, selfmade);
                         reimbursement.getInvoice().setFlag(false);
-                        anomalyTable.refresh(); // ggf. Status-Zelle aktualisieren
+                        anomalyTable.refresh();
                     }
                 });
             }
@@ -245,8 +255,13 @@ public class AnomalyDetectionController extends ReimbursementHistoryController {
                 setOnMouseClicked(event -> {
                     Anomaly anomaly = getTableView().getItems().get(getIndex());
                     Reimbursement reimbursement = reimbursementService.getReimbursementByInvoiceId(anomaly.getInvoiceId());
+
                     if (reimbursement != null) {
-                        reimbursementService.rejectReimbursement(reimbursement);
+                        User currentUser = SessionManager.getCurrentUser();
+                        User invoiceOwner = reimbursement.getInvoice().getUser();
+                        boolean selfmade = currentUser.getId() == invoiceOwner.getId();
+
+                        reimbursementService.rejectReimbursement(reimbursement, invoiceOwner, selfmade);
                         reimbursement.getInvoice().setFlag(false);
                         anomalyTable.refresh();
                     }
