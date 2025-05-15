@@ -1,4 +1,5 @@
 DROP TABLE AnomalyDetection;
+DROP TABLE FlaggedUsers;
 DROP TABLE Reimbursements;
 DROP TABLE Invoices;
 DROP TABLE Users;
@@ -64,7 +65,7 @@ CREATE TABLE notifications (
     user_id INT NOT NULL,
     entity_type VARCHAR(50),
     entity_id INT,
-	field_changed TEXT,
+	 field_changed TEXT,
     old_value TEXT,
     new_value TEXT,
     message TEXT,
@@ -75,6 +76,13 @@ CREATE TABLE notifications (
     original_invoice_date DATE,
 	is_selfmade_change boolean
 );
+
+CREATE TABLE FlaggedUsers (
+	user_id INTEGER PRIMARY KEY,
+	no_flaggs INTEGER NOT NULL DEFAULT 1,
+	permanent_flag BOOLEAN NOT NULL DEFAULT FALSE,
+	FOREIGN KEY (user_id) REFERENCES users(id)
+); 
 
 
 
