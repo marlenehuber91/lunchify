@@ -2,8 +2,8 @@ package backend.logic;
 
 import backend.interfaces.ConnectionProvider;
 import backend.model.Anomaly;
+import backend.model.FlaggedUser;
 import backend.model.Invoice;
-import backend.model.User;
 import database.DatabaseConnection;
 
 import java.sql.*;
@@ -71,5 +71,44 @@ public class AnomalyDetectionService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static FlaggedUser detectFlaggedUser(Integer userId) throws SQLException {
+        String sql = "SELECT * FROM flaggedUsers WHERE user_id = ?";
+        FlaggedUser flaggedUser = new FlaggedUser(userId);
+
+        try (Connection conn = connectionProvider.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            ResultSet resultSet = stmt.executeQuery();
+
+            if (resultSet.next()) {
+                int no_flaggs = resultSet.getInt("no_flaggs");
+                boolean permanent_flag = resultSet.getBoolean("permanent_flag");
+
+                flaggedUser.setNoFlaggs(no_flaggs);
+                flaggedUser.setPermanentFlag(permanent_flag);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return flaggedUser;
+    }
+
+
+    public static void addFlaggedUser(FlaggedUser user) throws SQLException {
+        String sql = "INSERT INTO flaggedUsers (user_id, no_flaggs, permanent_flag) VALUES (?, ?, ?)";
+
+        try (Connection conn = connectionProvider.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, user.getUserId());
+            stmt.setInt(2, user.getNoFlaggs());
+            stmt.setBoolean(3, user.isPermanentFlag());
+            stmt.executeUpdate();
+        }
+
     }
 }

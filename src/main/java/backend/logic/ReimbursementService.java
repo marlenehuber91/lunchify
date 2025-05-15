@@ -16,8 +16,9 @@ import backend.model.Reimbursement;
 import backend.model.ReimbursementState;
 import backend.model.User;
 import backend.model.UserRole;
+import frontend.controller.ReimbursementHistoryController;
 
-public class ReimbursementService {
+public class ReimbursementService extends ReimbursementHistoryController {
 	public static ConnectionProvider connectionProvider;
 	private User user; // is used but still marked as unused.. interesting - ignore in PMD!
 	private float reimbursementAmount;
@@ -79,7 +80,6 @@ public class ReimbursementService {
 
 		String sql = "INSERT INTO reimbursements (invoice_id, approved_amount, processed_date, status) VALUES (?, ?, ?, ?)";
 
-		String sql = "INSERT INTO reimbursements (invoice_id, approved_amount, processed_date) VALUES (?, ?, ?)";
 
 		try (Connection conn = connectionProvider.getConnection();
 			 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {

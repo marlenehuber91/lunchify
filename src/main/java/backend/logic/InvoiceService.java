@@ -24,7 +24,7 @@ import backend.model.User;
 import backend.model.UserRole;
 import backend.model.*;
 
-import static backend.logic.AnomalyDetectionService.detectAnomaliesAndLog;
+import static backend.logic.AnomalyDetectionService.*;
 
 
 public class InvoiceService {
@@ -124,7 +124,7 @@ public class InvoiceService {
 	}
 
 	public static boolean addInvoice(Invoice invoice) { //created with AI (ChatGPT)
-		//added manually from marlene - no AI
+		//added manually from marlene - not AI
 		LocalDate ocrDate = OCR.getDate();
 		Float ocrAmount = OCR.getAmount();
 		InvoiceCategory ocrCategory = OCR.getCategory();
@@ -134,8 +134,10 @@ public class InvoiceService {
 				invoice.getAmount() == 0.0f || Math.abs(ocrAmount - invoice.getAmount()) > 0.0001 || // Float-Delta
 				ocrCategory == null || invoice.getCategory() == null || !ocrCategory.equals(invoice.getCategory())) {
 			invoice.setFlag(true);
+
 		}
 
+		String flaggingQuery = "Insert INTO flagged_users (user_id, ) VALUES (?)";
 		// until here manually added by marlene
 
 		String sql = "INSERT INTO invoices (date, amount, category, user_id, file, flagged) VALUES (?, ?, ?, ?, ?, ?)";
@@ -168,6 +170,12 @@ public class InvoiceService {
 
 				if (invoice.isFlagged()) {
 					detectAnomaliesAndLog(invoice);
+					FlaggedUser flaggedUser = detectFlaggedUser(invoice.getUserId());
+					flaggedUser.setNoFlaggs(flaggedUser.getNoFlaggs()+1); //raise by one, since the invoice was flagged, therfore the user too
+					if (!flaggedUser.isPermanentFlag() || flaggedUser.getNoFlaggs() > 9) {
+						flaggedUser.setPermanentFlag(true);
+					}
+					addFlaggedUser(flaggedUser);
 				}
 
 				return true; // Erfolg

@@ -27,7 +27,7 @@ import java.util.List;
 import static backend.logic.ReimbursementService.getReimbursementByInvoiceId;
 
 
-public class AnomalyDetectionController extends ReimbursementHistoryController {
+public class AnomalyDetectionController {
 
     @FXML private TableView<Anomaly> anomalyTable;
     @FXML private TableColumn<Anomaly, Integer> userId;
