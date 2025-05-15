@@ -3,6 +3,7 @@ DROP TABLE Reimbursements;
 DROP TABLE Invoices;
 DROP TABLE Users;
 DROP TABLE ReimbursementAmount;
+DROP TABLE notifications;
 DROP TYPE ReimbursementState;
 DROP TYPE InvoiceCategory;
 DROP TYPE UserState;
@@ -57,6 +58,8 @@ id SERIAL PRIMARY KEY,
 category InvoiceCategory NOT NULL,
 amount FLOAT NOT NULL
 );
+
+
 
 
 ALTER TABLE Reimbursements

@@ -15,14 +15,18 @@ import backend.model.InvoiceCategory;
 import backend.model.Reimbursement;
 import backend.model.ReimbursementState;
 import backend.model.User;
+import backend.model.UserRole;
 
 public class ReimbursementService {
 	public static ConnectionProvider connectionProvider;
-	private User user; //is used but still marked as unused.. interesting - ignore in PMD!
+	private User user; // is used but still marked as unused.. interesting - ignore in PMD!
 	private float reimbursementAmount;
 	private float supermarketLimit = 2.5f;
 	private float restaurantLimit = 3.0f;
 	private float undetectableLimit = 2.5f;
+
+	boolean isAdmin;
+	private User selectedUser;
 
 	public static void setConnectionProvider(ConnectionProvider provider) {
 		connectionProvider = provider;
@@ -38,7 +42,12 @@ public class ReimbursementService {
 		this.user = user;
 		if (connectionProvider != null) {
 			loadLimitsFromDatabase();
+			isAdmin = user.getRole().equals(UserRole.ADMIN);
 		}
+	}
+
+	public User getSelectedUser() {
+		return this.selectedUser;
 	}
 
 	public float getReimbursementAmount() {
@@ -59,12 +68,18 @@ public class ReimbursementService {
 		this.reimbursementAmount = amount;
 	}
 
+	public void setSelectedUser(User selectedUser) {
+		this.selectedUser = selectedUser;
+	}
+
 	public boolean addReimbursement(Invoice invoice, float amount) {
 		if (connectionProvider == null) {
 			throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
 		}
 
 		String sql = "INSERT INTO reimbursements (invoice_id, approved_amount, processed_date, status) VALUES (?, ?, ?, ?)";
+
+		String sql = "INSERT INTO reimbursements (invoice_id, approved_amount, processed_date) VALUES (?, ?, ?)";
 
 		try (Connection conn = connectionProvider.getConnection();
 			 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -92,7 +107,6 @@ public class ReimbursementService {
 		return false; // Falls etwas schiefgeht
 	}
 
-
 	public boolean isValidFloat(String text) { // created by AI (ChatGPT)
 		return text.matches("^\\d+(\\.\\d+)?$");
 	}
@@ -117,17 +131,17 @@ public class ReimbursementService {
 				// Update cached value
 				if (rowsUpdated > 0) {
 					switch (category) {
-						case SUPERMARKET:
-							supermarketLimit = newLimit;
-							break;
-						case RESTAURANT:
-							restaurantLimit = newLimit;
-							break;
-						case UNDETECTABLE:
-							undetectableLimit = newLimit;
-							break;
-						default:
-							break;
+					case SUPERMARKET:
+						supermarketLimit = newLimit;
+						break;
+					case RESTAURANT:
+						restaurantLimit = newLimit;
+						break;
+					case UNDETECTABLE:
+						undetectableLimit = newLimit;
+						break;
+					default:
+						break;
 					}
 					setReimbursementAmount(newLimit);
 					return true;
@@ -188,7 +202,7 @@ public class ReimbursementService {
 				+ "WHERE " + condition;
 
 		try (Connection conn = connectionProvider.getConnection();
-			 PreparedStatement stmt = conn.prepareStatement(sql)) {
+				 PreparedStatement stmt = conn.prepareStatement(sql))  {
 
 			ResultSet rs = stmt.executeQuery();
 
@@ -227,7 +241,8 @@ public class ReimbursementService {
 	public List<Reimbursement> getCurrentReimbursements(int userId) {
 		return getReimbursements(
 				"i.user_id = " + userId + " AND EXTRACT( MONTH FROM i.date) = EXTRACT(MONTH FROM CURRENT_DATE) "
-						+ "AND EXTRACT(YEAR FROM i.date) = EXTRACT(YEAR FROM CURRENT_DATE)", userId);
+						+ "AND EXTRACT(YEAR FROM i.date) = EXTRACT(YEAR FROM CURRENT_DATE)",
+				userId);
 	}
 
 	public List<Reimbursement> getAllReimbursements(int userId) {
@@ -239,7 +254,7 @@ public class ReimbursementService {
 	}
 
 	public List<Reimbursement> getFilteredReimbursements(String selectedMonth, String selectedYear,
-														 String selectedCategory, String selectedStatus, int userId) {
+			String selectedCategory, String selectedStatus, int userId) {
 
 		StringBuilder condition = new StringBuilder(buildUserFilterCondition(userId));
 		// Monat filtern
@@ -248,7 +263,7 @@ public class ReimbursementService {
 		}
 
 		// Jahr filtern
-
+		
 		if (selectedYear != null && !selectedYear.isEmpty()) {
 			condition.append(" AND EXTRACT(YEAR FROM i.date) = ").append(selectedYear);
 		}
@@ -290,81 +305,88 @@ public class ReimbursementService {
 
 	public String convertMonthToNumber(String month) {
 		switch (month.toLowerCase()) {
-			case "jänner":
-				return "1";
-			case "februar":
-				return "2";
-			case "märz":
-				return "3";
-			case "april":
-				return "4";
-			case "mai":
-				return "5";
-			case "juni":
-				return "6";
-			case "juli":
-				return "7";
-			case "august":
-				return "8";
-			case "september":
-				return "9";
-			case "oktober":
-				return "10";
-			case "november":
-				return "11";
-			case "dezember":
-				return "12";
-			case "alle":
-				return null;
-			default:
-				throw new IllegalArgumentException("Ungültiger Monat: " + month);
+		case "jänner":
+			return "1";
+		case "februar":
+			return "2";
+		case "märz":
+			return "3";
+		case "april":
+			return "4";
+		case "mai":
+			return "5";
+		case "juni":
+			return "6";
+		case "juli":
+			return "7";
+		case "august":
+			return "8";
+		case "september":
+			return "9";
+		case "oktober":
+			return "10";
+		case "november":
+			return "11";
+		case "dezember":
+			return "12";
+		case "alle":
+			return null;
+		default:
+			throw new IllegalArgumentException("Ungültiger Monat: " + month);
 		}
 	}
-
+	
 	private String buildUserFilterCondition(int userId) {
 		return userId > 0 ? "i.user_id = " + userId : "1=1";
 	}
 
 	public String getInfoText() {
 		StringBuilder info = new StringBuilder();
-		info.append("Pro Arbeitstag kann eine Rechnung eingereicht werden.").append(System.lineSeparator()).append(System.lineSeparator());
-		info.append("Maximale Rückerstattung pro Arbeitstag:").append(System.lineSeparator()).append(System.lineSeparator());
+		info.append("Pro Arbeitstag kann eine Rechnung eingereicht werden.").append(System.lineSeparator())
+				.append(System.lineSeparator());
+		info.append("Maximale Rückerstattung pro Arbeitstag:").append(System.lineSeparator())
+				.append(System.lineSeparator());
 
 		for (InvoiceCategory category : InvoiceCategory.values()) {
 			if (category != InvoiceCategory.UNDETECTABLE) {
 				float limit = getLimit(category);
-				info.append(category.name().charAt(0))
-						.append(category.name().substring(1).toLowerCase())
-						.append(": ")
-						.append(String.format("%.2f €", limit))
-						.append(System.lineSeparator());
+				info.append(category.name().charAt(0)).append(category.name().substring(1).toLowerCase()).append(": ")
+						.append(String.format("%.2f €", limit)).append(System.lineSeparator());
 			}
 		}
 
 		return info.toString().trim();
 	}
 
-	public boolean updateReimbursementIfChanged(Reimbursement oldReimb, Reimbursement newReimb) {
+	public boolean updateReimbursementIfChanged(Reimbursement oldReimb, Reimbursement newReimb, User reimbUser, boolean selfmade) {
 		boolean updated = false;
+		System.out.println("User:" + user + "selectedUser: " + reimbUser);
+		System.out.println(selfmade);
 
 		try (Connection conn = connectionProvider.getConnection()) {
 
 			if (oldReimb.getApprovedAmount() != newReimb.getApprovedAmount()) {
-				PreparedStatement stmt = conn.prepareStatement("UPDATE reimbursements SET approved_amount = ? WHERE id = ?");
+				PreparedStatement stmt = conn
+						.prepareStatement("UPDATE reimbursements SET approved_amount = ? WHERE id = ?");
 				stmt.setFloat(1, newReimb.getApprovedAmount());
 				stmt.setInt(2, oldReimb.getId());
 				stmt.executeUpdate();
 				updated = true;
+
+				NotificationService.createNotification(reimbUser.getId(), "REIMBURSEMENT",
+						oldReimb.getId(), "approved_amount", String.valueOf(oldReimb.getApprovedAmount()),
+						String.valueOf(newReimb.getApprovedAmount()), "Der Erstattungsbetrag wurde geändert.",
+						newReimb.getInvoice().getFile(), isAdmin, oldReimb.getInvoice().getDate(), selfmade);
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 
-		return updated;
+	    return updated;
 	}
 
-	public boolean deleteReimbursement(Reimbursement toDeleteReimb) {
+	public boolean deleteReimbursement(Reimbursement toDeleteReimb, User reimbUser, boolean selfmade) {
 		boolean deleted = false;
 
 		try (Connection conn = connectionProvider.getConnection()) {
@@ -388,17 +410,22 @@ public class ReimbursementService {
 			e.printStackTrace();
 		}
 
+		NotificationService.createNotification(toDeleteReimb.getInvoice().getUser().getId(), "REIMBURSEMENT",
+				toDeleteReimb.getId(), "delete", null, null,
+				"Die Rechnung wurde gelöscht.",null, isAdmin, toDeleteReimb.getInvoice().getDate(), selfmade);
+
 		return deleted;
 	}
 
-	public boolean approveReimbursement(Reimbursement toApproveReimb) {
+	public boolean approveReimbursement(Reimbursement toApproveReimb, User reimbUser, boolean selfmade) {
 		boolean approved = false;
 
 		try (Connection conn = connectionProvider.getConnection()) {
 			int reimbId = toApproveReimb.getId();
 
 			if (reimbId != 0) {
-				PreparedStatement stmtReimb = conn.prepareStatement("UPDATE reimbursements SET status = 'APPROVED' WHERE id = ?");
+				PreparedStatement stmtReimb = conn
+						.prepareStatement("UPDATE reimbursements SET status = 'APPROVED' WHERE id = ?");
 				stmtReimb.setInt(1, reimbId);
 				stmtReimb.executeUpdate();
 
@@ -410,17 +437,22 @@ public class ReimbursementService {
 			e.printStackTrace();
 		}
 
-		return approved;
-	}
+		NotificationService.createNotification(toApproveReimb.getInvoice().getUser().getId(), "REIMBURSEMENT",
+				toApproveReimb.getId(), "approve", null, null, "Die Rechnung wurde genehmigt.",
+				toApproveReimb.getInvoice().getFile(), isAdmin, toApproveReimb.getInvoice().getDate(), selfmade);
 
-	public boolean rejectReimbursement(Reimbursement toRejectReimb) {
+		return approved;
+    }
+
+	public boolean rejectReimbursement(Reimbursement toRejectReimb, User reimbUser, boolean selfmade) {
 		boolean rejected = false;
 
 		try (Connection conn = connectionProvider.getConnection()) {
 			int reimbId = toRejectReimb.getId();
 
 			if (reimbId != 0) {
-				PreparedStatement stmtReimb = conn.prepareStatement("UPDATE reimbursements SET status = 'REJECTED' WHERE id = ?");
+				PreparedStatement stmtReimb = conn
+						.prepareStatement("UPDATE reimbursements SET status = 'REJECTED' WHERE id = ?");
 				stmtReimb.setInt(1, reimbId);
 				stmtReimb.executeUpdate();
 
@@ -431,6 +463,11 @@ public class ReimbursementService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
+		NotificationService.createNotification(toRejectReimb.getInvoice().getUser().getId(), "REIMBURSEMENT",
+				toRejectReimb.getId(), "approve", null, null, "Die Rechnung wurde genehmigt.",
+				toRejectReimb.getInvoice().getFile(), isAdmin, toRejectReimb.getInvoice().getDate(), selfmade);
+
 
 		return rejected;
 	}

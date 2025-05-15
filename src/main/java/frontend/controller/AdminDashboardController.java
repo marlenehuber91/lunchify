@@ -1,14 +1,18 @@
 package frontend.controller;
 import java.io.IOException;
+import java.util.List;
 
-
+import backend.logic.NotificationService;
 import backend.logic.SessionManager;
+import backend.model.Notification;
 import backend.model.User;
+import backend.model.UserRole;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.Node;
@@ -20,7 +24,12 @@ public class AdminDashboardController {
     private Text userNameText;
 
     @FXML
+    private Circle redDot;
+
+
+    @FXML
     public void initialize() {
+    	redDot.setVisible(false);
     	User user = SessionManager.getCurrentUser();
         if (user != null) {
             String username = user.getName();
@@ -28,6 +37,15 @@ public class AdminDashboardController {
         } else {
             userNameText.setText("Nicht eingeloggt");
         }
+
+        List<Notification> notifications = NotificationService.getNotificationsByUser(user);
+        redDot.setVisible(NotificationService.hasUnreadNotifications(notifications, user.getId()));
+
+      	if (user.getRole().equals(UserRole.ADMIN)) {
+      		List<Notification> adminNotifications = NotificationService.getAdminNotification();
+      		redDot.setVisible(NotificationService.hasUnreadAdminNotifications(adminNotifications, user.getId()));
+      	}
+
     }
 
 
@@ -148,6 +166,22 @@ public class AdminDashboardController {
          } catch (IOException e) {
              e.printStackTrace();
          }
+    }
+
+    @FXML public void openNotifications(MouseEvent event) {
+    	try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/Notification.fxml"));
+            Parent root = fxmlLoader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            stage.setTitle("Search");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

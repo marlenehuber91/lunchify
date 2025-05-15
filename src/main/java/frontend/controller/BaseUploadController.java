@@ -65,6 +65,7 @@ public class BaseUploadController {
 	protected InvoiceService invoiceService = new InvoiceService();
 	protected ReimbursementService reimbursementService;
 	protected List<Invoice> invoices;
+	protected User selectedUser;
 	
 	public BaseUploadController() { //for testing
 		instance = this;

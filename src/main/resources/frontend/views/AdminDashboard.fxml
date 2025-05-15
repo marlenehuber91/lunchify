@@ -4,6 +4,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
@@ -137,5 +138,11 @@
             <Image url="@../images/pen.png" />
          </image>
       </ImageView>
+      <ImageView fx:id="notificationBell" fitHeight="47.0" fitWidth="53.0" layoutX="1194.0" layoutY="63.0" onMouseClicked="#openNotifications" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/bell.png" />
+         </image>
+      </ImageView>
+      <Circle fx:id="redDot" fill="#ff1f1f" layoutX="1226.0" layoutY="82.0" radius="7.6" stroke="#ff1f1f" strokeType="INSIDE" />
    </children>
 </AnchorPane>

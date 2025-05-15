@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+
+import backend.logic.SessionManager;
 import backend.model.*;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -12,13 +14,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class EditReimbursementController extends BaseUploadController{
 	
 	protected Reimbursement reimbursement;
 	protected Invoice selectedInvoice;
+	protected User user;
+	protected User selectedUser;
+	private boolean selfmade;
     
     public void setReimbursement (Reimbursement reimb) {
     	this.reimbursement = reimb;
@@ -29,11 +33,18 @@ public class EditReimbursementController extends BaseUploadController{
     public void initialize() {
     	super.initialize();
         categoryBox.setItems(FXCollections.observableArrayList(InvoiceCategory.values()));
+        
+        if (user == null) {
+			user = SessionManager.getCurrentUser();
+		}
     }
     
     
    @FXML
    private void showEditConfirmationDialog() {
+	   if ((selectedUser == null) ||  (user.getId() == selectedUser.getId())) {
+		   selfmade = true;
+	   }
 	   
 	   Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
        alert.setTitle("Bestätigung");
@@ -47,8 +58,9 @@ public class EditReimbursementController extends BaseUploadController{
        alert.showAndWait().ifPresent(response -> {
     	   if (response == buttonSave) {
     		   Reimbursement newReimb = getReimbursement();
-    		   boolean isReimbAltered = reimbursementService.updateReimbursementIfChanged(reimbursement, newReimb);
-    		   boolean isInvoiceAltered =  invoiceService.updateInvoiceIfChanged(reimbursement.getInvoice(), newReimb.getInvoice());
+    		   System.out.println("EditReimb: showEdiCon + if" + selfmade );
+    		   boolean isReimbAltered = reimbursementService.updateReimbursementIfChanged(reimbursement, newReimb, selectedInvoice.getUser(), selfmade);
+    		   boolean isInvoiceAltered =  invoiceService.updateInvoiceIfChanged(reimbursement.getInvoice(), newReimb.getInvoice(), reimbursement.getInvoice().getUser(), selfmade);
     		   
     		   if (isReimbAltered || isInvoiceAltered) {
     	    	   showAlert("Erfolg", "Änderungen wurden gespeichert");
@@ -72,7 +84,7 @@ public class EditReimbursementController extends BaseUploadController{
 	   alert.showAndWait().ifPresent(response -> {
 		   if (response == buttonSave) {
 			   Reimbursement toDeleteReimb = reimbursement;
-			   boolean isReimbDeleted = reimbursementService.deleteReimbursement(toDeleteReimb);
+			   boolean isReimbDeleted = reimbursementService.deleteReimbursement(toDeleteReimb, toDeleteReimb.getInvoice().getUser(), false);
 
 			   if (isReimbDeleted) {
 				   showAlert("Erfolg", "Rückerstattungsantrag gelöscht.");
@@ -84,6 +96,14 @@ public class EditReimbursementController extends BaseUploadController{
 
    public File getFile() {
 	   return this.uploadedFile;
+   }
+   
+   public User getSelectedUser() {
+	   return this.selectedUser;
+   }
+   
+   public void setSelectedUser(User selectedUser) {
+	   this.selectedUser = selectedUser;
    }
    
    private boolean isDateValid(LocalDate date) {
