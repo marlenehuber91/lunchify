@@ -457,7 +457,7 @@ public class ReimbursementService {
 		}
 		
 		NotificationService.createNotification(toRejectReimb.getInvoice().getUser().getId(), "REIMBURSEMENT",
-				toRejectReimb.getId(), "approve", null, null, "Die Rechnung wurde genehmigt.",
+				toRejectReimb.getId(), "approve", null, null, "Die Rechnung wurde abgelehnt.",
 				toRejectReimb.getInvoice().getFile(), isAdmin, toRejectReimb.getInvoice().getDate(), selfmade);
 
 
