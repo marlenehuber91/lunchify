@@ -59,6 +59,22 @@ category InvoiceCategory NOT NULL,
 amount FLOAT NOT NULL
 );
 
+CREATE TABLE notifications (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    entity_type VARCHAR(50),
+    entity_id INT,
+	field_changed TEXT,
+    old_value TEXT,
+    new_value TEXT,
+    message TEXT,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    old_file BYTEA,
+    as_admin BOOLEAN,
+    original_invoice_date DATE,
+	is_selfmade_change boolean
+);
 
 
 
