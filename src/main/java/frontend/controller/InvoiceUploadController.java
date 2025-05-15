@@ -58,6 +58,10 @@ public class InvoiceUploadController extends BaseUploadController {
                     amountField.setText(String.valueOf(extractedInvoice.getAmount()));
                     datePicker.setValue(extractedInvoice.getDate());
                     categoryBox.setValue(extractedInvoice.getCategory());
+
+                    OCR.setAmount(extractedInvoice.getAmount());
+                    OCR.setDate(extractedInvoice.getDate());
+                    OCR.setCategory(extractedInvoice.getCategory());
                 }
                 extractedInvoice.setFlag(false); //intitially false, only true if user alters amount manually
 
