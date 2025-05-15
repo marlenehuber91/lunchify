@@ -12,11 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -63,14 +59,22 @@ public class FlaggedUserController {
         anomalyTable.setItems(observableList);
     }
 
-    private void addEditButtonToTable() {
+    private void addEditButtonToTable() {//AI generated
         Callback<TableColumn<FlaggedUser, Void>, TableCell<FlaggedUser, Void>> cellFactory = param -> new TableCell<>() {
-            private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/frontend/images/pen.png")));
+
+            private final Button editButton = new Button();
 
             {
-                editIcon.setFitHeight(20);
-                editIcon.setFitWidth(20);
-                editIcon.setOnMouseClicked(event -> {
+                ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/frontend/images/pen.png")));
+                icon.setFitHeight(16);
+                icon.setFitWidth(16);
+                icon.setPreserveRatio(true);
+
+                editButton.setGraphic(icon);
+                editButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+
+                // Klick-Handler
+                editButton.setOnAction(event -> {
                     FlaggedUser user = getTableView().getItems().get(getIndex());
                     handleRemovePermFlag(user);
                 });
@@ -82,13 +86,14 @@ public class FlaggedUserController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(editIcon);
+                    setGraphic(editButton);
                 }
             }
         };
 
         removePermFlag.setCellFactory(cellFactory);
     }
+
 
     private void handleRemovePermFlag(FlaggedUser user) {
         int currentUserId = SessionManager.getCurrentUser().getId();
