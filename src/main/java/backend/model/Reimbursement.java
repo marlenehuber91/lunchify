@@ -73,7 +73,8 @@ public class Reimbursement {
 	}
 
     public boolean isReimbursementEditable() {
-        return this.getInvoice().getDate().getMonthValue() == LocalDate.now().getMonthValue();
+        return (this.getInvoice().getDate().getMonthValue() == LocalDate.now().getMonthValue()
+                && this.getStatus() != ReimbursementState.APPROVED);
     }
 
     public boolean isReimbursementAcceptable() {
