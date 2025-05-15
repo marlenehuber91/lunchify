@@ -13,6 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.Button?>
 <AnchorPane fx:id="historyPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controller.AnomalyDetectionController">
     <children>
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#42b35b" height="832.0" layoutX="1002.0" stroke="#42b35b" strokeType="INSIDE" width="278.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
@@ -59,6 +60,11 @@
         <ComboBox fx:id="yearFilterBox" layoutX="225.0" layoutY="243.0" prefHeight="26.0" prefWidth="101.0" />
         <Label fx:id="monthLabel" layoutX="108.0" layoutY="226.0" text="Monat" />
         <Label fx:id="yearLabel" layoutX="225.0" layoutY="226.0" text="Jahr" />
+        <Button fx:id="flaggedUserButton" layoutX="793.0" layoutY="200.0" mnemonicParsing="false" onMouseClicked="#goToFlaggedUsers" prefHeight="40.0" prefWidth="128.0" style="-fx-background-color: #42b45b;" text="Auffällige User" textFill="#edf2ef">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Button>
     </children>
     <fx:include source="UserDropDown.fxml" />
 </AnchorPane>

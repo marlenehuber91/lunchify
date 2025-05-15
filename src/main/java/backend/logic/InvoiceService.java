@@ -124,39 +124,28 @@ public class InvoiceService {
 		return this.invoices;
 	}
 
-	public static boolean addInvoice(Invoice invoice) {
-
+	public static boolean addInvoice(Invoice invoice) { //created with AI (ChatGPT)
+		//added manually from marlene - not AI
 		LocalDate ocrDate = OCR.getDate();
 		Float ocrAmount = OCR.getAmount();
 		InvoiceCategory ocrCategory = OCR.getCategory();
 
-		boolean isUserPermanentFlagged = false;
-		String checkPermFlag = "SELECT permanent_flag FROM FlaggedUsers WHERE user_id = ?";
+		//TODO REMOVE DEBUGGIN LINE
+		System.out.println("OCR Date: " + OCR.getDate());
+		System.out.println("OCR Amount: " + OCR.getAmount());
+		System.out.println("OCR Category: " + OCR.getCategory());
 
-		try (Connection conn = connectionProvider.getConnection();
-			 PreparedStatement permFlagStmt = conn.prepareStatement(checkPermFlag)) {
-			permFlagStmt.setInt(1, invoice.getUser().getId());
-			try (ResultSet rs = permFlagStmt.executeQuery()) {
-				if (rs.next()) {
-					isUserPermanentFlagged = rs.getBoolean("permanent_flag");
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		if (isUserPermanentFlagged) {
+		//check if ocr amount was altered - if so flag the invoice!
+		if (ocrDate == null || invoice.getDate() == null || !ocrDate.equals(invoice.getDate()) ||
+				invoice.getAmount() == 0.0f || Math.abs(ocrAmount - invoice.getAmount()) > 0.0001 || // Float-Delta
+				ocrCategory == null || invoice.getCategory() == null || !ocrCategory.equals(invoice.getCategory())) {
 			invoice.setFlag(true);
-		} else {
-			// check if ocr amount was altered - if so flag the invoice!
-			if (ocrDate == null || invoice.getDate() == null || !ocrDate.equals(invoice.getDate()) ||
-					invoice.getAmount() == 0.0f || Math.abs(ocrAmount - invoice.getAmount()) > 0.0001 || // Float-Delta
-					ocrCategory == null || invoice.getCategory() == null || !ocrCategory.equals(invoice.getCategory())) {
-				invoice.setFlag(true);
-			}
+
 		}
+		// until here manually added by marlene
 
 		String sql = "INSERT INTO invoices (date, amount, category, user_id, file, flagged) VALUES (?, ?, ?, ?, ?, ?)";
+		String checkPermFlag = "SELECT permanent_flag FROM flagged_users WHERE user_id = ?";
 
 		try (Connection conn = connectionProvider.getConnection();
 			 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -167,39 +156,39 @@ public class InvoiceService {
 			stmt.setInt(4, invoice.getUser().getId()); // Nutzer-ID setzen
 			stmt.setBoolean(6, invoice.isFlagged());
 
-			if (invoice.getFile() != null) {
+			if (invoice.getFile() != null) { // Falls eine Datei vorhanden ist
 				try {
 					stmt.setBinaryStream(5, new FileInputStream(invoice.getFile()), (int) invoice.getFile().length());
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
 			} else {
-				stmt.setNull(5, Types.BINARY);
+				stmt.setNull(5, Types.BINARY); // Falls keine Datei da ist
 			}
 
-			int affectedRows = stmt.executeUpdate();
+			int affectedRows = stmt.executeUpdate(); // SQL ausführen
 			if (affectedRows > 0) {
 				ResultSet generatedKeys = stmt.getGeneratedKeys();
 				if (generatedKeys.next()) {
-					invoice.setId(generatedKeys.getInt(1));
+					invoice.setId(generatedKeys.getInt(1)); // Neue ID setzen
 				}
 
 				if (invoice.isFlagged()) {
 					detectAnomaliesAndLog(invoice);
 					FlaggedUser flaggedUser = detectFlaggedUser(invoice.getUserId());
-					flaggedUser.setNoFlaggs(flaggedUser.getNoFlaggs() + 1); //raise by one, since the invoice was flagged, therfore the user too
-					if (!flaggedUser.isPermanentFlag() || flaggedUser.getNoFlaggs() > 9) {
+					flaggedUser.setNoFlaggs(flaggedUser.getNoFlaggs()+1); //raise by one, since the invoice was flagged, therfore the user too
+					if (!flaggedUser.isPermanentFlag() && flaggedUser.getNoFlaggs() > 9) {
 						flaggedUser.setPermanentFlag(true);
 					}
 					addOrUpdateFlaggedUser(flaggedUser);
 				}
 
-				return true;
+				return true; // Erfolg
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return false;
+		return false; // Falls etwas schiefgeht
 	}
 
 

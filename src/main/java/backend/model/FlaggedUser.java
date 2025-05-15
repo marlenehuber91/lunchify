@@ -4,9 +4,19 @@ public class FlaggedUser {
     private int userId;
     private int no_flaggs;
     private boolean permanent_flag;
+    private String userName;
 
     public FlaggedUser(int userId) { //AI generated
-        this.userId = userId;
+        this.userId = userId; 
+        this.permanent_flag = false;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String setUserName(String userName) {
+        return this.userName = userName;
     }
 
     public int getUserId() {

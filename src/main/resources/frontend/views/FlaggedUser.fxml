@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="historyPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controller.AnomalyDetectionController">
+<AnchorPane fx:id="historyPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="832.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controller.FlaggedUserController">
     <children>
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#42b35b" height="832.0" layoutX="1002.0" stroke="#42b35b" strokeType="INSIDE" width="278.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
         <Rectangle fx:id="anomalyRectangle" arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="120.0" layoutX="195.0" layoutY="40.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="445.0" AnchorPane.leftAnchor="195.0" />
@@ -20,14 +20,14 @@
                 <Image url="@../images/warning.png" />
             </image>
         </ImageView>
-        <StackPane fx:id="backButton" layoutX="63.0" layoutY="55.0" onMouseClicked="#handleBackToDashboard" prefHeight="87.0" prefWidth="90.0">
+        <StackPane fx:id="backButton" layoutX="63.0" layoutY="55.0" onMouseClicked="#handleBackToAnomaly" prefHeight="87.0" prefWidth="90.0">
             <children>
                 <ImageView fitHeight="90.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../images/arrow.png" />
                     </image>
                 </ImageView>
-                <Circle fx:id="backArrow" fill="#eceeef00" onMouseClicked="#handleBackToDashboard" radius="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
+                <Circle fx:id="backArrow" fill="#eceeef00" onMouseClicked="#handleBackToAnomaly" radius="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
             </children>
         </StackPane>
         <Text fx:id="anomalyText" layoutX="326.0" layoutY="114.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Auffällige User" wrappingWidth="278.0">
@@ -54,7 +54,7 @@
             <Font name="System Bold" size="16.0" />
          </font>
       </Text>
-      <Text fill="#eeebeb" layoutX="740.0" layoutY="366.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rechnungen von &quot;Permanent Flag Usern&quot; müssen immer manuell vom Administrator freigegeben werden" textAlignment="CENTER" wrappingWidth="223.0">
+      <Text fill="#eeebeb" layoutX="740.0" layoutY="366.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rechnungen von Permanent Flagged Usern müssen immer manuell vom Administrator freigegeben werden" textAlignment="CENTER" wrappingWidth="223.0">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>

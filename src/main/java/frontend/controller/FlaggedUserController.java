@@ -8,6 +8,10 @@ import backend.logic.SessionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
@@ -16,8 +20,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class FlaggedUserController {
@@ -50,14 +58,14 @@ public class FlaggedUserController {
     }
 
     private void loadFlaggedUsers() {
-        List<FlaggedUser> userList = flaggedUserService.getAllFlaggedUsers();
+        List<FlaggedUser> userList = flaggedUserService.getFlaggedUsers();
         ObservableList<FlaggedUser> observableList = FXCollections.observableArrayList(userList);
         anomalyTable.setItems(observableList);
     }
 
     private void addEditButtonToTable() {
         Callback<TableColumn<FlaggedUser, Void>, TableCell<FlaggedUser, Void>> cellFactory = param -> new TableCell<>() {
-            private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/frontend/images/edit.png")));
+            private final ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/frontend/images/pen.png")));
 
             {
                 editIcon.setFitHeight(20);
@@ -93,7 +101,11 @@ public class FlaggedUserController {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION, "Wollen Sie die Permanent Flag wirklich entfernen?", ButtonType.YES, ButtonType.NO);
         confirmation.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
-                flaggedUserService.removePermanentFlag(user.getUserId());
+                try {
+                    flaggedUserService.removePermanentFlag(user.getUserId());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 loadFlaggedUsers();
             }
         });
@@ -105,6 +117,26 @@ public class FlaggedUserController {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleBackToAnomaly(MouseEvent event) {
+
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/AnomalyDetection.fxml"));
+            Parent root = fxmlLoader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            if (stage != null) {
+                stage.setScene(new Scene(root));
+                stage.setTitle("Dashboard");
+                stage.show();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

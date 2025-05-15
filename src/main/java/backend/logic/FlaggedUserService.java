@@ -4,6 +4,7 @@ import backend.interfaces.ConnectionProvider;
 import backend.model.FlaggedUser;
 import backend.model.Invoice;
 import backend.model.User;
+import database.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,22 +14,49 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FlaggedUserService {
-    public static ConnectionProvider connectionProvider;
     public List<FlaggedUser> flaggedUsers;
 
-    public FlaggedUserService () {
+    public FlaggedUserService() {
         this.flaggedUsers = new ArrayList<>();
     }
 
-    public static void setConnectionProvider(ConnectionProvider provider) {
-        connectionProvider = provider;
-    }
+    public static ConnectionProvider connectionProvider = new ConnectionProvider() {
+        @Override
+        public Connection getConnection() {
+            return DatabaseConnection.connect();
+        }
+    };
 
     public List<FlaggedUser> getFlaggedUsers() {
+        List<FlaggedUser> flaggedUsers = new ArrayList<>();
+
+        String selectSql = "SELECT f.user_id, u.name, f.no_flaggs, f.permanent_flag " +
+                "FROM FlaggedUsers f JOIN Users u ON f.user_id = u.id";
 
 
+        try (Connection conn = connectionProvider.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(selectSql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int userId = rs.getInt("user_id");
+                String userName = rs.getString("name");
+                int noFlaggs = rs.getInt("no_flaggs");
+                boolean permanentFlag = rs.getBoolean("permanent_flag");
+
+                FlaggedUser user = new FlaggedUser(userId);
+                user.setNoFlaggs(noFlaggs);
+                user.setUserName(userName);
+                user.setPermanentFlag(permanentFlag);
+                flaggedUsers.add(user);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return flaggedUsers;
     }
+
 
 
     public static void addOrUpdateFlaggedUser(FlaggedUser user) throws SQLException {
@@ -62,5 +90,21 @@ public class FlaggedUserService {
             }
         }
     }
+
+    public void removePermanentFlag(int userId) throws SQLException {
+        int currentUserId = SessionManager.getCurrentUser().getId();
+        if (userId == currentUserId) {
+            throw new IllegalArgumentException("Eigene Permanent Flag kann nicht entfernt werden.");
+        }
+
+        String sql = "UPDATE FlaggedUsers SET permanent_flag = false WHERE user_id = ?";
+
+        try (Connection conn = connectionProvider.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.executeUpdate();
+        }
+    }
+
 
 }
