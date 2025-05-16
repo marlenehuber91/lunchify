@@ -54,7 +54,7 @@
             <Font name="System Bold" size="16.0" />
          </font>
       </Text>
-      <Text fill="#eeebeb" layoutX="740.0" layoutY="366.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rechnungen von Permanent Flagged Usern müssen immer manuell vom Administrator freigegeben werden" textAlignment="CENTER" wrappingWidth="223.0">
+      <Text fill="#eeebeb" layoutX="740.0" layoutY="366.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rechnungen von Permanent Flagged Usern werden automatisch als Anomalie erkannt." textAlignment="CENTER" wrappingWidth="223.0">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>

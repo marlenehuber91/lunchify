@@ -54,7 +54,7 @@ public class AnomalyDetectionController  {
     @FXML
     public void initialize() {
         // Column value factories
-        userId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
+        userId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getUserId()).asObject());
         userName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUserName()));
         invoiceDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getInvoiceDate()));
         invoiceID.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getInvoiceId()));

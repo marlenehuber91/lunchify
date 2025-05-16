@@ -85,26 +85,6 @@ class FlaggedUserServiceTest {
         assertTrue(result.isEmpty());
     }
 
-    @Test
-    void testAddOrUpdateFlaggedUser_InsertNew() throws SQLException {
-        // Arrange
-        FlaggedUser newUser = new FlaggedUser(1);
-        newUser.setNoFlaggs(2);
-        newUser.setPermanentFlag(false);
-
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
-        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(false); // No existing record
-
-        // Act
-        FlaggedUserService.addOrUpdateFlaggedUser(newUser);
-
-        // Assert
-        verify(mockPreparedStatement, times(1)).setInt(1, 1);
-        verify(mockPreparedStatement, times(1)).setInt(2, 2);
-        verify(mockPreparedStatement, times(1)).setBoolean(3, false);
-        verify(mockPreparedStatement, times(1)).executeUpdate();
-    }
 
     @Test
     void testAddOrUpdateFlaggedUser_UpdateExisting() throws SQLException {

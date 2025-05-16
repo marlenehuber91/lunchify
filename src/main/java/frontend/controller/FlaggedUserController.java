@@ -49,6 +49,18 @@ public class FlaggedUserController {
         userName.setCellValueFactory(new PropertyValueFactory<>("userName"));
         permFlagStatus.setCellValueFactory(new PropertyValueFactory<>("permanentFlag"));
 
+        permFlagStatus.setCellFactory(column -> new TableCell<FlaggedUser, Boolean>() {
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item ? "ja" : "nein");
+                }
+            }
+        });
+
         loadFlaggedUsers();
         addEditButtonToTable();
     }
