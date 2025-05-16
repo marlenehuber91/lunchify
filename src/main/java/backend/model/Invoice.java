@@ -1,14 +1,32 @@
 package backend.model;
+
+import backend.logic.LocalDateAdapter;
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import java.io.File;
 import java.time.LocalDate;
 
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Invoice {
     private int id;
+
+    @XmlElement(name = "invoiceDate")
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate date;
+
+    @XmlElement
     private float amount;
+
+    @XmlElement
     private InvoiceCategory category;
-    private User user;
+
+    @XmlElement
+    private User user;  // User muss ebenfalls annotiert sein
+
+    @XmlTransient  // File wird nicht serialisiert
     private File file;
     private boolean flag;
     private String text;

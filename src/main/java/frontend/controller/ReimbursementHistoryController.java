@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import backend.logic.ExportService;
 import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
 import backend.logic.UserService;
@@ -51,6 +52,7 @@ public class ReimbursementHistoryController {
 	String category;
 	String status;
 	String totalReimbursement;
+	ExportService exportService;
 	int currUserId;
 	private boolean selfmade;
 
@@ -592,6 +594,7 @@ public class ReimbursementHistoryController {
 	@FXML
 	private void handleExport() { //AI generated
 		List<Reimbursement> data = reimbursementHistoryTable.getItems();
+		exportService = new ExportService();
 
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Exportieren als");
@@ -605,49 +608,14 @@ public class ReimbursementHistoryController {
 			try {
 				String extension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
 				if ("json".equalsIgnoreCase(extension)) {
-					exportToJson(data, file);
+					exportService.exportToJson(data, file);
 				} else if ("xml".equalsIgnoreCase(extension)) {
-					exportToXml(data, file);
+					exportService.exportToXml(data, file);
 				}
 				showAlert("Erfolg", "Daten wurden exportiert: " + file.getAbsolutePath());
 			} catch (Exception e) {
 				showAlert("Fehler", "Export fehlgeschlagen: " + e.getMessage());
 			}
-		}
-	}
-
-	private void exportToJson(List<Reimbursement> data, File file) throws Exception { //AI generated
-		ObjectMapper mapper = new ObjectMapper();
-		// Java 8 Date/Time-Unterstützung aktivieren
-		mapper.registerModule(new JavaTimeModule());
-		// Deaktiviert das Schreiben von Dates als Timestamps (z. B. 1623456000000)
-		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		mapper.writeValue(file, data);
-	}
-
-	private void exportToXml(List<Reimbursement> data, File file) throws Exception {//AI generated
-		// Konvertiere ObservableList zu ArrayList
-		List<Reimbursement> exportData = new ArrayList<>(data);
-
-		JAXBContext context = JAXBContext.newInstance(Wrapper.class, Reimbursement.class);
-		Marshaller marshaller = context.createMarshaller();
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-		// Nutze Wrapper-Klasse für die Liste
-		marshaller.marshal(new Wrapper(exportData), file);
-	}
-
-	// Wrapper-Klasse für die Liste
-	@XmlRootElement(name = "reimbursements")
-	private static class Wrapper {
-		@XmlElement(name = "reimbursement")
-		private List<Reimbursement> items;
-
-		public Wrapper() {}
-
-		public Wrapper(List<Reimbursement> items) {
-			this.items = items;
 		}
 	}
 }

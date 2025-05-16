@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @XmlRootElement // Für XML-Export
-@XmlAccessorType(XmlAccessType.FIELD) // Felder statt Getter serialisieren
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Reimbursement {
     private int id; //created automatically by database
     private Invoice invoice;
