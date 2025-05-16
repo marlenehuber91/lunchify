@@ -6,11 +6,14 @@ import java.time.LocalDate;
 
 import backend.logic.*;
 import backend.model.*;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
@@ -19,6 +22,9 @@ import javafx.stage.Stage;
 public class InvoiceUploadController extends BaseUploadController {
 
     private Invoice extractedInvoice;
+    @FXML
+    private ProgressIndicator loadingIndicator;
+
 
     @FXML
     public void initialize() {
@@ -27,57 +33,85 @@ public class InvoiceUploadController extends BaseUploadController {
 
     @FXML
     protected void openFileChooser() {
-    	
-        Stage stage = (Stage) uploadPane.getScene().getWindow(); 
+        Stage stage = (Stage) uploadPane.getScene().getWindow();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Bild oder PDF hochladen");
 
         fileChooser.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("Bilddateien und PDF", "*.jpg", "*.jpeg", "*.png", "*.pdf"));
-         
+                new FileChooser.ExtensionFilter("Bilddateien und PDF", "*.jpg", "*.jpeg", "*.png", "*.pdf"));
+
         File file = fileChooser.showOpenDialog(stage);
 
         if (file != null) {
+            loadingIndicator.setVisible(true); // Zeige Indikator sofort
+
             String filePath = file.getAbsolutePath();
             System.out.println("Datei ausgewählt: " + filePath);
-            
-            if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg") || filePath.endsWith(".png")) {
-                uploadedImageView.setImage(new Image(file.toURI().toString()));
-                uploadedFile = file;
-                previewText.setText("Vorschau");
-            } else {
-            	uploadedFile = file;
-                showAlert("Datei hochgeladen", "Die Datei wurde erfolgreich ausgewählt:\n" + filePath);
-            }
 
-            try {
-                OCRService ocrService = new OCRService();
-                extractedInvoice = ocrService.extractData(file);
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() {
+                    try {
+                        if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg") || filePath.endsWith(".png")) {
+                            Platform.runLater(() -> {
+                                uploadedImageView.setImage(new Image(file.toURI().toString()));
+                                previewText.setText("Vorschau");
+                            });
+                        }
 
-                if (extractedInvoice != null) {
-                    amountField.setText(String.valueOf(extractedInvoice.getAmount()));
-                    datePicker.setValue(extractedInvoice.getDate());
-                    categoryBox.setValue(extractedInvoice.getCategory());
+                        uploadedFile = file;
 
-                    OCR.setAmount(extractedInvoice.getAmount());
-                    OCR.setDate(extractedInvoice.getDate());
-                    OCR.setCategory(extractedInvoice.getCategory());
+                        OCRService ocrService = new OCRService();
+                        extractedInvoice = ocrService.extractData(file);
+
+                        if (extractedInvoice != null) {
+                            OCR.setAmount(extractedInvoice.getAmount());
+                            OCR.setDate(extractedInvoice.getDate());
+                            OCR.setCategory(extractedInvoice.getCategory());
+
+                            Platform.runLater(() -> {
+                                amountField.setText(String.valueOf(extractedInvoice.getAmount()));
+                                datePicker.setValue(extractedInvoice.getDate());
+                                categoryBox.setValue(extractedInvoice.getCategory());
+                            });
+                        }
+
+                        extractedInvoice.setFlag(false);
+
+                    } catch (Exception e) {
+                        Platform.runLater(() -> showAlert("Fehler", "Die Datei konnte nicht analysiert werden."));
+                        e.printStackTrace();
+                    }
+
+                    return null;
                 }
-                extractedInvoice.setFlag(false); //intitially false, only true if user alters amount manually
 
-            } catch (Exception e) {
-                showAlert("Fehler", "Die Datei konnte nicht analysiert werden.");
-                e.printStackTrace();
-            }
+                @Override
+                protected void succeeded() {
+                    loadingIndicator.setVisible(false);
+                    uploadText.setText("Foto hochgeladen");
+                }
 
-            uploadText.setText("Foto hochgeladen");
+                @Override
+                protected void failed() {
+                    loadingIndicator.setVisible(false);
+                    showAlert("Fehler", "Es ist ein Fehler aufgetreten.");
+                }
+            };
+            task.setOnFailed(e -> {
+                loadingIndicator.setVisible(false);
+                showAlert("Fehler", "Die Datei konnte nicht analysiert werden");
+                if (task.getException() != null) {
+                    task.getException().printStackTrace();
+                }
+            });
+            new Thread(task).start(); // Starte im Hintergrund
 
         } else {
             showAlert("Keine Datei", "Es wurde keine Datei ausgewählt.");
         }
-
-        
     }
+
 
 
     @FXML

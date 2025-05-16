@@ -10,7 +10,6 @@
         <MenuButton fx:id="userDropDown" layoutX="87.0" layoutY="22.0" mnemonicParsing="false" prefHeight="82.0" prefWidth="38.0" style="-fx-background-color: #feead1;" visible="false">
             <items>
                 <MenuItem fx:id="changePassword" mnemonicParsing="false" onAction="#changePassword" text="Passwort ändern" />
-                <MenuItem fx:id="changeRoleButton" mnemonicParsing="false" onAction="#changeRole" text="Rolle wechseln " />
                 <MenuItem fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" text="Logout" />
             </items>
         </MenuButton>
