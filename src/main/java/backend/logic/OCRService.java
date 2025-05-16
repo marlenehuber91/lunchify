@@ -57,11 +57,6 @@ public class OCRService {
     private Invoice parseInvoiceFromText(String text) { //Amount detection coded with AI assistance (not AI only)
         Invoice invoice = new Invoice();
 
-        //TODO remove debugging line
-        System.out.println("---- OCR TEXT BEGIN ----");
-        System.out.println(text);
-        System.out.println("---- OCR TEXT END ----");
-
         String[] lines = text.split("\\r?\\n");
         Float amount = null;
 

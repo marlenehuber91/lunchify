@@ -5,13 +5,11 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import backend.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import backend.logic.StatisticsService;
-import backend.model.Invoice;
-import backend.model.InvoiceCategory;
-import backend.model.Reimbursement;
-import backend.model.User;
 
 class StatisticsServiceTest { //created by AI, changed by the team
 
@@ -29,16 +27,16 @@ class StatisticsServiceTest { //created by AI, changed by the team
 	        statisticsService = new StatisticsService(testReimbursements);
 	    }
 
-	    private Reimbursement createReimbursement(LocalDate date, float amount, InvoiceCategory category) {
-	        // Dummydaten für User und File (falls gebraucht)
-	        User user = new User(); // Falls der Konstruktor hier Anpassung benötigt, ggf. erweitern
-	        //File file = new File("dummy.pdf");
+	private Reimbursement createReimbursement(LocalDate date, float amount, InvoiceCategory category) {
+		// Dummydaten für User
+		User user = new User(); // ggf. mit Parametern anpassen
 
-	        Invoice invoice = new Invoice(date, amount, category, null, user);
-	        return new Reimbursement(invoice, amount, new Date());
-	    }
+		Invoice invoice = new Invoice(date, amount, category, null, user);
+		return new Reimbursement(invoice, amount, new Date(), ReimbursementState.PENDING);
+	}
 
-	    @Test
+
+	@Test
 	    void testGetSumByCategory() {
 	        Map<InvoiceCategory, Double> result = statisticsService.getSumByCategory();
 

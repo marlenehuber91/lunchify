@@ -14,11 +14,11 @@ public class Reimbursement {
     	
     }
     
-    public Reimbursement(Invoice invoice, float approvedAmount, Date processedDate) {
+    public Reimbursement(Invoice invoice, float approvedAmount, Date processedDate, ReimbursementState state) {
         this.invoice = invoice;
         this.approvedAmount = approvedAmount;
         this.processedDate = processedDate;
-        this.state = ReimbursementState.PENDING;
+        this.state = state;
     }
 
     public int getId() {

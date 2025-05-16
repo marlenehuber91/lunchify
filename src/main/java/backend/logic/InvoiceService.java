@@ -22,6 +22,10 @@ import backend.model.InvoiceCategory;
 import backend.model.Reimbursement;
 import backend.model.User;
 import backend.model.UserRole;
+import backend.model.*;
+
+import static backend.logic.AnomalyDetectionService.*;
+import static backend.logic.FlaggedUserService.addOrUpdateFlaggedUser;
 
 
 public class InvoiceService {
@@ -119,43 +123,92 @@ public class InvoiceService {
 	public List<Invoice> getInvoices (){
 		return this.invoices;
 	}
-	
-	public static boolean addInvoice(Invoice invoice) { //created with AI (ChatGPT)
-	    String sql = "INSERT INTO invoices (date, amount, category, user_id, file, flagged) VALUES (?, ?, ?, ?, ?, ?)";
 
-	    try (Connection conn = connectionProvider.getConnection();
-	        PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+	public static boolean addInvoice(Invoice invoice) {
+		LocalDate ocrDate = OCR.getDate();
+		Float ocrAmount = OCR.getAmount();
+		InvoiceCategory ocrCategory = OCR.getCategory();
 
-	    	stmt.setDate(1, Date.valueOf(invoice.getDate()));
-	    	stmt.setFloat(2, invoice.getAmount());
-	        stmt.setObject(3, invoice.getCategory(), Types.OTHER);
-	        stmt.setInt(4, invoice.getUser().getId()); // Nutzer-ID setzen
+		//TODO REMOVE DEBUGGIN LINE
+		System.out.println("OCR Date: " + OCR.getDate());
+		System.out.println("OCR Amount: " + OCR.getAmount());
+		System.out.println("OCR Category: " + OCR.getCategory());
+
+		//check for permanent flagged users
+		String checkPermFlag = "SELECT permanent_flag FROM FlaggedUsers WHERE user_id = ?";
+
+		try (Connection conn = connectionProvider.getConnection();
+			 PreparedStatement permFlagStmt = conn.prepareStatement(checkPermFlag)) {
+
+			permFlagStmt.setInt(1, invoice.getUser().getId());
+			try (ResultSet rs = permFlagStmt.executeQuery()) {
+				if (rs.next() && rs.getBoolean("permanent_flag")) {
+					invoice.setFlag(true);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			// Optional: trotzdem fortsetzen oder lieber abbrechen?
+		}
+
+		//check for differences with ocr data if not already flagged because of permanent flag
+		if (!invoice.isFlagged()) { // Nur wenn noch nicht durch permanent_flag gesetzt
+			if (ocrDate == null || invoice.getDate() == null || !ocrDate.equals(invoice.getDate()) ||
+					invoice.getAmount() == 0.0f || Math.abs(ocrAmount - invoice.getAmount()) > 0.0001 ||
+					ocrCategory == null || invoice.getCategory() == null || !ocrCategory.equals(invoice.getCategory())) {
+				invoice.setFlag(true);
+			}
+		}
+
+		String sql = "INSERT INTO invoices (date, amount, category, user_id, file, flagged) VALUES (?, ?, ?, ?, ?, ?)";
+
+		try (Connection conn = connectionProvider.getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+			stmt.setDate(1, Date.valueOf(invoice.getDate()));
+			stmt.setFloat(2, invoice.getAmount());
+			stmt.setObject(3, invoice.getCategory(), Types.OTHER);
+			stmt.setInt(4, invoice.getUser().getId());
 			stmt.setBoolean(6, invoice.isFlagged());
-	        
-	        if (invoice.getFile() != null) { // Falls eine Datei vorhanden ist
-	            try {
+
+			if (invoice.getFile() != null) {
+				try {
 					stmt.setBinaryStream(5, new FileInputStream(invoice.getFile()), (int) invoice.getFile().length());
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
-	        } else {
-	            stmt.setNull(5, Types.BINARY); // Falls keine Datei da ist
+			} else {
+				stmt.setNull(5, Types.BINARY);
 			}
 
-			int affectedRows = stmt.executeUpdate(); // SQL ausführen
-	        if (affectedRows > 0) {
-	            ResultSet generatedKeys = stmt.getGeneratedKeys();
-	            if (generatedKeys.next()) {
-	                invoice.setId(generatedKeys.getInt(1)); // Neue ID setzen
-	            }
-	            return true; // Erfolg
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return false; // Falls etwas schiefgeht
+			int affectedRows = stmt.executeUpdate();
+			if (affectedRows > 0) {
+				ResultSet generatedKeys = stmt.getGeneratedKeys();
+				if (generatedKeys.next()) {
+					invoice.setId(generatedKeys.getInt(1));
+				}
+
+				if (invoice.isFlagged()) {
+					detectAnomaliesAndLog(invoice);
+					FlaggedUser flaggedUser = detectFlaggedUser(invoice.getUserId());
+					flaggedUser.setNoFlaggs(flaggedUser.getNoFlaggs() + 1);
+					if (!flaggedUser.isPermanentFlag() && flaggedUser.getNoFlaggs() > 9) {
+						flaggedUser.setPermanentFlag(true);
+					}
+					addOrUpdateFlaggedUser(flaggedUser);
+				}
+
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
 	}
-	
+
+
+
 	public Invoice loadInvoice(Reimbursement reimbursement) {
 	    String sql = "SELECT i.* FROM Invoices i " +
 	                 "JOIN Reimbursements r ON i.id = r.invoice_id " +
@@ -220,7 +273,7 @@ public class InvoiceService {
 		String oldVal = "";
 		String newVal = "";
 		boolean isAdmin = user.getRole().equals(UserRole.ADMIN);
-		
+
 		try (Connection conn = connectionProvider.getConnection()) {
 			
 			if (!oldInvoice.getDate().equals(newInvoice.getDate())) {
@@ -245,7 +298,7 @@ public class InvoiceService {
 	            text = "Der Rechnungsbetrag wurde geändert";
 	            oldVal = String.valueOf(oldInvoice.getAmount());
 	            newVal = String.valueOf(newInvoice.getAmount());
-	            
+
 	        }
 
 	        if (oldInvoice.getCategory() != newInvoice.getCategory()) {
@@ -266,16 +319,31 @@ public class InvoiceService {
 	                stmt.setInt(2, oldInvoice.getId());
 	                stmt.executeUpdate();
 	                updated = true;
-	                
+
 	            } catch (FileNotFoundException e) {
 	                e.printStackTrace();
 	            }
 	        }
 
-	    } catch (SQLException e) {
+			if (!oldInvoice.isFlagged() && updated) {
+				try (PreparedStatement stmt = conn.prepareStatement("UPDATE invoices SET flagged = true WHERE id = ?")) {
+					stmt.setInt(1, oldInvoice.getId());
+					stmt.executeUpdate();
+				}
+
+				try (PreparedStatement stmt = conn.prepareStatement(
+						"UPDATE reimbursements SET state = ? WHERE invoice_id = ?")) {
+					stmt.setString(1, "FLAGGED"); // oder ReimbursementState.IN_REVIEW.name()
+					stmt.setInt(2, oldInvoice.getId());
+					stmt.executeUpdate();
+				}
+			}
+
+
+		} catch (SQLException e) {
 	        e.printStackTrace();
 	    }
-		
+
 			NotificationService.createNotification(
 				    invoiceUser.getId(),
 				    "INVOICE",
@@ -288,8 +356,34 @@ public class InvoiceService {
 				    isAdmin,
 				    oldInvoice.getDate(),
 				    selfmade
-				);		
-		
+				);
+
 	    return updated;
 	}
+	public static Invoice getInvoiceById(int id) {
+		String sql = "SELECT id, date, amount, category, flagged FROM Invoices WHERE id = ?";
+
+		try (Connection conn = connectionProvider.getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, id);
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				Invoice invoice = new Invoice();
+				invoice.setId(rs.getInt("id"));
+				invoice.setDate(rs.getDate("date").toLocalDate());
+				invoice.setAmount(rs.getFloat("amount"));
+				invoice.setCategory(InvoiceCategory.valueOf(rs.getString("category")));
+				invoice.setFlag(rs.getBoolean("flagged"));
+				return invoice;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 }

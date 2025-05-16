@@ -22,10 +22,10 @@ public class AdminDashboardController {
 
     @FXML
     private Text userNameText;
-    
+
     @FXML
     private Circle redDot;
-    
+
 
     @FXML
     public void initialize() {
@@ -37,15 +37,15 @@ public class AdminDashboardController {
         } else {
             userNameText.setText("Nicht eingeloggt");
         }
-        
+
         List<Notification> notifications = NotificationService.getNotificationsByUser(user);
         redDot.setVisible(NotificationService.hasUnreadNotifications(notifications, user.getId()));
-        
+
       	if (user.getRole().equals(UserRole.ADMIN)) {
       		List<Notification> adminNotifications = NotificationService.getAdminNotification();
       		redDot.setVisible(NotificationService.hasUnreadAdminNotifications(adminNotifications, user.getId()));
       	}
-        
+
     }
 
 
@@ -167,7 +167,7 @@ public class AdminDashboardController {
              e.printStackTrace();
          }
     }
-    
+
     @FXML public void openNotifications(MouseEvent event) {
     	try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/Notification.fxml"));
@@ -183,4 +183,22 @@ public class AdminDashboardController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    public void openAnomalyDetection(MouseEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/AnomalyDetection.fxml"));
+            Parent root = fxmlLoader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
