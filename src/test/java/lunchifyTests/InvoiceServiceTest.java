@@ -174,7 +174,7 @@ public class InvoiceServiceTest {
         assertEquals(InvoiceCategory.RESTAURANT, invoice.getCategory());
         assertEquals(LocalDate.of(2024, 4, 1), invoice.getDate());
     }
-    
+
     @Test
     public void testAddInvoiceWithoutFileShouldReturnTrueAndSetId() throws Exception {
         // Arrange
@@ -192,11 +192,27 @@ public class InvoiceServiceTest {
         // Mocks vorbereiten
         ConnectionProvider mockProvider = mock(ConnectionProvider.class);
         Connection mockConn = mock(Connection.class);
+
+        // PreparedStatement und ResultSet für Flag-Abfrage (permFlagStmt)
+        PreparedStatement mockPermFlagStmt = mock(PreparedStatement.class);
+        ResultSet mockPermFlagRs = mock(ResultSet.class);
+
+        // PreparedStatement und ResultSet für Insert (stmt)
         PreparedStatement mockStmt = mock(PreparedStatement.class);
         ResultSet mockKeys = mock(ResultSet.class);
 
+        // Verknüpfungen setzen
         when(mockProvider.getConnection()).thenReturn(mockConn);
-        when(mockConn.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS))).thenReturn(mockStmt);
+
+        // Für permFlagStmt: PreparedStatement ohne RETURN_GENERATED_KEYS
+        when(mockConn.prepareStatement("SELECT permanent_flag FROM FlaggedUsers WHERE user_id = ?"))
+                .thenReturn(mockPermFlagStmt);
+        when(mockPermFlagStmt.executeQuery()).thenReturn(mockPermFlagRs);
+        when(mockPermFlagRs.next()).thenReturn(false); // User ist nicht permanent flagged
+
+        // Für stmt: PreparedStatement mit RETURN_GENERATED_KEYS (Insert)
+        when(mockConn.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS)))
+                .thenReturn(mockStmt);
         when(mockStmt.executeUpdate()).thenReturn(1); // simulate success
         when(mockStmt.getGeneratedKeys()).thenReturn(mockKeys);
         when(mockKeys.next()).thenReturn(true);
@@ -212,7 +228,7 @@ public class InvoiceServiceTest {
         assertTrue(result);
         assertEquals(42, invoice.getId());
 
-        // Verify relevant method calls
+        // Verify relevante Methodenaufrufe am Insert-PreparedStatement
         verify(mockStmt).setDate(eq(1), any());
         verify(mockStmt).setFloat(2, 99.99f);
         verify(mockStmt).setObject(3, InvoiceCategory.RESTAURANT, Types.OTHER);
@@ -220,7 +236,8 @@ public class InvoiceServiceTest {
         verify(mockStmt).setNull(5, Types.BINARY); // weil file == null
         verify(mockStmt).setBoolean(6, false);
     }
-    
+
+
     @Test
     public void testLoadInvoice() throws Exception {
         // Arrange
