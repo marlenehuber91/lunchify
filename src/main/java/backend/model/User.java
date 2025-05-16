@@ -1,9 +1,17 @@
 package backend.model;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.mindrot.jbcrypt.BCrypt;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class User {
     private int id;
+    @XmlElement
     private String name;
+    @XmlElement
     private String email;
     private String password;
     private UserRole role;

@@ -1,8 +1,11 @@
 package frontend.controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import backend.logic.ExportService;
 import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
 import backend.logic.UserService;
@@ -10,6 +13,13 @@ import backend.model.Reimbursement;
 import backend.model.ReimbursementState;
 import backend.model.User;
 import backend.model.UserRole;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -27,6 +37,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class ReimbursementHistoryController {
@@ -41,6 +52,7 @@ public class ReimbursementHistoryController {
 	String category;
 	String status;
 	String totalReimbursement;
+	ExportService exportService;
 	int currUserId;
 	private boolean selfmade;
 
@@ -578,4 +590,33 @@ public class ReimbursementHistoryController {
 		populateBoxes();
 		loadList();
 	}
+
+	@FXML
+	private void handleExport() { //AI generated
+		List<Reimbursement> data = reimbursementHistoryTable.getItems();
+		exportService = new ExportService();
+
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Exportieren als");
+		fileChooser.getExtensionFilters().addAll(
+				new FileChooser.ExtensionFilter("JSON", "*.json"),
+				new FileChooser.ExtensionFilter("XML", "*.xml")
+		);
+
+		File file = fileChooser.showSaveDialog(reimbursementHistoryTable.getScene().getWindow());
+		if (file != null) {
+			try {
+				String extension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+				if ("json".equalsIgnoreCase(extension)) {
+					exportService.exportToJson(data, file);
+				} else if ("xml".equalsIgnoreCase(extension)) {
+					exportService.exportToXml(data, file);
+				}
+				showAlert("Erfolg", "Daten wurden exportiert: " + file.getAbsolutePath());
+			} catch (Exception e) {
+				showAlert("Fehler", "Export fehlgeschlagen: " + e.getMessage());
+			}
+		}
+	}
 }
+
