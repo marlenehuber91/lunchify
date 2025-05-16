@@ -3,6 +3,7 @@ package backend.logic;
 import backend.model.Invoice;
 import backend.model.Reimbursement;
 import backend.model.User;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -25,7 +26,9 @@ public class ExportService {//AI generated
         // Deaktiviert das Schreiben von Dates als Timestamps (z. B. 1623456000000)
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.writeValue(file, data);
+
     }
 
     public void exportToXml(List<Reimbursement> data, File file) throws Exception {
