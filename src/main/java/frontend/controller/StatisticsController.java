@@ -274,13 +274,14 @@ public class StatisticsController {
 	
 	// created by AI
 	private void loadStatusBarChart(List<Reimbursement> reimbursements) {
-		Map<String, Integer> statusCount = new LinkedHashMap<>(Map.of("Offen", 0, "Genehmigt", 0, "Abgelehnt", 0));
+		Map<String, Integer> statusCount = new LinkedHashMap<>(Map.of("Offen", 0, "Genehmigt", 0, "Abgelehnt", 0, "Zur Kontrolle", 0));
 
 		for (Reimbursement r : reimbursements) {
 			String status = switch (r.getStatus()) {
 			case PENDING -> "Offen";
 			case APPROVED -> "Genehmigt";
 			case REJECTED -> "Abgelehnt";
+			case FLAGGED -> "Zur Kontrolle";
 			default -> throw new IllegalArgumentException("Unexpected value: " + r.getStatus());
 			};
 			statusCount.merge(status, 1, Integer::sum);
