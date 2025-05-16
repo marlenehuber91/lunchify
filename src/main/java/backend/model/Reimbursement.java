@@ -1,7 +1,13 @@
 package backend.model;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.time.LocalDate;
 import java.util.Date;
 
+@XmlRootElement // Für XML-Export
+@XmlAccessorType(XmlAccessType.FIELD) // Felder statt Getter serialisieren
 public class Reimbursement {
     private int id; //created automatically by database
     private Invoice invoice;

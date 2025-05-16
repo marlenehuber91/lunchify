@@ -1,6 +1,8 @@
 package frontend.controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import backend.logic.ReimbursementService;
@@ -10,6 +12,13 @@ import backend.model.Reimbursement;
 import backend.model.ReimbursementState;
 import backend.model.User;
 import backend.model.UserRole;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -27,6 +36,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class ReimbursementHistoryController {
@@ -578,4 +588,67 @@ public class ReimbursementHistoryController {
 		populateBoxes();
 		loadList();
 	}
+
+	@FXML
+	private void handleExport() { //AI generated
+		List<Reimbursement> data = reimbursementHistoryTable.getItems();
+
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Exportieren als");
+		fileChooser.getExtensionFilters().addAll(
+				new FileChooser.ExtensionFilter("JSON", "*.json"),
+				new FileChooser.ExtensionFilter("XML", "*.xml")
+		);
+
+		File file = fileChooser.showSaveDialog(reimbursementHistoryTable.getScene().getWindow());
+		if (file != null) {
+			try {
+				String extension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+				if ("json".equalsIgnoreCase(extension)) {
+					exportToJson(data, file);
+				} else if ("xml".equalsIgnoreCase(extension)) {
+					exportToXml(data, file);
+				}
+				showAlert("Erfolg", "Daten wurden exportiert: " + file.getAbsolutePath());
+			} catch (Exception e) {
+				showAlert("Fehler", "Export fehlgeschlagen: " + e.getMessage());
+			}
+		}
+	}
+
+	private void exportToJson(List<Reimbursement> data, File file) throws Exception { //AI generated
+		ObjectMapper mapper = new ObjectMapper();
+		// Java 8 Date/Time-Unterstützung aktivieren
+		mapper.registerModule(new JavaTimeModule());
+		// Deaktiviert das Schreiben von Dates als Timestamps (z. B. 1623456000000)
+		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+		mapper.writeValue(file, data);
+	}
+
+	private void exportToXml(List<Reimbursement> data, File file) throws Exception {//AI generated
+		// Konvertiere ObservableList zu ArrayList
+		List<Reimbursement> exportData = new ArrayList<>(data);
+
+		JAXBContext context = JAXBContext.newInstance(Wrapper.class, Reimbursement.class);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+		// Nutze Wrapper-Klasse für die Liste
+		marshaller.marshal(new Wrapper(exportData), file);
+	}
+
+	// Wrapper-Klasse für die Liste
+	@XmlRootElement(name = "reimbursements")
+	private static class Wrapper {
+		@XmlElement(name = "reimbursement")
+		private List<Reimbursement> items;
+
+		public Wrapper() {}
+
+		public Wrapper(List<Reimbursement> items) {
+			this.items = items;
+		}
+	}
 }
+
