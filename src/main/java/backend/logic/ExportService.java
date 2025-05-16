@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ExportService {//AI generated
 
-    public void exportToJson(List<Reimbursement> data, File file) throws Exception {
+    public void exportToJson(List<Reimbursement> data, File file) throws Exception { //AI generated
         ObjectMapper mapper = new ObjectMapper();
         // Java 8 Date/Time-Unterstützung aktivieren
         mapper.registerModule(new JavaTimeModule());
@@ -54,5 +54,4 @@ public class ExportService {//AI generated
             this.items = items;
         }
     }
-
 }
