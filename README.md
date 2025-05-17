@@ -1,5 +1,5 @@
-Praktikum Software Engineering
------------------------------
+Gr4: Marlene Huber, Johanna Ferstl, Silvia Mahringer
+  
 # Lunchify
 
 **Lunchify** is a Java-based desktop application developed for internal use at a Linz-based software company. The application enables employees to submit receipts for lunch expenses and request daily reimbursements efficiently. Employees can upload receipts (JPEG, PNG), classify them, and receive automated reimbursements according to predefined rules. Administrators can manage users, monitor submission statistics, and export monthly data for payroll processing.
@@ -23,8 +23,6 @@ Lunchify is developed in an agile process to continuously incorporate stakeholde
 - User [Benutzerdokumentation](../main/docs/UserDocumentation.md)
 - System [SystemDocumentation](../main/docs/SystemDocumentation.md)
 
-Gr4: Marlene Huber, Johanna Ferstl, Silvia Mahringer  
------------------------------
 ## Clockify 
 Time is tracked: [clockify](https://app.clockify.me/tracker)
 
