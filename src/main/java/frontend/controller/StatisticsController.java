@@ -243,7 +243,7 @@ public class StatisticsController {
         File file = showFileChooser("CSV speichern", "*.csv");
         if (file != null) {
             try {
-                exportService.exportAdminToCsv(file, reportTypeComboBox.getValue());
+                exportService.exportAdminToCsv(file, reportTypeComboBox.getValue(), currentFilteredAdminData);
                 showAlert("Export erfolgreich", "CSV wurde erstellt");
             } catch (IOException e) {
                 showAlert("Export fehlgeschlagen", "Fehler: " + e.getMessage());
@@ -280,10 +280,7 @@ public class StatisticsController {
 	            if ((timeRange).contains("12")) {
 	            	List<Reimbursement> filtered = adminStatisticsService.getReimbursementsFromLast12Months();
 	            	adminStatisticsService.setReimbursements(filtered);
-	            	currentFilteredAdminData = filtered;
-	            } else {
-	            	currentFilteredAdminData = adminStatisticsService.getReimbursements();
-	            }
+	            } 
 	            
 	            loadChartWithData(adminStatisticsService.getSumByCategory(), adminPieChart, false);
 	            reportTimeRangeComboBox.setVisible(true);
@@ -293,9 +290,6 @@ public class StatisticsController {
 	        	if ((timeRange).contains("12")) {
 	            	List<Reimbursement> filtered = adminStatisticsService.getReimbursementsFromLast12Months();
 	            	adminStatisticsService.setReimbursements(filtered);
-	            	currentFilteredAdminData = filtered;
-	            } else {
-	            	currentFilteredAdminData = adminStatisticsService.getReimbursements();
 	            }
 	        	
 	            adminPieChart.setVisible(true);
@@ -303,6 +297,7 @@ public class StatisticsController {
 	            reportTimeRangeComboBox.setVisible(true);
 	        }			
 		}
+		currentFilteredAdminData = getFilteredAdminDataForCurrentTimeRange();
 		
 	}
 
@@ -560,6 +555,12 @@ public class StatisticsController {
         
         if (isAdminTab) containerRectangle.setHeight(173); 
         else containerRectangle.setHeight(77);
+    }
+    
+    private List<Reimbursement> getFilteredAdminDataForCurrentTimeRange() {
+        return timeRange != null && timeRange.contains("12")
+            ? adminStatisticsService.getReimbursementsFromLast12Months()
+            : adminStatisticsService.getReimbursements();
     }
 	
 }
