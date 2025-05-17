@@ -134,7 +134,8 @@ public class ExportService {// AI generated changed by the team
 	}
 
 	// CSV Export (nur für Admin)
-	public void exportAdminToCsv(File file, String reportType) throws IOException {
+	public void exportAdminToCsv(File file, String reportType, List<Reimbursement> adminData) throws IOException {
+		statisticsService.setReimbursements(adminData);
 		try (PrintWriter writer = new PrintWriter(file)) {
 			switch (reportType) {
 			case "Anzahl pro Monat":
