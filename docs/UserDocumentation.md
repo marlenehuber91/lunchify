@@ -1,24 +1,13 @@
---> Screenshots still missing
-
 # WELCOME to Lunchify
 
 ## Inhaltsverzeichnis
 
 - [Einleitung](#einleitung)
 - [Installation und Start](#installation-und-start)
-- [Anmeldung](#Anmeldung)
+- [Anmeldung](#anmeldung)
 - [Funktionen für Mitarbeiter:innen](#funktionen-für-mitarbeiterinnen)
-    - [Rechnung hochladen](#rechnung-hochladen)
-    - [Rechnung klassifizieren & Betrag eingeben](#rechnung-klassifizieren--betrag-eingeben)
-    - [Rückerstattung einreichen](#rückerstattung-einreichen)
-    - [Verlauf und Änderungen](#verlauf-und-änderungen)
 - [Funktionen für Administrator:innen](#funktionen-für-administratorinnen)
-    - [Übersicht & Statistik](#übersicht--statistik)
-    - [Benutzerverwaltung](#benutzerverwaltung)
-    - [Export für Gehaltsabrechnung](#export-für-gehaltsabrechnung)
-    - [Konfiguration der Rückerstattung](#konfiguration-der-rückerstattung)
 - [Fehlermeldungen und Hinweise](#fehlermeldungen-und-hinweise)
-- [Support](#support)
 
 ---
 
@@ -89,12 +78,15 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 ---
 
 ### Statistik
+
 - unter **"Statistik"** siehst du eine Übersicht deiner bisher eingereichten Rechnungen nach verschiedenen Kriterien.
+
+---
 
 ### Logout
 
 - bei Klick auf den Avatar kannst du Logout wählen
-- 
+![UserDashboard](/docs/Screenshots/UserDashboard.png)
 ---
 
 
@@ -102,8 +94,30 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 
 - Du hast als Admin alle Funktionen, die auch ein Mitarbeiter hat - siehe oben. Zusätzliche Funktionen für dich:
 
-<!-- Screenshot: Admin-Dashboard -->
-<!-- ![Dashboard](screenshots/dashboard.png) -->
+![Dashboard](/docs/Screenshots/AdminDashboard.png)
+
+---
+
+### Rechnungen freigeben oder ablehnen
+
+- unter **alle Rechnungen** kannst du Rechnungen freigeben oder ablehnen, löschen oder ändern
+- wenn diese unter der Anomalieerkennung laufen, können sie hier **nicht** freigegeben werden
+- ACHTUNG: einmal freigebene Rechnungen können nicht mehr geändert werden
+
+![alleRechnungen](/docs/Screenshots/AdminAlleRechnungen.png)
+
+---
+
+### Anomalieerkennung und Auswirkungen
+
+- **Lunchify** erkennt potentiell missbräuchliche Nutzung und flagged User und/oder Rechnungen
+- Diese müssen vor Freigabe unter **"Anomalien"** gesondert kontrolliert und dann geändert, gelöscht, freigegeben oder abgelehnt werden
+- edit: Rechnung ändern
+- del: Rechnung löschen --> User könnte für diesen Tag eine neue Rechnung einreichen
+- ok: Rechnung freigeben --> kann nicht rückgängig gemacht werden
+- rej: Rechnung ablehnen
+
+![Anomalie](/docs/Screenshots/AdminAnomalie.png)
 
 ---
 
@@ -115,9 +129,7 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
     - Durchschnitt pro Benutzer
     - Verteilung Restaurant/Supermarkt
     - Gesamtsumme der Rückvergütungen
-
-<!-- Screenshot: Statistik -->
-<!-- ![Statistik](screenshots/statistik.png) -->
+![Statistik](/docs/Screenshots/AdminStatistik.png)
 
 ---
 
@@ -126,27 +138,23 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 - Klicke auf **"Suche"**
 - Suche nach bestimmten Kriterien wie zB Benutzer oder Monat
 
-<!-- Screenshot: Suche -->
-<!-- ![Suche](screenshots/suche.png) -->
-
 ---
 
 ### Export für Gehaltsabrechnung
 
-- - Klicke auf **"Export"**
-- Exportiere Daten monatlich als **CSV**, **PDF**, **JSON** oder **XML**
-- Diese Dateien enthalten alle Benutzer:innen mit der jeweiligen Monatssumme
+- Klicke auf **"alle Rechnungen"**
+- filtere nach Wunsch
+- klicke auf **"Export"**
 
 ---
 
 ### Benutzerverwaltung
 
-- Klicke auf **"Benutzerverwaltung"**
+- Klicke auf **"Benutzer verwalten"**
 - Neue Benutzer:innen hinzufügen oder bestehende löschen
-- Rollen verwalten (Benutzer:in oder Administrator:in)
+- Rollen zuweisen (Benutzer:in oder Administrator:in)
 
-<!-- Screenshot: Benutzerverwaltung -->
-<!-- ![Benutzerverwaltung](screenshots/benutzer.png) -->
+![Benutzerverwaltung](/docs/Screenshots/AdminUserAnlegen.png)
 
 ---
 
@@ -156,8 +164,7 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 - Im Admin-Bereich kannst du die Rückerstattungsbeträge anpassen.
 - Diese Änderungen gelten ab dem nächsten Antrag.
 
-<!-- Screenshot: Konfiguration -->
-<!-- ![Konfiguration](screenshots/konfiguration.png) -->
+![Konfiguration](/docs/Screenshots/AdminRueckerstattungAendern.png)
 
 ---
 
