@@ -6,7 +6,7 @@
 
 - [Einleitung](#einleitung)
 - [Installation und Start](#installation-und-start)
-- [Anmeldung](#anmeldung)
+- [Anmeldung](#Anmeldung)
 - [Funktionen für Mitarbeiter:innen](#funktionen-für-mitarbeiterinnen)
     - [Rechnung hochladen](#rechnung-hochladen)
     - [Rechnung klassifizieren & Betrag eingeben](#rechnung-klassifizieren--betrag-eingeben)
@@ -46,7 +46,7 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 - Nach erfolgreicher Anmeldung wirst du entsprechend deiner Rolle weitergeleitet.
 
 <!-- Screenshot: Login-Bildschirm -->
-<!-- ![Login](screenshots/login.png) -->
+<!-- ![Login](Screenshots/loginPage.png) -->
 
 ---
 
@@ -59,11 +59,12 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
     - Unterstützte Formate: `.jpg`, `.png`, `.pdf`
 
 <!-- Screenshot: Upload-Bereich -->
-<!-- ![Upload](screenshots/upload.png) -->
+<!-- ![Upload](Screenshots/RechnungEinreichen.png) -->
 
 ### Rechnung klassifizieren & Betrag eingeben
 
 - Die App erkennt automatisch:
+    - Datum
     - ob es sich um ein **Restaurant** oder **Supermarkt** handelt
     - den **Rechnungsbetrag**
 - Du kannst diese Angaben, wenn nötig, manuell ändern.
@@ -81,9 +82,6 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 - Supermarkt 5 € → Rückvergütung: 2,5 €
 - Supermarkt 1,70 € → Rückvergütung: 1,70 €
 
-<!-- Screenshot: Bestätigung -->
-<!-- ![Bestätigung](screenshots/bestaetigung.png) -->
-
 ---
 
 ### Übersicht und Änderungen
@@ -96,6 +94,9 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 <!-- ![Verlauf](screenshots/verlauf.png) -->
 
 ---
+
+### Statistik
+- unter **"Statistik"** siehst du eine Übersicht deiner bisher eingereichten Rechnungen nach verschiedenen Kriterien.
 
 ### Logout
 
