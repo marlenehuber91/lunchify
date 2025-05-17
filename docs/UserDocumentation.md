@@ -44,9 +44,7 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 
 - Gib deine E-Mail-Adresse und dein Passwort ein.
 - Nach erfolgreicher Anmeldung wirst du entsprechend deiner Rolle weitergeleitet.
-
-<!-- Screenshot: Login-Bildschirm -->
-<!-- ![Login](Screenshots/loginPage.png) -->
+![LoginPage](/docs/Screenshots/loginPage.png)
 
 ---
 
@@ -57,9 +55,7 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 1. Klicke auf **"Rechnung einreichen"**.
 2. Lade ein Bild oder eine PDF deiner Mittagsrechnung hoch.
     - Unterstützte Formate: `.jpg`, `.png`, `.pdf`
-
-<!-- Screenshot: Upload-Bereich -->
-<!-- ![Upload](Screenshots/RechnungEinreichen.png) -->
+![Upload](/docs/Screenshots/RechnungEinreichen.png)
 
 ### Rechnung klassifizieren & Betrag eingeben
 
@@ -88,10 +84,7 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 
 - Unter **"alle Rechnungen"** siehst du alle deine bisher eingereichten Rechungen mit Status, Datum, Betrag und Klassifikation.
 - Unter **"aktuelle Rechnungen"** siehst du eine Liste deiner Einreichungen dieses Monats mit Status, Datum, Betrag und Klassifikation.
-- Rechnungen können **bis zum Monatsende** bearbeitet oder gelöscht werden.
-
-<!-- Screenshot: Verlauf -->
-<!-- ![Verlauf](screenshots/verlauf.png) -->
+- **offene** Rechnungen können **bis zum Monatsende** bearbeitet oder gelöscht werden. Sobald sie genehmigt wurden, können sie nicht mehr geändert werden.
 
 ---
 
@@ -100,10 +93,8 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 
 ### Logout
 
-- hier kannst du dich wieder ausloggen
-<!-- Screenshot: Logout -->
-<!-- ![Logout](screenshots/logout.png) -->
-
+- bei Klick auf den Avatar kannst du Logout wählen
+- 
 ---
 
 
