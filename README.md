@@ -2,7 +2,7 @@ Praktikum Software Engineering
 -----------------------------
 # Lunchify
 
-**Lunchify** is a Java-based desktop application developed for internal use at a Linz-based software company. The application enables employees to submit receipts for lunch expenses and request daily reimbursements efficiently. Employees can upload receipts (JPEG, PNG, PDF), classify them, and receive automated reimbursements according to predefined rules. Administrators can manage users, monitor submission statistics, and export monthly data for payroll processing.
+**Lunchify** is a Java-based desktop application developed for internal use at a Linz-based software company. The application enables employees to submit receipts for lunch expenses and request daily reimbursements efficiently. Employees can upload receipts (JPEG, PNG), classify them, and receive automated reimbursements according to predefined rules. Administrators can manage users, monitor submission statistics, and export monthly data for payroll processing.
 
 Lunchify features secure login with role-based access for employees and administrators, OCR-based receipt analysis, automatic refund calculation, and anomaly detection. The app is built using Java 21 and JavaFX, follows the MVC design pattern, and persists data in a PostgreSQL database.
 
