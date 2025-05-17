@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Collections;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Ignore("Skip testing the class - only for GitHubActions reasons! - Tests are successfull locally")
@@ -32,4 +31,8 @@ public class ExportServiceTest {
 
         assertDoesNotThrow(() -> exportService.exportToXml(data, tempFile));
     }
+    /*
+     * no further testing for pdf and csv export, because the export involves Charts
+     * which is JavaFX specific
+     */
 }

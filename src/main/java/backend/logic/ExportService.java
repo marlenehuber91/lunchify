@@ -78,7 +78,8 @@ public class ExportService {// AI generated changed by the team
 		marshaller.marshal(new Wrapper(data), file);
 	}
 
-	public void exportAdminToPdf(File file, Chart chart, String reportTitle, List<Reimbursement> adminData) throws IOException {
+	public void exportAdminToPdf(File file, Chart chart, String reportTitle, List<Reimbursement> adminData)
+			throws IOException {
 		statisticsService.setReimbursements(adminData);
 		try (PDDocument doc = new PDDocument()) {
 			PDPage page = new PDPage(PDRectangle.A4);
@@ -100,35 +101,36 @@ public class ExportService {// AI generated changed by the team
 		}
 	}
 
-	public void exportUserToPdf(File file, PieChart pieChart, BarChart<?, ?> barChart, List<Reimbursement> filteredData) throws IOException {
-	    statisticsService.setReimbursements(filteredData); // WICHTIG
+	public void exportUserToPdf(File file, PieChart pieChart, BarChart<?, ?> barChart, List<Reimbursement> filteredData)
+			throws IOException {
+		statisticsService.setReimbursements(filteredData); // WICHTIG
 
-	    try (PDDocument doc = new PDDocument()) {
-	        PDPage page = new PDPage(PDRectangle.A4);
-	        doc.addPage(page);
+		try (PDDocument doc = new PDDocument()) {
+			PDPage page = new PDPage(PDRectangle.A4);
+			doc.addPage(page);
 
-	        try (PDPageContentStream content = new PDPageContentStream(doc, page)) {
-	            // Header
-	            addPdfHeader(content, "Meine Statistiken");
+			try (PDPageContentStream content = new PDPageContentStream(doc, page)) {
+				// Header
+				addPdfHeader(content, "Meine Statistiken");
 
-	            // Charts
-	            addChart(content, doc, pieChart, 50, 725, 0.35f);
-	            addChart(content, doc, barChart, 320, 725, 0.35f);
+				// Charts
+				addChart(content, doc, pieChart, 50, 725, 0.35f);
+				addChart(content, doc, barChart, 320, 725, 0.35f);
 
-	            content.setFont(PDType1Font.HELVETICA_BOLD, 10);
-	            content.beginText();
-	            content.newLineAtOffset(120, 580);
-	            content.showText("Kategorien");
-	            content.newLineAtOffset(200, 0);
-	            content.showText("Status");
-	            content.endText();
+				content.setFont(PDType1Font.HELVETICA_BOLD, 10);
+				content.beginText();
+				content.newLineAtOffset(120, 580);
+				content.showText("Kategorien");
+				content.newLineAtOffset(200, 0);
+				content.showText("Status");
+				content.endText();
 
-	            // Tabellen
-	            addUserDataTables(content, doc, 500);
-	        }
+				// Tabellen
+				addUserDataTables(content, doc, 500);
+			}
 
-	        doc.save(file);
-	    }
+			doc.save(file);
+		}
 	}
 
 	// CSV Export (nur für Admin)
@@ -163,11 +165,11 @@ public class ExportService {// AI generated changed by the team
 		content.newLineAtOffset(0, 765); // Zeilenabstand
 		content.showText("Von: " + currentUser.getName());
 		content.endText();
-		
-	    content.beginText();
-	    content.newLineAtOffset(50, 750);
-	    content.showText("Zeitraum: " + (timeRange != null ? timeRange : "Alle Zeiträume"));
-	    content.endText();
+
+		content.beginText();
+		content.newLineAtOffset(50, 750);
+		content.showText("Zeitraum: " + (timeRange != null ? timeRange : "Alle Zeiträume"));
+		content.endText();
 
 		content.setLineWidth(1f);
 		content.moveTo(50, 735);
@@ -196,13 +198,29 @@ public class ExportService {// AI generated changed by the team
 		content.endText();
 		startY -= 20;
 
-		// Tabelleninhalt (abhängig vom Report-Typ)
 		Map<String, String> data = new LinkedHashMap<>();
 		switch (reportType) {
 		case "Anzahl pro Monat":
 			statisticsService.getInvoiceCountLastYear().forEach((k, v) -> data.put(k, String.valueOf(v)));
 			break;
-		// Weitere Cases...
+
+		case "Erstattungsbetrag":
+			statisticsService.getReimbursementSumPerMonthLastYear()
+					.forEach((k, v) -> data.put(k, String.format("%.2f €", v)));
+			break;
+
+		case "Rechnungen pro Nutzer":
+			statisticsService.getAverageInvoicesPerUserLastYear()
+					.forEach((k, v) -> data.put(k, String.format("%.2f", v)));
+			break;
+
+		case "Kategorien - Anzahl":
+			statisticsService.getCountByCategory().forEach((k, v) -> data.put(k.name(), String.valueOf(v.intValue())));
+			break;
+
+		case "Kategorien - Summe":
+			statisticsService.getSumByCategory().forEach((k, v) -> data.put(k.name(), String.format("%.2f €", v)));
+			break;
 		}
 
 		addTableContent(content, doc, data, startY);
@@ -215,7 +233,6 @@ public class ExportService {// AI generated changed by the team
 		content.newLineAtOffset(50, startY);
 		content.showText("Kategorien (Summe)");
 		content.endText();
-
 
 		content.setFont(PDType1Font.HELVETICA_BOLD, 10);
 		content.beginText();
@@ -286,18 +303,18 @@ public class ExportService {// AI generated changed by the team
 	}
 
 	private Map<String, Integer> getStatusData() {
-		 Map<String, Integer> counts = new LinkedHashMap<>();
-		    statisticsService.getReimbursements().forEach(r -> {
-		        String status = switch (r.getStatus()) {
-		            case APPROVED -> "Genehmigt";
-		            case REJECTED -> "Abgelehnt";
-		            case PENDING -> "Offen";
-		            case FLAGGED -> "Zur Kontrolle";
-		        };
-		        counts.merge(status, 1, Integer::sum);
-		    });
-		    
-		 return counts;
+		Map<String, Integer> counts = new LinkedHashMap<>();
+		statisticsService.getReimbursements().forEach(r -> {
+			String status = switch (r.getStatus()) {
+			case APPROVED -> "Genehmigt";
+			case REJECTED -> "Abgelehnt";
+			case PENDING -> "Offen";
+			case FLAGGED -> "Zur Kontrolle";
+			};
+			counts.merge(status, 1, Integer::sum);
+		});
+
+		return counts;
 	}
 
 	private void addTableContent(PDPageContentStream content, PDDocument doc, Map<String, String> data, float startY)
