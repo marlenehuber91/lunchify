@@ -80,6 +80,8 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 ### Statistik
 
 - unter **"Statistik"** siehst du eine Übersicht deiner bisher eingereichten Rechnungen nach verschiedenen Kriterien.
+- die Ansicht kann als .pdf abgespeichert werden, nutze den Button rechts
+![Statistik](/docs/Screenshots/Statistik.png)
 
 ---
 
