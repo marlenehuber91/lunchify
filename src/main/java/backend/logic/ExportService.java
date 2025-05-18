@@ -182,7 +182,7 @@ public class ExportService {// AI generated changed by the team
 		content.beginText();
 		content.newLineAtOffset(50, 780);
 		content.showText("Erstellt am: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
-		content.newLineAtOffset(0, 765); // Zeilenabstand
+		content.newLineAtOffset(0, -15); // Zeilenabstand
 		content.showText("Von: " + currentUser.getName());
 		content.endText();
 
