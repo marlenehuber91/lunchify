@@ -7,6 +7,7 @@ import java.util.List;
 
 import backend.logic.NotificationService;
 import backend.logic.SessionManager;
+import backend.logic.UserService;
 import backend.model.Notification;
 import backend.model.User;
 import backend.model.UserRole;
@@ -56,7 +57,7 @@ public class NotificationsController {
 
 	@FXML
 	private TableColumn<Notification, String> newVal;
-
+	
 	@FXML
 	private AnchorPane notificationPane;
 
@@ -95,6 +96,9 @@ public class NotificationsController {
 
     @FXML
     private TableColumn<Notification, String> adminNewValue;
+    
+    @FXML
+	private TableColumn<Notification, String> userEmailColumn;
     
     @FXML
     private Circle notificationDot;
@@ -228,6 +232,12 @@ public class NotificationsController {
 	    adminMessage.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMessage()));
 	    adminOldValue.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOldValue()));
 	    adminNewValue.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNewValue()));
+	    
+	    userEmailColumn.setCellValueFactory(cellData -> {
+	        Long userId = cellData.getValue().getUserId();
+	        String email = UserService.getUserById(userId.intValue()).getEmail(); // Achtung: ggf. null prüfen
+	        return new SimpleStringProperty(email);
+	    });
 
 	    adminIsRead.setCellFactory(col -> new TableCell<Notification, Boolean>() {
 	        private final CheckBox checkBox = new CheckBox();
