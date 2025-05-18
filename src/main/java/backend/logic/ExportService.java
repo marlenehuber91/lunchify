@@ -147,7 +147,26 @@ public class ExportService {// AI generated changed by the team
 				statisticsService.getReimbursementSumPerMonthLastYear()
 						.forEach((k, v) -> writer.println(k + "," + String.format("%.2f", v)));
 				break;
-			// Weitere Admin-Report-Typen...
+			case "Rechnungen pro Nutzer":
+				writer.println("Nutzer,Ø Rechnungen");
+				statisticsService.getAverageInvoicesPerUserLastYear()
+					.forEach((k, v) -> writer.println(k + "," + String.format("%.2f", v)));
+				break;
+
+			case "Kategorien - Anzahl":
+				writer.println("Kategorie,Anzahl");
+				statisticsService.getCountByCategory()
+					.forEach((k, v) -> writer.println(k.name() + "," + v.intValue()));
+				break;
+
+			case "Kategorien - Summe":
+				writer.println("Kategorie,Summe (€)");
+				statisticsService.getSumByCategory()
+					.forEach((k, v) -> writer.println(k.name() + "," + String.format("%.2f", v)));
+				break;
+
+			default:
+				writer.println("Report-Typ nicht unterstützt: " + reportType);
 			}
 		}
 	}
@@ -163,7 +182,7 @@ public class ExportService {// AI generated changed by the team
 		content.beginText();
 		content.newLineAtOffset(50, 780);
 		content.showText("Erstellt am: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
-		content.newLineAtOffset(0, 765); // Zeilenabstand
+		content.newLineAtOffset(0, -15); // Zeilenabstand
 		content.showText("Von: " + currentUser.getName());
 		content.endText();
 
