@@ -70,6 +70,7 @@
       <PieChart fx:id="sumChart" layoutX="1050.0" layoutY="225.0" prefHeight="128.0" prefWidth="163.0" />
       <Label fx:id="sumLabel" layoutX="1050.0" layoutY="367.0" text=" " />
       <Label fx:id="totalSumLabel" layoutX="1054.0" layoutY="434.0" text=" " />
+      <Label fx:id="noDataLabel" layoutX="1044.0" layoutY="236.0" text="Label" />
      <!-- <fx:include source="UserStatistics.fxml" layoutX="1002" layoutY="0.0" />   --> 
    </children>
 </AnchorPane>
