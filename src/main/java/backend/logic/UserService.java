@@ -118,7 +118,7 @@ public class UserService {
         return users;
     }
 
-    public User getUserById(int userId) {
+    public static User getUserById(int userId) {
         User user = new User();
 
         String sql = "SELECT id, name, email, password, role, state FROM users WHERE id = ?";

@@ -45,12 +45,12 @@
                      <children>
                         <TableView fx:id="notificationView" layoutX="18.0" layoutY="36.0" onMouseClicked="#handleUserChoice" prefHeight="306.0" prefWidth="855.0">
                           <columns>
-                            <TableColumn fx:id="originalInvoiceDate" prefWidth="212.800048828125" text="(ursprüngliches) Rechnungsdatum" />
-                              <TableColumn fx:id="processedDate" prefWidth="133.60003662109375" text="Änderungsdatum" />
-                             <TableColumn fx:id="message" prefWidth="287.1999206542969" text="Änderungen" />
-                            <TableColumn fx:id="oldVal" prefWidth="82.4000244140625" text="alter Wert" />
-                              <TableColumn fx:id="newVal" prefWidth="76.79998779296875" text="neuer Wert" />
-                              <TableColumn fx:id="isRead" prefWidth="58.4000244140625" text="gesehen" />
+                            <TableColumn fx:id="originalInvoiceDate" prefWidth="201.60000610351562" text="(ursprüngliches) Rechnungsdatum" />
+                              <TableColumn fx:id="processedDate" prefWidth="112.0" text="Änderungsdatum" />
+                             <TableColumn fx:id="message" prefWidth="243.20001220703125" text="Änderungen" />
+                            <TableColumn fx:id="oldVal" prefWidth="130.40008544921875" text="alter Wert" />
+                              <TableColumn fx:id="newVal" prefWidth="103.199951171875" text="neuer Wert" />
+                              <TableColumn fx:id="isRead" prefWidth="67.19989013671875" text="gesehen" />
                           </columns>
                         </TableView>
                      </children>
@@ -63,12 +63,13 @@
                      <children>
                         <TableView fx:id="adminNotificationView" layoutX="18.0" layoutY="35.0" onMouseClicked="#handleUserChoice" prefHeight="306.0" prefWidth="855.0">
                            <columns>
-                              <TableColumn fx:id="adminInvoiceDate" prefWidth="212.800048828125" text="(ursprüngliches) Rechnungsdatum" />
-                              <TableColumn fx:id="adminProcessedDate" prefWidth="133.60003662109375" text="Änderungsdatum" />
-                              <TableColumn fx:id="adminMessage" prefWidth="287.1999206542969" text="Änderungen" />
-                              <TableColumn fx:id="adminOldValue" prefWidth="82.4000244140625" text="alter Wert" />
-                              <TableColumn fx:id="adminNewValue" prefWidth="76.79998779296875" text="neuer Wert" />
-                              <TableColumn fx:id="adminIsRead" prefWidth="58.4000244140625" text="gesehen" />
+                              <TableColumn fx:id="userEmailColumn" prefWidth="162.4000244140625" text="User" />
+                              <TableColumn fx:id="adminInvoiceDate" prefWidth="143.99993896484375" text="(ursprüngliches) Rechnungsdatum" />
+                              <TableColumn fx:id="adminProcessedDate" prefWidth="109.60003662109375" text="Änderungsdatum" />
+                              <TableColumn fx:id="adminMessage" prefWidth="176.0" text="Änderungen" />
+                              <TableColumn fx:id="adminOldValue" prefWidth="103.0" text="alter Wert" />
+                              <TableColumn fx:id="adminNewValue" prefWidth="103.0" text="neuer Wert" />
+                              <TableColumn fx:id="adminIsRead" prefWidth="52.79998779296875" text="gesehen" />
                            </columns>
                         </TableView>
                      </children></AnchorPane>
