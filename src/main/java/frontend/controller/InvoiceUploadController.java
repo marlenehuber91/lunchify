@@ -119,7 +119,7 @@ public class InvoiceUploadController extends BaseUploadController {
         float amount = Float.parseFloat(amountField.getText().trim());
 
         if (invoices != null && invoiceService.invoiceDateAlreadyUsed(date, user)) {
-            showAlert("Ungültiges Datum", "Für das gewählte Datum wurde bereits eine Rechnung eingereicht. Bitte wähle ein anderes Datum.");
+            showAlert("Ungültiges Datum", "Für das gewählte Datum wurde bereits eine Rechnung eingereicht. Es ist genau eine Rechnung pro Arbeitstag erlaubt.");
             submitButton.setDisable(true);
         } else {
             Invoice invoice = new Invoice();
