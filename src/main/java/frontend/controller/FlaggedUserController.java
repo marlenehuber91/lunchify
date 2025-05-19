@@ -3,6 +3,7 @@ package frontend.controller;
 // FlaggedUserController.java
 
 import backend.model.FlaggedUser;
+import backend.exceptions.InfrastructureException;
 import backend.logic.FlaggedUserService;
 import backend.logic.SessionManager;
 import javafx.collections.FXCollections;
@@ -72,7 +73,7 @@ public class FlaggedUserController {
     }
 
     private void addEditButtonToTable() {//AI generated
-        Callback<TableColumn<FlaggedUser, Void>, TableCell<FlaggedUser, Void>> cellFactory = param -> new TableCell<>() {
+        Callback<TableColumn<FlaggedUser, Void>, TableCell<FlaggedUser, Void>> cellFactory = tableColumn -> new TableCell<>() {
 
             private final Button editButton = new Button();
 
@@ -86,7 +87,7 @@ public class FlaggedUserController {
                 editButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
 
                 // Klick-Handler
-                editButton.setOnAction(event -> {
+                editButton.setOnAction(e -> {
                     FlaggedUser user = getTableView().getItems().get(getIndex());
                     handleRemovePermFlag(user);
                 });
@@ -121,7 +122,7 @@ public class FlaggedUserController {
                 try {
                     flaggedUserService.removePermanentFlag(user.getUserId());
                 } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    throw new InfrastructureException("Fehler beim Entfernen der Permanenten Flag in der Datenbank");
                 }
                 loadFlaggedUsers();
             }

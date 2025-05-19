@@ -1,4 +1,4 @@
-package backend.Exceptions;
+package backend.exceptions;
 
 public class ReimbursementException extends RuntimeException {
     public ReimbursementException(String message) {

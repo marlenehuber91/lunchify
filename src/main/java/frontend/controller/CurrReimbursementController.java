@@ -127,8 +127,6 @@ public class CurrReimbursementController {
 
 					EditReimbursementController controller = loader.getController();
 					controller.setSelectedUser(selectedUser);
-					System.out.println(
-							"controller.setSelectedUser(selectedUser)" + controller.getSelectedUser().getEmail());
 					controller.setReimbursement(selectedReimbursement);
 
 					Stage stage = (Stage) currReimbursementTable.getScene().getWindow();

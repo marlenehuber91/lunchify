@@ -59,7 +59,6 @@ public class UserDropDownController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Fehler beim Laden der Login-Seite");
         }
     }
 

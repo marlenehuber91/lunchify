@@ -2,7 +2,7 @@ package frontend.controller;
 
 import java.io.IOException;
 
-import backend.Exceptions.AuthenticationException;
+import backend.exceptions.AuthenticationException;
 import backend.logic.UserService;
 import backend.model.User;
 import backend.model.UserRole;

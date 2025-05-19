@@ -46,8 +46,6 @@ public class InvoiceUploadController extends BaseUploadController {
             loadingIndicator.setVisible(true); // Zeige Indikator sofort
 
             String filePath = file.getAbsolutePath();
-            System.out.println("Datei ausgewählt: " + filePath);
-
             Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() {

@@ -149,8 +149,7 @@ public class BaseUploadController {
 
 		if (file != null) {
 			String filePath = file.getAbsolutePath();
-			System.out.println("Datei ausgewählt: " + filePath);
-
+			
 			if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg") || filePath.endsWith(".png")) {
 				uploadedImageView.setImage(new Image(file.toURI().toString()));
 				uploadedFile = file;
