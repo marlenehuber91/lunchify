@@ -108,7 +108,10 @@ public class ReimbursementService extends ReimbursementHistoryController {
 	}
 
 	public boolean isValidFloat(String text) { // created by AI (ChatGPT)
-		return text.matches("^\\d+(\\.\\d+)?$");
+		if (text == null) return false;
+		else {
+			return text.matches("^\\d+(\\.\\d+)?$");
+		}
 	}
 
 	public boolean isAmountValid(String text) {
@@ -428,8 +431,9 @@ public class ReimbursementService extends ReimbursementHistoryController {
 						.prepareStatement("UPDATE reimbursements SET status = 'APPROVED' WHERE id = ?");
 				stmtReimb.setInt(1, reimbId);
 				stmtReimb.executeUpdate();
-
-				approved = true;
+				
+				int rowsUpdated = stmtReimb.executeUpdate();
+				approved = rowsUpdated > 0;
 
 			}
 
