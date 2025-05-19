@@ -61,7 +61,6 @@ public class EditReimbursementController extends BaseUploadController{
        alert.showAndWait().ifPresent(response -> {
     	   if (response == buttonSave) {
     		   Reimbursement newReimb = getReimbursement();
-    		   System.out.println("EditReimb: showEdiCon + if" + selfmade );
     		   boolean isReimbAltered = reimbursementService.updateReimbursementIfChanged(reimbursement, newReimb, selectedInvoice.getUser(), selfmade);
     		   boolean isInvoiceAltered =  invoiceService.updateInvoiceIfChanged(reimbursement.getInvoice(), newReimb.getInvoice(), reimbursement.getInvoice().getUser(), selfmade);
     		   
