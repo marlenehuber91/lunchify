@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import backend.Exceptions.InfrastructureException;
+import backend.Exceptions.ReimbursementException;
 import backend.interfaces.ConnectionProvider;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
@@ -545,7 +546,8 @@ public class ReimbursementService extends ReimbursementHistoryController {
 
 			return reimbursement;
 		} catch (SQLException e) {
-            throw new RuntimeException(e);
+			throw new ReimbursementException("Fehler beim Abrufen der Erstattung für invoiceId=" + invoiceId, e);
+
         }
     }
 
