@@ -35,14 +35,13 @@ public class OCRService {
         try {
             BufferedImage image = ImageIO.read(imageFile);
             if (image == null) {
-                System.err.println("Bild konnte nicht gelesen werden: " + imageFile.getPath());
                 return null;
             }
             return tesseract.doOCR(image);
         } catch (IOException e) {
-            System.err.println("Fehler beim Lesen des Bildes: " + e.getMessage());
+        	e.getStackTrace();
         } catch (TesseractException e) {
-            System.err.println("Fehler bei der OCR-Verarbeitung: " + e.getMessage());
+        	e.getStackTrace();
         }
         return null;
     }

@@ -71,9 +71,6 @@ public class AnomalyDetectionService  {
             stmt.setInt(2, flaggedInvoice.getUser().getId());
 
             int affectedRows = stmt.executeUpdate();
-            if (affectedRows > 0) {
-                System.out.println("Anomalie erfolgreich gespeichert für Invoice ID: " + flaggedInvoice.getId());
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
