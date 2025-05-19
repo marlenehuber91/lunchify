@@ -21,21 +21,26 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
   - Beispiel 1: AnomalyDetectionService naming_convention_violation: permanent_flag -> Geändert in permanentFlag
   - Beispiel 2: InvoiceService sysout -> Debugging lines mussten entfernt werden
   
-### Projektdokus (System, Benutzerdoku)
+### Projektdokus
+  - Systemdoku (inkl. Architekturdiagramm)
+  - JavaDoc - how to use?
+  - Benutzerdoku (.jar failing)
 ---
 
 ## Sprint Retro
 - xxx h (xxx h gesamt) gebuchte Stunden 30.4.-20.5.
+
 - gröbere Probleme: 
-  1. Eher zeitliche Probleme (weniger Zeit aufgrund einer Klausur in einer andern LVA)
+  1. Zeitliche Probleme (weniger Zeit aufgrund einer Klausur in einer andern LVA)
   2. Mittlerweile viele Klassen, viel Code tlw. auch Codeverdoppelung -> effizienter wäre gewesen anfangs eine Klassenhierarchei (Abstrakte Klassen, Interfaces und Vererbungsstruktur durchzuplanen)
 - Learnings:
   1. Vorbereitung: In den Osterferien haben wir bereits etwas vorgearbeitet -> Hat sich bewährt.  
   2. Projektvorbereitung: Anfangs mehr Zeit in die Projektstruktur investieren. 
 
 ## Einsatz von KI
-- ...
-- ...
+- Testplan, Formatierung/Links im .md
+- UnitTests
+- .pdf/.xml/.csv Export Vorgehen/Formatierung
 
 ## Planung finale Abgabe
 - offene issues inkl. deren Priorisierung
