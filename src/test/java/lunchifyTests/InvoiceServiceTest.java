@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.time.DayOfWeek;
@@ -263,4 +264,57 @@ public class InvoiceServiceTest {
 
         assertFalse(invoiceService.isValidDate(nullDate));
     }
+    
+    @Test
+    public void testGetInvoiceByIdNotFound() throws Exception {
+        ConnectionProvider mockProvider = mock(ConnectionProvider.class);
+        Connection mockConn = mock(Connection.class);
+        PreparedStatement stmt = mock(PreparedStatement.class);
+        ResultSet rs = mock(ResultSet.class);
+
+        when(mockProvider.getConnection()).thenReturn(mockConn);
+        when(mockConn.prepareStatement(anyString())).thenReturn(stmt);
+        when(stmt.executeQuery()).thenReturn(rs);
+        when(rs.next()).thenReturn(false);
+
+        InvoiceService.setConnectionProvider(mockProvider);
+
+        Invoice invoice = InvoiceService.getInvoiceById(9999);
+        assertNull(invoice);
+    }
+    
+    @Test
+    public void testInvoiceDateAlreadyUsedWithExclude() {
+        invoiceService.invoices = Arrays.asList(
+            createInvoice(LocalDate.of(2025, 5, 10)),
+            createInvoice(LocalDate.of(2025, 5, 11))
+        );
+        long excludeId = invoiceService.invoices.get(0).getId();
+
+        boolean result = invoiceService.invoiceDateAlreadyUsed(LocalDate.of(2025, 5, 10), user, excludeId);
+        assertFalse(result);
+
+        result = invoiceService.invoiceDateAlreadyUsed(LocalDate.of(2025, 5, 10), user, -1);
+        assertTrue(result);
+    }
+    
+    @Test
+    public void testAddInvoiceFailsWhenSQLException() throws Exception {
+        Invoice invoice = new Invoice();
+        invoice.setDate(LocalDate.now());
+        invoice.setAmount(10.0f);
+        invoice.setCategory(InvoiceCategory.RESTAURANT);
+        invoice.setUser(user);
+
+        ConnectionProvider mockProvider = mock(ConnectionProvider.class);
+        when(mockProvider.getConnection()).thenThrow(new SQLException("Connection error"));
+
+        InvoiceService.setConnectionProvider(mockProvider);
+
+        boolean result = InvoiceService.addInvoice(invoice);
+        assertFalse(result);
+    }
+    /*
+     * no further testing, because we would have to mock a lot of objects
+     */
 }
