@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -107,4 +108,131 @@ public class UserServiceTest {
 
         assertTrue(ex.getMessage().contains("E-Mail-Adresse wurde nicht gefunden"));
     }
+    
+    @Test
+    public void suspendedAccount() throws Exception { //created by AI
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getString("state")).thenReturn("SUSPENDED");
+
+        AuthenticationException ex = assertThrows(AuthenticationException.class, () ->
+                UserService.authenticate("suspended@example.com", "password")
+        );
+
+        assertTrue(ex.getMessage().contains("Ihr Konto wurde gesperrt"));
+    }
+    
+    @Test
+    public void inactiveAccount() throws Exception { //created by AI
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getString("state")).thenReturn("INACTIVE");
+
+        AuthenticationException ex = assertThrows(AuthenticationException.class, () ->
+                UserService.authenticate("inactive@example.com", "password")
+        );
+
+        assertTrue(ex.getMessage().contains("Ihr Konto ist inaktiv"));
+    }
+    
+    @Test
+    public void missingStateInDatabase() throws Exception { //created by AI
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getString("state")).thenReturn(null);
+
+        AuthenticationException ex = assertThrows(AuthenticationException.class, () ->
+                UserService.authenticate("user@example.com", "password")
+        );
+
+        assertTrue(ex.getMessage().contains("Benutzerstatus fehlt in der Datenbank"));
+    }
+    
+    @Test
+    public void invalidStateInDatabase() throws Exception { //created by AI
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getString("state")).thenReturn("INVALID_STATE");
+
+        AuthenticationException ex = assertThrows(AuthenticationException.class, () ->
+                UserService.authenticate("user@example.com", "password")
+        );
+
+        assertTrue(ex.getMessage().contains("Ungültiger Benutzerstatus"));
+    }
+    
+    @Test
+    public void missingPasswordInDatabase() throws Exception { //created by AI
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getString("state")).thenReturn("ACTIVE");
+        when(mockResultSet.getString("password")).thenReturn(null);
+
+        AuthenticationException ex = assertThrows(AuthenticationException.class, () ->
+                UserService.authenticate("user@example.com", "password")
+        );
+
+        assertTrue(ex.getMessage().contains("Passwort fehlt in der Datenbank"));
+    }
+    
+    @Test
+    public void missingRoleInDatabase() throws Exception { //created by AI
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getString("state")).thenReturn("ACTIVE");
+        when(mockResultSet.getString("password"))
+                .thenReturn(BCrypt.hashpw("password", BCrypt.gensalt()));
+        when(mockResultSet.getString("role")).thenReturn(null);
+
+        AuthenticationException ex = assertThrows(AuthenticationException.class, () ->
+                UserService.authenticate("user@example.com", "password")
+        );
+
+        assertTrue(ex.getMessage().contains("Benutzerrolle fehlt in der Datenbank"));
+    }
+    
+    @Test
+    public void invalidRoleInDatabase() throws Exception { //created by AI
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getString("state")).thenReturn("ACTIVE");
+        when(mockResultSet.getString("password"))
+                .thenReturn(BCrypt.hashpw("password", BCrypt.gensalt()));
+        when(mockResultSet.getString("role")).thenReturn("INVALID_ROLE");
+
+        AuthenticationException ex = assertThrows(AuthenticationException.class, () ->
+                UserService.authenticate("user@example.com", "password")
+        );
+
+        assertTrue(ex.getMessage().contains("Ungültige Benutzerrolle"));
+    }
+    
+
+    @Test
+    public void testGetUserIdByEmail() throws Exception { //created by AI
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getInt("id")).thenReturn(5);
+
+        int userId = UserService.getUserIdByEmail("test@user.com");
+
+        assertEquals(5, userId);
+    }
+    
+    @Test
+    public void testGetUserIdByEmailNotFound() throws Exception { //created by AI
+        when(mockResultSet.next()).thenReturn(false);
+
+        int userId = UserService.getUserIdByEmail("notfound@user.com");
+
+        assertEquals(-1, userId);
+    }
+    
+    @Test
+    public void testGetUserByEmailNotFound() throws Exception { //created by AI
+        when(mockResultSet.next()).thenReturn(false);
+
+        User user = UserService.getUserByEmail("notfound@user.com");
+
+        assertNull(user);
+    }
+    
+    /*
+     * no further test cases for methods which get Users from database
+     *  --> too much mocking
+     *  e.g. getAllUsers, insertUser...
+     */
+
 }

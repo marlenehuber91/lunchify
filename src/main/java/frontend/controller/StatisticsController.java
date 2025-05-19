@@ -1,5 +1,5 @@
 package frontend.controller;
-
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import backend.logic.ExportService;
 import backend.logic.ReimbursementService;
 import backend.logic.SessionManager;
 import backend.logic.StatisticsService;
@@ -25,9 +26,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.Chart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -38,7 +42,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+
 
 public class StatisticsController {
 
@@ -47,9 +55,14 @@ public class StatisticsController {
 	List<Reimbursement> allReimbursements;
 	StatisticsService statisticsService;
 	StatisticsService adminStatisticsService;
+	ExportService exportService;
 	ReimbursementService reimbursementService;
 	String selectedMonth, selectedType, selectedYear, report, timeRange;
-
+	boolean isAdminTab;
+	Tab selectedTab;
+	List<Reimbursement> currentFilteredUserData;
+	List<Reimbursement> currentFilteredAdminData;
+	
 	@FXML
 	private Circle backArrow;
 
@@ -100,7 +113,16 @@ public class StatisticsController {
 
 	@FXML
 	private CheckBox rejectedCheckBox;
-
+	
+	@FXML
+	private Button exportPDFButton;
+	
+	@FXML
+	private Button exportCSVButton;
+	
+	@FXML
+	private Rectangle containerRectangle;
+	
 	@FXML
 	void initialize() {
 		if (user == null) {
@@ -118,6 +140,7 @@ public class StatisticsController {
 		setEventhandlers();
 		handleFilter(null);
 		handleAdminFilter(null);
+		
 	}
 
 	@FXML
@@ -156,7 +179,7 @@ public class StatisticsController {
 		
 		List<Reimbursement> pieData = rejectedCheckBox.isSelected() ? filtered
 				: filtered.stream().filter(r -> r.getStatus() != ReimbursementState.REJECTED).toList();
-		
+		currentFilteredUserData = filtered;
 		
 		if (pieData.isEmpty()) {
 			noDataLabel.setVisible(true);
@@ -172,8 +195,44 @@ public class StatisticsController {
 		    loadStatusBarChart(filtered);
 		    loadPieChart(filtered, pieChart);
 		});
+		
+		selectedTab = statisticsTabPane.getSelectionModel().getSelectedItem();
+		isAdminTab = selectedTab == adminTab;
+		adjustLayoutForExportButton();
 	}
+	
 
+    @FXML
+    private void handleExportPDF() {
+        File file = showFileChooser("PDF speichern", "*.pdf");
+        if (file != null) {
+            try {
+                if (isAdminTab) {
+                    Chart activeChart = adminBarChart.isVisible() ? adminBarChart : adminPieChart;
+                    exportService.exportAdminToPdf(file, activeChart, reportTypeComboBox.getValue(), currentFilteredAdminData);
+                } else {
+                    exportService.exportUserToPdf(file, pieChart, statusBarChart, currentFilteredUserData);
+                }
+                showAlert("Export erfolgreich", "PDF wurde erstellt");
+            } catch (IOException e) {
+                showAlert("Export fehlgeschlagen", "Fehler: " + e.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    private void handleExportCSV() {        
+        File file = showFileChooser("CSV speichern", "*.csv");
+        if (file != null) {
+            try {
+                exportService.exportAdminToCsv(file, reportTypeComboBox.getValue(), currentFilteredAdminData);
+                showAlert("Export erfolgreich", "CSV wurde erstellt");
+            } catch (IOException e) {
+                showAlert("Export fehlgeschlagen", "Fehler: " + e.getMessage());
+            }
+        }
+    }
+	
 	private void handleAdminFilter(MouseEvent event) {
 		//resetCharts();
 		getFilterInput();
@@ -203,7 +262,7 @@ public class StatisticsController {
 	            if ((timeRange).contains("12")) {
 	            	List<Reimbursement> filtered = adminStatisticsService.getReimbursementsFromLast12Months();
 	            	adminStatisticsService.setReimbursements(filtered);
-	            }
+	            } 
 	            
 	            loadChartWithData(adminStatisticsService.getSumByCategory(), adminPieChart, false);
 	            reportTimeRangeComboBox.setVisible(true);
@@ -220,6 +279,7 @@ public class StatisticsController {
 	            reportTimeRangeComboBox.setVisible(true);
 	        }			
 		}
+		currentFilteredAdminData = getFilteredAdminDataForCurrentTimeRange();
 		
 	}
 
@@ -417,6 +477,10 @@ public class StatisticsController {
 		rejectedCheckBox.setOnAction(e -> handleFilter(null));
 		reportTypeComboBox.setOnAction(e -> handleAdminFilter(null));
 		reportTimeRangeComboBox.setOnAction(e -> handleAdminFilter(null));
+		statisticsTabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+		    isAdminTab = newTab == adminTab;
+		    adjustLayoutForExportButton();
+		});
 	}
 	
 	private void setServices () {
@@ -428,6 +492,8 @@ public class StatisticsController {
 		adminStatisticsService = new StatisticsService();
 		allReimbursements = reimbursementService.getAllReimbursements(null);
 		adminStatisticsService.setReimbursements(allReimbursements);
+		
+		 exportService = new ExportService(statisticsService, SessionManager.getCurrentUser());
 	}
 
 	// created by AI, enhanced by the team
@@ -445,4 +511,38 @@ public class StatisticsController {
 		reportTypeComboBox.setValue("Anzahl pro Monat");
 		reportTimeRangeComboBox.setValue("alle Zeiträume");
 	}
+	
+	// Hilfsmethoden
+    private File showFileChooser(String title, String extension) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(title);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(title, extension));
+        return fileChooser.showSaveDialog(statistscPane.getScene().getWindow());
+    }
+    
+
+    private void showAlert(String title, String message) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
+    }
+    
+    private void adjustLayoutForExportButton() {
+        exportCSVButton.setVisible(isAdminTab);
+        exportCSVButton.setDisable(!isAdminTab);
+        
+        if (isAdminTab) containerRectangle.setHeight(173); 
+        else containerRectangle.setHeight(77);
+    }
+    
+    private List<Reimbursement> getFilteredAdminDataForCurrentTimeRange() {
+        return timeRange != null && timeRange.contains("12")
+            ? adminStatisticsService.getReimbursementsFromLast12Months()
+            : adminStatisticsService.getReimbursements();
+    }
+	
 }

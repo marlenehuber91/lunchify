@@ -5,6 +5,7 @@
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -27,7 +28,6 @@
             <Image url="@../images/logo.png" />
          </image>
       </ImageView>
-      <fx:include source="UserDropDown.fxml" />
       <Accordion layoutX="109.0" layoutY="341.0" />
       <Accordion layoutX="128.0" layoutY="428.0" />
       <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="120.0" layoutX="195.0" layoutY="40.0" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="445.0" />
@@ -46,7 +46,7 @@
             <Circle fx:id="backArrow" fill="#eceeef00" onMouseClicked="#handleBackToDashboard" radius="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
          </children>
       </StackPane>
-      <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="388.0" layoutX="1016.0" layoutY="30.0" stroke="WHITE" strokeType="INSIDE" width="250.0" />
+      <Rectangle fx:id="containerRectangle" arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="173.0" layoutX="1016.0" layoutY="30.0" stroke="WHITE" strokeType="INSIDE" width="250.0" />
       <TabPane fx:id="statisticsTabPane" layoutX="70.0" layoutY="192.0" prefHeight="596.0" prefWidth="901.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="employeeTab" text="meine Statistiken">
@@ -100,5 +100,15 @@
           </Tab>
         </tabs>
       </TabPane>
+      <Button fx:id="exportPDFButton" layoutX="1045.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#handleExportPDF" prefHeight="38.0" prefWidth="192.0" text="Download als pdf">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="exportCSVButton" layoutX="1045.0" layoutY="141.0" mnemonicParsing="false" onMouseClicked="#handleExportCSV" prefHeight="38.0" prefWidth="192.0" text="Download als csv">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

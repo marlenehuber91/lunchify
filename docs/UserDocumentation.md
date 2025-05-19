@@ -1,5 +1,3 @@
---> Screenshots still missing
-
 # WELCOME to Lunchify
 
 ## Inhaltsverzeichnis
@@ -8,17 +6,8 @@
 - [Installation und Start](#installation-und-start)
 - [Anmeldung](#anmeldung)
 - [Funktionen für Mitarbeiter:innen](#funktionen-für-mitarbeiterinnen)
-    - [Rechnung hochladen](#rechnung-hochladen)
-    - [Rechnung klassifizieren & Betrag eingeben](#rechnung-klassifizieren--betrag-eingeben)
-    - [Rückerstattung einreichen](#rückerstattung-einreichen)
-    - [Verlauf und Änderungen](#verlauf-und-änderungen)
 - [Funktionen für Administrator:innen](#funktionen-für-administratorinnen)
-    - [Übersicht & Statistik](#übersicht--statistik)
-    - [Benutzerverwaltung](#benutzerverwaltung)
-    - [Export für Gehaltsabrechnung](#export-für-gehaltsabrechnung)
-    - [Konfiguration der Rückerstattung](#konfiguration-der-rückerstattung)
 - [Fehlermeldungen und Hinweise](#fehlermeldungen-und-hinweise)
-- [Support](#support)
 
 ---
 
@@ -44,9 +33,7 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 
 - Gib deine E-Mail-Adresse und dein Passwort ein.
 - Nach erfolgreicher Anmeldung wirst du entsprechend deiner Rolle weitergeleitet.
-
-<!-- Screenshot: Login-Bildschirm -->
-<!-- ![Login](screenshots/login.png) -->
+![LoginPage](/docs/Screenshots/loginPage.png)
 
 ---
 
@@ -57,13 +44,12 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 1. Klicke auf **"Rechnung einreichen"**.
 2. Lade ein Bild oder eine PDF deiner Mittagsrechnung hoch.
     - Unterstützte Formate: `.jpg`, `.png`, `.pdf`
-
-<!-- Screenshot: Upload-Bereich -->
-<!-- ![Upload](screenshots/upload.png) -->
+![Upload](/docs/Screenshots/RechnungEinreichen.png)
 
 ### Rechnung klassifizieren & Betrag eingeben
 
 - Die App erkennt automatisch:
+    - Datum
     - ob es sich um ein **Restaurant** oder **Supermarkt** handelt
     - den **Rechnungsbetrag**
 - Du kannst diese Angaben, wenn nötig, manuell ändern.
@@ -81,28 +67,28 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 - Supermarkt 5 € → Rückvergütung: 2,5 €
 - Supermarkt 1,70 € → Rückvergütung: 1,70 €
 
-<!-- Screenshot: Bestätigung -->
-<!-- ![Bestätigung](screenshots/bestaetigung.png) -->
-
 ---
 
 ### Übersicht und Änderungen
 
 - Unter **"alle Rechnungen"** siehst du alle deine bisher eingereichten Rechungen mit Status, Datum, Betrag und Klassifikation.
 - Unter **"aktuelle Rechnungen"** siehst du eine Liste deiner Einreichungen dieses Monats mit Status, Datum, Betrag und Klassifikation.
-- Rechnungen können **bis zum Monatsende** bearbeitet oder gelöscht werden.
+- **offene** Rechnungen können **bis zum Monatsende** bearbeitet oder gelöscht werden. Sobald sie genehmigt wurden, können sie nicht mehr geändert werden.
 
-<!-- Screenshot: Verlauf -->
-<!-- ![Verlauf](screenshots/verlauf.png) -->
+---
+
+### Statistik
+
+- unter **"Statistik"** siehst du eine Übersicht deiner bisher eingereichten Rechnungen nach verschiedenen Kriterien.
+- die Ansicht kann als .pdf abgespeichert werden, nutze den Button rechts
+![Statistik](/docs/Screenshots/Statistik.png)
 
 ---
 
 ### Logout
 
-- hier kannst du dich wieder ausloggen
-<!-- Screenshot: Logout -->
-<!-- ![Logout](screenshots/logout.png) -->
-
+- bei Klick auf den Avatar kannst du Logout wählen
+![UserDashboard](/docs/Screenshots/UserDashboard.png)
 ---
 
 
@@ -110,8 +96,30 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 
 - Du hast als Admin alle Funktionen, die auch ein Mitarbeiter hat - siehe oben. Zusätzliche Funktionen für dich:
 
-<!-- Screenshot: Admin-Dashboard -->
-<!-- ![Dashboard](screenshots/dashboard.png) -->
+![Dashboard](/docs/Screenshots/AdminDashboard.png)
+
+---
+
+### Rechnungen freigeben oder ablehnen
+
+- unter **alle Rechnungen** kannst du Rechnungen freigeben oder ablehnen, löschen oder ändern
+- wenn diese unter der Anomalieerkennung laufen, können sie hier **nicht** freigegeben werden
+- ACHTUNG: einmal freigebene Rechnungen können nicht mehr geändert werden
+
+![alleRechnungen](/docs/Screenshots/AdminAlleRechnungen.png)
+
+---
+
+### Anomalieerkennung und Auswirkungen
+
+- **Lunchify** erkennt potentiell missbräuchliche Nutzung und flagged User und/oder Rechnungen
+- Diese müssen vor Freigabe unter **"Anomalien"** gesondert kontrolliert und dann geändert, gelöscht, freigegeben oder abgelehnt werden
+- edit: Rechnung ändern
+- del: Rechnung löschen --> User könnte für diesen Tag eine neue Rechnung einreichen
+- ok: Rechnung freigeben --> kann nicht rückgängig gemacht werden
+- rej: Rechnung ablehnen
+
+![Anomalie](/docs/Screenshots/AdminAnomalie.png)
 
 ---
 
@@ -123,9 +131,7 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
     - Durchschnitt pro Benutzer
     - Verteilung Restaurant/Supermarkt
     - Gesamtsumme der Rückvergütungen
-
-<!-- Screenshot: Statistik -->
-<!-- ![Statistik](screenshots/statistik.png) -->
+![Statistik](/docs/Screenshots/AdminStatistik.png)
 
 ---
 
@@ -134,27 +140,23 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 - Klicke auf **"Suche"**
 - Suche nach bestimmten Kriterien wie zB Benutzer oder Monat
 
-<!-- Screenshot: Suche -->
-<!-- ![Suche](screenshots/suche.png) -->
-
 ---
 
 ### Export für Gehaltsabrechnung
 
-- - Klicke auf **"Export"**
-- Exportiere Daten monatlich als **CSV**, **PDF**, **JSON** oder **XML**
-- Diese Dateien enthalten alle Benutzer:innen mit der jeweiligen Monatssumme
+- Klicke auf **"alle Rechnungen"**
+- filtere nach Wunsch
+- klicke auf **"Export"**
 
 ---
 
 ### Benutzerverwaltung
 
-- Klicke auf **"Benutzerverwaltung"**
+- Klicke auf **"Benutzer verwalten"**
 - Neue Benutzer:innen hinzufügen oder bestehende löschen
-- Rollen verwalten (Benutzer:in oder Administrator:in)
+- Rollen zuweisen (Benutzer:in oder Administrator:in)
 
-<!-- Screenshot: Benutzerverwaltung -->
-<!-- ![Benutzerverwaltung](screenshots/benutzer.png) -->
+![Benutzerverwaltung](/docs/Screenshots/AdminUserAnlegen.png)
 
 ---
 
@@ -164,8 +166,7 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 - Im Admin-Bereich kannst du die Rückerstattungsbeträge anpassen.
 - Diese Änderungen gelten ab dem nächsten Antrag.
 
-<!-- Screenshot: Konfiguration -->
-<!-- ![Konfiguration](screenshots/konfiguration.png) -->
+![Konfiguration](/docs/Screenshots/AdminRueckerstattungAendern.png)
 
 ---
 

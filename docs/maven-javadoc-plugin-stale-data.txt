@@ -1,0 +1,102 @@
+-J-Duser.language=
+-J-Duser.country=
+@options
+@packages
+-classpath
+'C:/Users/marle/.m2/repository/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar;C:/Users/marle/.m2/repository/org/jfree/jfreechart/1.5.3/jfreechart-1.5.3.jar;C:/Users/marle/.m2/repository/org/controlsfx/controlsfx/11.1.2/controlsfx-11.1.2.jar;C:/Users/marle/.m2/repository/org/apache/logging/log4j/log4j-api/2.23.1/log4j-api-2.23.1.jar;C:/Users/marle/.m2/repository/org/apache/logging/log4j/log4j-core/2.23.1/log4j-core-2.23.1.jar;C:/Users/marle/.m2/repository/org/openjfx/javafx-graphics/21/javafx-graphics-21.jar;C:/Users/marle/.m2/repository/org/openjfx/javafx-graphics/21/javafx-graphics-21-win.jar;C:/Users/marle/.m2/repository/org/openjfx/javafx-base/21/javafx-base-21.jar;C:/Users/marle/.m2/repository/org/openjfx/javafx-base/21/javafx-base-21-win.jar;C:/Users/marle/.m2/repository/org/openjfx/javafx-controls/21/javafx-controls-21.jar;C:/Users/marle/.m2/repository/org/openjfx/javafx-controls/21/javafx-controls-21-win.jar;C:/Users/marle/.m2/repository/org/openjfx/javafx-fxml/21/javafx-fxml-21.jar;C:/Users/marle/.m2/repository/org/openjfx/javafx-fxml/21/javafx-fxml-21-win.jar;C:/Users/marle/.m2/repository/org/apache/pdfbox/pdfbox/2.0.27/pdfbox-2.0.27.jar;C:/Users/marle/.m2/repository/org/apache/pdfbox/fontbox/2.0.27/fontbox-2.0.27.jar;C:/Users/marle/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar;C:/Users/marle/.m2/repository/org/openjfx/javafx-swing/21/javafx-swing-21.jar;C:/Users/marle/.m2/repository/org/openjfx/javafx-swing/21/javafx-swing-21-win.jar;C:/Users/marle/.m2/repository/org/mindrot/jbcrypt/0.4/jbcrypt-0.4.jar;C:/Users/marle/.m2/repository/net/sourceforge/tess4j/tess4j/5.4.0/tess4j-5.4.0.jar;C:/Users/marle/.m2/repository/net/java/dev/jna/jna/5.12.1/jna-5.12.1.jar;C:/Users/marle/.m2/repository/com/github/jai-imageio/jai-imageio-core/1.4.0/jai-imageio-core-1.4.0.jar;C:/Users/marle/.m2/repository/org/apache/pdfbox/pdfbox-tools/2.0.26/pdfbox-tools-2.0.26.jar;C:/Users/marle/.m2/repository/org/apache/pdfbox/pdfbox-debugger/2.0.26/pdfbox-debugger-2.0.26.jar;C:/Users/marle/.m2/repository/org/apache/pdfbox/jbig2-imageio/3.0.4/jbig2-imageio-3.0.4.jar;C:/Users/marle/.m2/repository/commons-io/commons-io/2.11.0/commons-io-2.11.0.jar;C:/Users/marle/.m2/repository/net/sourceforge/lept4j/lept4j/1.16.2/lept4j-1.16.2.jar;C:/Users/marle/.m2/repository/org/jboss/jboss-vfs/3.2.17.Final/jboss-vfs-3.2.17.Final.jar;C:/Users/marle/.m2/repository/org/jboss/logging/jboss-logging/3.1.4.GA/jboss-logging-3.1.4.GA.jar;C:/Users/marle/.m2/repository/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.jar;C:/Users/marle/.m2/repository/org/postgresql/postgresql/42.7.5/postgresql-42.7.5.jar;C:/Users/marle/.m2/repository/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar;C:/Users/marle/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar;C:/Users/marle/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar;C:/Users/marle/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.19.0/jackson-databind-2.19.0.jar;C:/Users/marle/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.19.0/jackson-annotations-2.19.0.jar;C:/Users/marle/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.19.0/jackson-core-2.19.0.jar;C:/Users/marle/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.19.0/jackson-datatype-jsr310-2.19.0.jar;C:/Users/marle/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.2/jakarta.xml.bind-api-4.0.2.jar;C:/Users/marle/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.3/jakarta.activation-api-2.1.3.jar;C:/Users/marle/.m2/repository/org/glassfish/jaxb/jaxb-runtime/4.0.2/jaxb-runtime-4.0.2.jar;C:/Users/marle/.m2/repository/org/glassfish/jaxb/jaxb-core/4.0.2/jaxb-core-4.0.2.jar;C:/Users/marle/.m2/repository/org/glassfish/jaxb/txw2/4.0.2/txw2-4.0.2.jar;C:/Users/marle/.m2/repository/com/sun/istack/istack-commons-runtime/4.1.1/istack-commons-runtime-4.1.1.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'21'
+-sourcepath
+'C:/teaching-2025.ss.prse.braeuer.team4/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2025. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/teaching-2025.ss.prse.braeuer.team4/target/reports/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'lunchify 0.0.3 API'
+-use
+-version
+-windowtitle
+'lunchify 0.0.3 API'
+backend.configs
+backend.Exceptions
+backend.interfaces
+backend.logic
+backend.model
+database
+frontend.controller
+frontend
+C:\Users\marle\.m2\repository\org\apache\commons\commons-lang3\3.9\commons-lang3-3.9.jar = 1743600391129
+C:\Users\marle\.m2\repository\org\jfree\jfreechart\1.5.3\jfreechart-1.5.3.jar = 1743600391757
+C:\Users\marle\.m2\repository\org\controlsfx\controlsfx\11.1.2\controlsfx-11.1.2.jar = 1743600391850
+C:\Users\marle\.m2\repository\org\apache\logging\log4j\log4j-api\2.23.1\log4j-api-2.23.1.jar = 1743600391982
+C:\Users\marle\.m2\repository\org\apache\logging\log4j\log4j-core\2.23.1\log4j-core-2.23.1.jar = 1743600392754
+C:\Users\marle\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21.jar = 1743661670622
+C:\Users\marle\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21-win.jar = 1743661672033
+C:\Users\marle\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21.jar = 1743661670837
+C:\Users\marle\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21-win.jar = 1743661670761
+C:\Users\marle\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21.jar = 1743661671500
+C:\Users\marle\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21-win.jar = 1743661671428
+C:\Users\marle\.m2\repository\org\openjfx\javafx-fxml\21\javafx-fxml-21.jar = 1743661670823
+C:\Users\marle\.m2\repository\org\openjfx\javafx-fxml\21\javafx-fxml-21-win.jar = 1743661670745
+C:\Users\marle\.m2\repository\org\apache\pdfbox\pdfbox\2.0.27\pdfbox-2.0.27.jar = 1743667413552
+C:\Users\marle\.m2\repository\org\apache\pdfbox\fontbox\2.0.27\fontbox-2.0.27.jar = 1743667411450
+C:\Users\marle\.m2\repository\commons-logging\commons-logging\1.2\commons-logging-1.2.jar = 1743601076016
+C:\Users\marle\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21.jar = 1747635080329
+C:\Users\marle\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21-win.jar = 1747635080433
+C:\Users\marle\.m2\repository\org\mindrot\jbcrypt\0.4\jbcrypt-0.4.jar = 1743600391940
+C:\Users\marle\.m2\repository\net\sourceforge\tess4j\tess4j\5.4.0\tess4j-5.4.0.jar = 1743601080388
+C:\Users\marle\.m2\repository\net\java\dev\jna\jna\5.12.1\jna-5.12.1.jar = 1743601078123
+C:\Users\marle\.m2\repository\com\github\jai-imageio\jai-imageio-core\1.4.0\jai-imageio-core-1.4.0.jar = 1743601077038
+C:\Users\marle\.m2\repository\org\apache\pdfbox\pdfbox-tools\2.0.26\pdfbox-tools-2.0.26.jar = 1743601076786
+C:\Users\marle\.m2\repository\org\apache\pdfbox\pdfbox-debugger\2.0.26\pdfbox-debugger-2.0.26.jar = 1743601076371
+C:\Users\marle\.m2\repository\org\apache\pdfbox\jbig2-imageio\3.0.4\jbig2-imageio-3.0.4.jar = 1743601076380
+C:\Users\marle\.m2\repository\commons-io\commons-io\2.11.0\commons-io-2.11.0.jar = 1743600394346
+C:\Users\marle\.m2\repository\net\sourceforge\lept4j\lept4j\1.16.2\lept4j-1.16.2.jar = 1743601079756
+C:\Users\marle\.m2\repository\org\jboss\jboss-vfs\3.2.17.Final\jboss-vfs-3.2.17.Final.jar = 1743601077279
+C:\Users\marle\.m2\repository\org\jboss\logging\jboss-logging\3.1.4.GA\jboss-logging-3.1.4.GA.jar = 1743601077275
+C:\Users\marle\.m2\repository\org\slf4j\slf4j-api\1.7.36\slf4j-api-1.7.36.jar = 1743600394254
+C:\Users\marle\.m2\repository\org\postgresql\postgresql\42.7.5\postgresql-42.7.5.jar = 1743600392575
+C:\Users\marle\.m2\repository\javax\servlet\javax.servlet-api\4.0.1\javax.servlet-api-4.0.1.jar = 1744037952231
+C:\Users\marle\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar = 1743600390607
+C:\Users\marle\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar = 1743667411960
+C:\Users\marle\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.19.0\jackson-databind-2.19.0.jar = 1745826294430
+C:\Users\marle\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.19.0\jackson-annotations-2.19.0.jar = 1745826294039
+C:\Users\marle\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.19.0\jackson-core-2.19.0.jar = 1745826294264
+C:\Users\marle\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.19.0\jackson-datatype-jsr310-2.19.0.jar = 1745826294138
+C:\Users\marle\.m2\repository\jakarta\xml\bind\jakarta.xml.bind-api\4.0.2\jakarta.xml.bind-api-4.0.2.jar = 1747384161307
+C:\Users\marle\.m2\repository\jakarta\activation\jakarta.activation-api\2.1.3\jakarta.activation-api-2.1.3.jar = 1747384161261
+C:\Users\marle\.m2\repository\org\glassfish\jaxb\jaxb-runtime\4.0.2\jaxb-runtime-4.0.2.jar = 1747385859495
+C:\Users\marle\.m2\repository\org\glassfish\jaxb\jaxb-core\4.0.2\jaxb-core-4.0.2.jar = 1747385859546
+C:\Users\marle\.m2\repository\org\glassfish\jaxb\txw2\4.0.2\txw2-4.0.2.jar = 1747385859491
+C:\Users\marle\.m2\repository\com\sun\istack\istack-commons-runtime\4.1.1\istack-commons-runtime-4.1.1.jar = 1747385859522
+C:\teaching-2025.ss.prse.braeuer.team4\src\main\java = 1744387726500
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\allclasses-index.html = 1747639784129
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\allpackages-index.html = 1747639784133
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\copy.svg = 1747639784201
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\element-list = 1747639783646
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\help-doc.html = 1747639784193
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\index-all.html = 1747639784184
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\index.html = 1747639784091
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\link.svg = 1747639784203
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\member-search-index.js = 1747639784137
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\module-search-index.js = 1747639784134
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\overview-summary.html = 1747639784189
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\overview-tree.html = 1747639784085
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\package-search-index.js = 1747639784135
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\script.js = 1747639784199
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\search-page.js = 1747639784207
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\search.html = 1747639784187
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\search.js = 1747639784205
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\serialized-form.html = 1747639783752
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\stylesheet.css = 1747639784197
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\tag-search-index.js = 1747639784139
+C:\teaching-2025.ss.prse.braeuer.team4\target\reports\apidocs\type-search-index.js = 1747639784136

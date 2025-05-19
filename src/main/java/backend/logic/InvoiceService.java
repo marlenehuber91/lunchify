@@ -129,11 +129,6 @@ public class InvoiceService {
 		Float ocrAmount = OCR.getAmount();
 		InvoiceCategory ocrCategory = OCR.getCategory();
 
-		//TODO REMOVE DEBUGGIN LINE
-		System.out.println("OCR Date: " + OCR.getDate());
-		System.out.println("OCR Amount: " + OCR.getAmount());
-		System.out.println("OCR Category: " + OCR.getCategory());
-
 		//check for permanent flagged users
 		String checkPermFlag = "SELECT permanent_flag FROM FlaggedUsers WHERE user_id = ?";
 

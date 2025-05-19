@@ -90,11 +90,11 @@ public class AnomalyDetectionService  {
             ResultSet resultSet = stmt.executeQuery();
 
             if (resultSet.next()) {
-                int no_flaggs = resultSet.getInt("no_flaggs");
-                boolean permanent_flag = resultSet.getBoolean("permanent_flag");
+                int noFlaggs = resultSet.getInt("no_flaggs");
+                boolean permanentFlag = resultSet.getBoolean("permanent_flag");
 
-                flaggedUser.setNoFlaggs(no_flaggs);
-                flaggedUser.setPermanentFlag(permanent_flag);
+                flaggedUser.setNoFlaggs(noFlaggs);
+                flaggedUser.setPermanentFlag(permanentFlag);
             }
 
         } catch (SQLException e) {
