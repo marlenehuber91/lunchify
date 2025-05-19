@@ -218,7 +218,7 @@ public class ExportService {// AI generated changed by the team
 		content.newLineAtOffset(50, currentY);
 		content.showText("Datenübersicht (" + reportType + ")");
 		content.endText();
-		startY -= currentY;
+		currentY -= 20;
 
 		Map<String, String> data = new LinkedHashMap<>();
 		switch (reportType) {
@@ -245,7 +245,7 @@ public class ExportService {// AI generated changed by the team
 			break;
 		}
 
-		addTableContent(content, doc, data, startY);
+		addTableContent(content, doc, data, currentY);
 	}
 
 	private void addUserDataTables(PDPageContentStream content, PDDocument doc, float startY) throws IOException {
@@ -260,14 +260,15 @@ public class ExportService {// AI generated changed by the team
 
 		content.setFont(PDType1Font.HELVETICA_BOLD, 10);
 		content.beginText();
-		content.newLineAtOffset(50, startY - 25);
+		content.newLineAtOffset(50, currentY - 25);
 		content.showText("Kategorie");
 		content.newLineAtOffset(150, 0);
 		content.showText("Betrag");
 		content.endText();
 
+		currentY -= 40;
 		content.setFont(PDType1Font.HELVETICA, 10);
-		currentY = startY - 40;
+		
 		Map<InvoiceCategory, Double> categoryData = statisticsService.getSumByCategory();
 
 		for (Map.Entry<InvoiceCategory, Double> entry : categoryData.entrySet()) {
