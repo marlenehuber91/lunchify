@@ -1,5 +1,6 @@
 package lunchifyTests;
 
+import backend.logic.NotificationService;
 import backend.logic.ReimbursementService;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
@@ -34,8 +35,8 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-class ReimbursementServiceTest {
+@ExtendWith(MockitoExtension.class) 
+class ReimbursementServiceTest { //all testcases are created with help of AI
 
     @Mock private Connection mockConnection;
     @Mock private PreparedStatement mockStatement;
@@ -59,6 +60,7 @@ class ReimbursementServiceTest {
 
         service = new ReimbursementService(testUser);
         mockReimbursementService = new ReimbursementService(testUser);
+        NotificationService.setConnectionProvider(provider);
     }
 
     @Test
@@ -236,11 +238,156 @@ class ReimbursementServiceTest {
         assertEquals("RESTAURANT", filtered.get(0).getInvoice().getCategory().toString());
         assertEquals(ReimbursementState.APPROVED, filtered.get(0).getStatus());
     }
-
+    
     @Test
-    void testGetFilteredReimbursementsWithFilters() {
-        // Mock für Service und Testdaten
-        ReimbursementService mockService = mock(ReimbursementService.class);
-        // ...
+    void testModifyLimitsSuccess() throws Exception {
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+        when(mockStatement.executeUpdate()).thenReturn(1);
+
+        boolean result = service.modifyLimits(InvoiceCategory.RESTAURANT, 4.5f);
+        assertTrue(result);
+        assertEquals(4.5f, service.getLimit(InvoiceCategory.RESTAURANT));
     }
+    
+    @Test
+    void testModifyLimitsWithNegativeValueThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            service.modifyLimits(InvoiceCategory.SUPERMARKET, -1.0f);
+        });
+    }
+    
+    @Test
+    void testIsValidFloatWithValidInput() {
+        assertTrue(service.isValidFloat("10.5"));
+        assertTrue(service.isValidFloat("7"));
+    }
+    
+    @Test
+    void testIsValidFloatWithInvalidInput() {
+        assertFalse(service.isValidFloat("abc"));
+        assertFalse(service.isValidFloat(""));
+        assertFalse(service.isValidFloat(null));
+    }
+    
+    @Test
+    void testIsAmountValid() {
+        assertTrue(service.isAmountValid("12.34"));
+        assertFalse(service.isAmountValid("wrong"));
+        assertFalse(service.isAmountValid(null));
+    }
+    
+    @Test
+    void testGetLimitForAllCategories() {
+        assertEquals(3.0f, service.getLimit(InvoiceCategory.RESTAURANT));
+        assertEquals(2.5f, service.getLimit(InvoiceCategory.SUPERMARKET));
+        assertEquals(2.5f, service.getLimit(InvoiceCategory.UNDETECTABLE));
+    }
+    
+    @Test
+    void testGetReimbursementsReturnsEmptyList() throws Exception {
+        when(mockResultSet.next()).thenReturn(false); // kein Ergebnis
+
+        List<Reimbursement> result = service.getAllReimbursements(testUser.getId());
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+    
+    @Test
+    void testSetAndGetSelectedUser() {
+        User otherUser = new User(2, "Anna", "anna@example.com", UserRole.EMPLOYEE, UserState.ACTIVE);
+        service.setSelectedUser(otherUser);
+
+        assertEquals(otherUser, service.getSelectedUser());
+    }
+    
+    @Test
+    void testGetReimbursementAmount() {
+        ReimbursementService service = new ReimbursementService();
+        service.setReimbursementAmount(42.0f);
+        assertEquals(42.0f, service.getReimbursementAmount());
+    }
+    
+    @Test
+    void testGetInfoText_containsLimits() {
+        ReimbursementService service = new ReimbursementService();
+        service.setReimbursementAmount(3.0f); // Optional
+        
+        String text = service.getInfoText();
+        
+        assertTrue(text.contains("Pro Arbeitstag kann eine Rechnung eingereicht werden"));
+        assertTrue(text.contains("Supermarket:") || text.contains("Supermarkt:"));
+        assertTrue(text.contains("Restaurant:"));
+    }
+    //failing
+    @Test
+    void testApproveReimbursementFailure() throws Exception {
+        Reimbursement testReimb = new Reimbursement();
+        testReimb.setId(1);
+        Invoice testInvoice = new Invoice();
+        testInvoice.setId(1);
+        testInvoice.setUser(testUser);
+        testReimb.setInvoice(testInvoice);
+
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+        when(mockStatement.executeUpdate()).thenReturn(0); // No rows updated
+
+        boolean result = service.approveReimbursement(testReimb, testUser, false);
+        
+        assertFalse(result);
+    }
+   
+    @Test
+    void testApproveReimbursementSuccess() throws Exception {
+        Reimbursement testReimb = new Reimbursement();
+        testReimb.setId(1);
+        Invoice testInvoice = new Invoice();
+        testInvoice.setId(1);
+        testInvoice.setUser(testUser);
+        testReimb.setInvoice(testInvoice);
+
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+        when(mockStatement.executeUpdate()).thenReturn(1);
+
+        boolean result = service.approveReimbursement(testReimb, testUser, false);
+        
+        assertTrue(result);
+     }
+    
+
+	@Test
+	void testApproveReimbursementWithNullReimbursementThrowsException() {
+	    assertThrows(NullPointerException.class, () -> {
+	        service.approveReimbursement(null, testUser, false);
+	    });
+	}
+	
+	@Test
+	void testDeleteReimbursementSuccess() throws Exception {
+	    Reimbursement testReimb = new Reimbursement();
+	    testReimb.setId(1);
+	    Invoice testInvoice = new Invoice();
+	    testInvoice.setId(1);
+	    testInvoice.setUser(testUser);
+	    testReimb.setInvoice(testInvoice);
+
+	    // Mock die beiden DELETE-Statements
+	    when(mockConnection.prepareStatement(startsWith("DELETE FROM reimbursements")))
+	        .thenReturn(mockStatement);
+	    when(mockConnection.prepareStatement(startsWith("DELETE FROM invoices")))
+	        .thenReturn(mockStatement);
+	    when(mockStatement.executeUpdate()).thenReturn(1); // Erfolgreiche Ausführung
+
+	    boolean result = service.deleteReimbursement(testReimb, testUser, false);
+	    
+	    assertTrue(result);
+	}
+	
+	@Test
+	void testRejectReimbursementWithNullInvoice() {
+	    Reimbursement testReimb = new Reimbursement();
+	    testReimb.setId(1);
+	    assertThrows(NullPointerException.class, () -> {
+	        service.rejectReimbursement(testReimb, testUser, false);
+	    });
+	}
 }

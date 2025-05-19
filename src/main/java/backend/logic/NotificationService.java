@@ -55,7 +55,11 @@ public class NotificationService {
 			}
 
 			stmt.setBoolean(9, asAdmin);
-			stmt.setDate(10, Date.valueOf(originalInvoiceDate));
+			if (originalInvoiceDate != null) {
+			    stmt.setDate(10, Date.valueOf(originalInvoiceDate));
+			} else {
+			    stmt.setNull(10, java.sql.Types.DATE);
+			}
 			stmt.setBoolean(11, selfmade);
 			stmt.executeUpdate();
 
