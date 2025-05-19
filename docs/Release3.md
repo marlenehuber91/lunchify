@@ -23,12 +23,12 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
   
 ### Projektdokus
   - Systemdoku (inkl. Architekturdiagramm)
-  - JavaDoc - how to use?
+  - JavaDoc - how to use? [JavadocFile](maven-javadoc-plugin-stale-data.txt)
   - Benutzerdoku (.jar failing)
 ---
 
 ## Sprint Retro
-- xxx h (xxx h gesamt) gebuchte Stunden 30.4.-20.5.
+- 82h (360h gesamt) gebuchte Stunden 30.4.-20.5.
 
 1) gröbere Probleme:
    -  Zeitliche Probleme (weniger Zeit aufgrund einer Klausur in einer andern LVA)
