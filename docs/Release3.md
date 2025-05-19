@@ -18,17 +18,21 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 - Beispiele von Findings
 
   
-### Projektdokus (System, Benutzerdoku)
+### Projektdokus
+  - Systemdoku (inkl. Architekturdiagramm)
+  - JavaDoc - how to use?
+  - Benutzerdoku (.jar failing)
 ---
 
 ## Sprint Retro
 - xxx h (xxx h gesamt) gebuchte Stunden 30.4.-20.5.
-- gröbere Probleme: 
-- Learnings:
+- gröbere Probleme: DKE
+- Learnings: Vorarbeit macht sich bezahlt
 
 ## Einsatz von KI
-- ...
-- ...
+- Testplan, Formatierung/Links im .md
+- UnitTests
+- .pdf/.xml/.csv Export Vorgehen/Formatierung
 
 ## Planung finale Abgabe
 - offene issues inkl. deren Priorisierung
