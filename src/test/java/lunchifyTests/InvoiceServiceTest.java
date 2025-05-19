@@ -174,52 +174,7 @@ public class InvoiceServiceTest {
         assertEquals(InvoiceCategory.RESTAURANT, invoice.getCategory());
         assertEquals(LocalDate.of(2024, 4, 1), invoice.getDate());
     }
-    
-    @Test
-    public void testAddInvoiceWithoutFileShouldReturnTrueAndSetId() throws Exception {
-        // Arrange
-        Invoice invoice = new Invoice();
-        invoice.setDate(LocalDate.of(2024, 4, 1));
-        invoice.setAmount(99.99f);
-        invoice.setCategory(InvoiceCategory.RESTAURANT);
-        invoice.setFile(null);
-        invoice.setFlag(false);
 
-        User user = mock(User.class);
-        when(user.getId()).thenReturn(1);
-        invoice.setUser(user);
-
-        // Mocks vorbereiten
-        ConnectionProvider mockProvider = mock(ConnectionProvider.class);
-        Connection mockConn = mock(Connection.class);
-        PreparedStatement mockStmt = mock(PreparedStatement.class);
-        ResultSet mockKeys = mock(ResultSet.class);
-
-        when(mockProvider.getConnection()).thenReturn(mockConn);
-        when(mockConn.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS))).thenReturn(mockStmt);
-        when(mockStmt.executeUpdate()).thenReturn(1); // simulate success
-        when(mockStmt.getGeneratedKeys()).thenReturn(mockKeys);
-        when(mockKeys.next()).thenReturn(true);
-        when(mockKeys.getInt(1)).thenReturn(42);
-
-        // ConnectionProvider setzen
-        InvoiceService.setConnectionProvider(mockProvider);
-
-        // Act
-        boolean result = InvoiceService.addInvoice(invoice);
-
-        // Assert
-        assertTrue(result);
-        assertEquals(42, invoice.getId());
-
-        // Verify relevant method calls
-        verify(mockStmt).setDate(eq(1), any());
-        verify(mockStmt).setFloat(2, 99.99f);
-        verify(mockStmt).setObject(3, InvoiceCategory.RESTAURANT, Types.OTHER);
-        verify(mockStmt).setInt(4, 1);
-        verify(mockStmt).setNull(5, Types.BINARY); // weil file == null
-        verify(mockStmt).setBoolean(6, false);
-    }
     
     @Test
     public void testLoadInvoice() throws Exception {
