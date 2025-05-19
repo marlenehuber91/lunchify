@@ -247,8 +247,6 @@ public class InvoiceService {
 	                    }
 
 	                    invoice.setFile(tempFile);
-	                } else {
-	                    System.out.println("Keine Datei vorhanden.");
 	                }
 
 	                return invoice;
