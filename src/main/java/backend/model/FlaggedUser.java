@@ -2,13 +2,13 @@ package backend.model;
 
 public class FlaggedUser {
     private int userId;
-    private int no_flaggs;
-    private boolean permanent_flag;
+    private int noFlaggs;
+    private boolean permanentFlag;
     private String userName;
 
     public FlaggedUser(int userId) { //AI generated
         this.userId = userId; 
-        this.permanent_flag = false;
+        this.permanentFlag = false;
     }
 
     public String getUserName() {
@@ -28,19 +28,19 @@ public class FlaggedUser {
     }
 
     public int getNoFlaggs() {
-        return no_flaggs;
+        return noFlaggs;
     }
 
-    public void setNoFlaggs(int no_flaggs) {
-        this.no_flaggs = no_flaggs;
+    public void setNoFlaggs(int noFlaggs) {
+        this.noFlaggs = noFlaggs;
     }
 
     public boolean isPermanentFlag() {
-        return permanent_flag;
+        return permanentFlag;
     }
 
-    public void setPermanentFlag(boolean permanent_flag) {
-        this.permanent_flag = permanent_flag;
+    public void setPermanentFlag(boolean permanentFlag) {
+        this.permanentFlag = permanentFlag;
     }
 }
 
