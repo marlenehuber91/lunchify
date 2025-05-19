@@ -29,6 +29,7 @@ Lunchify follows the **MVC (Model-View-Controller)** pattern:
 - **Model**: Manages business logic and data access using JDBC.
 - **View**: Implemented with JavaFX for the user interface.
 - **Controller**: Handles input and updates both the model and the view.
+- Link to Diagram ![UML](../uml/UML_release_v.1.0.0.png)
 
 ---
 
