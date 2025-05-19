@@ -176,7 +176,7 @@ public class InvoiceServiceTest {
         assertEquals(LocalDate.of(2024, 4, 1), invoice.getDate());
     }
 
-    
+
     @Test
     public void testLoadInvoice() throws Exception {
         // Arrange

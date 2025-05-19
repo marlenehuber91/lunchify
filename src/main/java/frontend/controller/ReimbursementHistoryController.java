@@ -2,21 +2,21 @@ package frontend.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.YearMonth;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import backend.logic.ExportService;
-import backend.logic.ReimbursementService;
-import backend.logic.SessionManager;
-import backend.logic.UserService;
-import backend.model.Reimbursement;
-import backend.model.ReimbursementState;
-import backend.model.User;
-import backend.model.UserRole;
+import backend.logic.*;
+import backend.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -26,6 +26,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -35,10 +36,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+
+import static com.sun.glass.ui.CommonDialogs.showFileChooser;
 
 public class ReimbursementHistoryController {
 
@@ -618,5 +623,116 @@ public class ReimbursementHistoryController {
 			}
 		}
 	}
+	@FXML
+    public void handlePayrollData() {
+		// Dialog für Monat/Jahr Auswahl
+		Dialog<Pair<Integer, Integer>> dialog = new Dialog<>();
+		dialog.setTitle("Lohnverrechnungsdaten");
+		dialog.setHeaderText("Bitte Monat und Jahr auswählen");
+
+		// Buttons
+		ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+		// Layout
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20, 150, 10, 10));
+
+		ComboBox<String> monthCombo = new ComboBox<>();
+		String[] monthNames = getMonthNames();
+		monthCombo.getItems().addAll(monthNames);
+		monthCombo.setValue(monthNames[LocalDate.now().getMonthValue() - 1]);
+
+		ComboBox<Integer> yearCombo = new ComboBox<>();
+		yearCombo.getItems().addAll( 2024, 2025);
+		yearCombo.setValue(LocalDate.now().getYear());
+
+		grid.add(new Label("Monat:"), 0, 0);
+		grid.add(monthCombo, 1, 0);
+		grid.add(new Label("Jahr:"), 0, 1);
+		grid.add(yearCombo, 1, 1);
+
+		dialog.getDialogPane().setContent(grid);
+
+		// Ergebnis konvertieren
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == okButtonType) {
+				int month = Arrays.asList(monthNames).indexOf(monthCombo.getValue()) + 1;
+				return new Pair<>(month, yearCombo.getValue());
+			}
+			return null;
+		});
+
+		Optional<Pair<Integer, Integer>> result = dialog.showAndWait();
+
+		result.ifPresent(monthYear -> {
+			int month = monthYear.getKey();
+			int year = monthYear.getValue();
+
+			// Daten abrufen und verarbeiten
+			ReimbursementService reimbursementService = new ReimbursementService();
+			List<Reimbursement> reimbursements = reimbursementService.getAllReimbursements(month, year);
+			Map<User, Double> userPayrollData = calculateUserPayrollData(reimbursements);
+			exportPayrollData(userPayrollData, month, year);
+		});
+	}
+
+
+	private Map<User, Double> calculateUserPayrollData(List<Reimbursement> reimbursements) {
+		Map<User, Double> result = new HashMap<>();
+
+		if (reimbursements == null) return result;
+
+		reimbursements.stream()
+				.collect(Collectors.groupingBy(
+						r -> UserService.getUserById(r.getInvoice().getUserId()),
+						Collectors.summingDouble(Reimbursement::getApprovedAmount)
+				))
+				.forEach(result::put);
+
+
+		return result;
+	}
+
+
+	private void exportPayrollData(Map<User, Double> userPayrollData, int month, int year) {
+		ExportService exportService = new ExportService();
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Lohnverrechnungsdaten exportieren");
+
+		String[] monthNames = getMonthNames();
+		String monthName = monthNames[month - 1];
+		fileChooser.setInitialFileName("Lohnverrechnungen_" + monthName + "_" + year);
+
+		fileChooser.getExtensionFilters().addAll(
+				new FileChooser.ExtensionFilter("JSON", "*.json"),
+				new FileChooser.ExtensionFilter("XML", "*.xml")
+		);
+
+		File file = fileChooser.showSaveDialog(reimbursementHistoryTable.getScene().getWindow());
+		if (file != null) {
+			try {
+				String extension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+				if ("json".equalsIgnoreCase(extension)) {
+					exportService.exportToJsonAccounting(userPayrollData, file);
+				} else if ("xml".equalsIgnoreCase(extension)) {
+					exportService.exportToXmlAccounting(userPayrollData, file);
+				}
+				showAlert("Erfolg", "Lohnverrechnungsdaten wurden exportiert: " + file.getAbsolutePath());
+			} catch (Exception e) {
+				showAlert("Fehler", "Export fehlgeschlagen: " + e.getMessage());
+			}
+		}
+	}
+
+	private String[] getMonthNames() {
+		return new String[] {
+				"Jänner", "Februar", "März", "April", "Mai", "Juni",
+				"Juli", "August", "September", "Oktober", "November", "Dezember"
+		};
+	}
+
 }
 

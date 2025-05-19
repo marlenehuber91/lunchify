@@ -68,7 +68,7 @@
       <ComboBox fx:id="categoryFilterBox" layoutX="331.0" layoutY="243.0" prefHeight="26.0" prefWidth="200.0" />
       <ComboBox fx:id="statusFilterBox" layoutX="551.0" layoutY="243.0" prefWidth="200.0" />
       <ComboBox fx:id="yearFilterBox" layoutX="210.0" layoutY="243.0" prefHeight="26.0" prefWidth="101.0" />
-      <!--TODO CHECK POSITION OF EXPORT BUTTON-->
+      <Button fx:id="payrollDataButton" layoutX="877.0" layoutY="243.0" text="Lohnverrechnung" onAction="#handlePayrollData" prefWidth="120.0" />
       <Button fx:id="exportButton" layoutX="767.0" layoutY="243.0" text="Exportieren" onAction="#handleExport" prefWidth="100.0" />
       <Rectangle fx:id="resetFilterButton" arcHeight="20.0" arcWidth="20.0" fill="#42b25ac6" height="60.0" layoutX="442.0" layoutY="516.0" onMouseClicked="#handleResetFilter" stroke="#42b35b" strokeType="INSIDE" strokeWidth="2.0" width="325.0" />
       <Text fx:id="resetText" layoutX="541.0" layoutY="553.0" onMouseClicked="#handleResetFilter" strokeType="OUTSIDE" strokeWidth="0.0" text="Filter zurücksetzen">

@@ -1,15 +1,21 @@
 package backend.logic;
 
+import backend.interfaces.ConnectionProvider;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
 import backend.model.Reimbursement;
+import backend.model.ReimbursementState;
 import backend.model.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import database.DatabaseConnection;
 import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import javafx.embed.swing.SwingFXUtils;
@@ -20,13 +26,13 @@ import javafx.scene.chart.PieChart;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.sql.Connection;
+import java.util.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -52,24 +58,31 @@ public class ExportService {// AI generated changed by the team
 		this.currentUser = currentUser;
 	}
 
+    public static ConnectionProvider connectionProvider = new ConnectionProvider() {
+        @Override
+        public Connection getConnection() {
+            return DatabaseConnection.connect();
+        }
+    };
+
 	public void setReportParameters(String reportType, String timeRange) {
 		this.reportType = reportType;
 		this.timeRange = timeRange;
 	}
 
 	public void exportToJson(List<Reimbursement> data, File file) throws Exception { // AI generated
-		ObjectMapper mapper = new ObjectMapper();
-		// Java 8 Date/Time-Unterstützung aktivieren
-		mapper.registerModule(new JavaTimeModule());
-		// Deaktiviert das Schreiben von Dates als Timestamps (z. B. 1623456000000)
-		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-		mapper.writeValue(file, data);
+        ObjectMapper mapper = new ObjectMapper();
+        // Java 8 Date/Time-Unterstützung aktivieren
+        mapper.registerModule(new JavaTimeModule());
+        // Deaktiviert das Schreiben von Dates als Timestamps (z. B. 1623456000000)
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.writeValue(file, data);
 
-	}
+    }
 
-	public void exportToXml(List<Reimbursement> data, File file) throws Exception {
+    public void exportToXml(List<Reimbursement> data, File file) throws Exception {
 		// Kontext muss alle beteiligten Klassen kennen
 		JAXBContext context = JAXBContext.newInstance(Wrapper.class, Reimbursement.class, Invoice.class, User.class);
 
@@ -77,6 +90,70 @@ public class ExportService {// AI generated changed by the team
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		marshaller.marshal(new Wrapper(data), file);
 	}
+
+	public void exportToJsonAccounting(Map<User, Double> userPayrollData, File file) throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+		// Erstelle eine Liste von Accounting-Objekten für saubere JSON-Struktur
+		List<Map<String, Object>> accountingData = new ArrayList<>();
+
+		userPayrollData.forEach((user, amount) -> {
+			Map<String, Object> entry = new LinkedHashMap<>();
+			entry.put("userId", user.getId());
+			entry.put("userName", user.getName());
+			entry.put("totalApprovedAmount", amount);
+			entry.put("currency", "EUR");
+			accountingData.add(entry);
+		});
+
+		mapper.writeValue(file, accountingData);
+	}
+
+	@XmlRootElement
+	@XmlAccessorType(XmlAccessType.FIELD)
+	public static class AccountingWrapper {
+		@XmlElement(name = "accountingEntry")
+		List<AccountingEntry> entries = new ArrayList<>();
+	}
+
+	@XmlAccessorType(XmlAccessType.FIELD)
+	public static class AccountingEntry {
+		int userId;
+		String userName;
+		String userEmail;
+		double totalApprovedAmount;
+		String currency = "EUR";
+
+		// Default-Konstruktor für JAXB
+		public AccountingEntry() {}
+
+		public AccountingEntry(User user, double amount) {
+			this.userId = user.getId();
+			this.userName = user.getName(); // ggf. user.getFirstName() + " " + user.getLastName()
+			this.userEmail = user.getEmail();
+			this.totalApprovedAmount = amount;
+		}
+	}
+
+
+	public void exportToXmlAccounting(Map<User, Double> userPayrollData, File file) throws Exception {
+		// Daten vorbereiten
+		AccountingWrapper wrapper = new AccountingWrapper();
+		userPayrollData.forEach((user, amount) -> {
+			wrapper.entries.add(new AccountingEntry(user, amount));
+		});
+
+		// XML marshallen
+		JAXBContext context = JAXBContext.newInstance(AccountingWrapper.class);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		marshaller.marshal(wrapper, file);
+	}
+
 
 	public void exportAdminToPdf(File file, Chart chart, String reportTitle, List<Reimbursement> adminData)
 			throws IOException {
@@ -210,7 +287,7 @@ public class ExportService {// AI generated changed by the team
 
 	private void addAdminDataTable(PDPageContentStream content, PDDocument doc, String reportType, float startY)
 			throws IOException {
-		
+
 		float currentY = startY;
 		// Tabellenkopf
 		content.setFont(PDType1Font.HELVETICA_BOLD, 12);
@@ -249,7 +326,7 @@ public class ExportService {// AI generated changed by the team
 	}
 
 	private void addUserDataTables(PDPageContentStream content, PDDocument doc, float startY) throws IOException {
-		
+
 		float currentY = startY;
 		PDPageContentStream currContent = content;
 
@@ -269,7 +346,7 @@ public class ExportService {// AI generated changed by the team
 
 		currentY -= 40;
 		currContent.setFont(PDType1Font.HELVETICA, 10);
-		
+
 		Map<InvoiceCategory, Double> categoryData = statisticsService.getSumByCategory();
 
 		for (Map.Entry<InvoiceCategory, Double> entry : categoryData.entrySet()) {
@@ -347,7 +424,7 @@ public class ExportService {// AI generated changed by the team
 			throws IOException {
 		float currentY = startY;
 		PDPageContentStream currContent = content;
-		
+
 		// Tabellenkopf
 		currContent.setFont(PDType1Font.HELVETICA_BOLD, 10);
 		currContent.beginText();
@@ -390,6 +467,48 @@ public class ExportService {// AI generated changed by the team
 
 		public Wrapper(List<Reimbursement> items) {
 			this.items = items;
+		}
+    }
+
+	public static class ExportData {
+		private int userId;
+		private String userName;
+		private List<Reimbursement> reimbursements;
+		private long totalAmount;
+
+		public ExportData(int userId, String userName) {
+			this.userId = userId;
+			this.userName = userName;
+			this.reimbursements = new ArrayList<>();
+			this.totalAmount = 0L;
+		}
+
+		public int getUserId() {
+			return userId;
+		}
+
+		public String getUserName() {
+			return userName;
+		}
+
+		public List<Reimbursement> getReimbursements() {
+			return reimbursements;
+		}
+
+		public void setReimbursements(List<Reimbursement> reimbursements) {
+			this.reimbursements = reimbursements;
+			calculateTotalAmount();
+		}
+
+		public long getTotalAmount() {
+			return totalAmount;
+		}
+
+		private void calculateTotalAmount() {
+			this.totalAmount = reimbursements.stream()
+					.filter(r -> r.getStatus() == ReimbursementState.APPROVED)
+					.mapToLong(r -> (long) r.getApprovedAmount())
+					.sum();
 		}
 	}
 }
