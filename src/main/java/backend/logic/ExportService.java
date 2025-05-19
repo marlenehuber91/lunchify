@@ -210,13 +210,15 @@ public class ExportService {// AI generated changed by the team
 
 	private void addAdminDataTable(PDPageContentStream content, PDDocument doc, String reportType, float startY)
 			throws IOException {
+		
+		float currentY = startY;
 		// Tabellenkopf
 		content.setFont(PDType1Font.HELVETICA_BOLD, 12);
 		content.beginText();
-		content.newLineAtOffset(50, startY);
+		content.newLineAtOffset(50, currentY);
 		content.showText("Datenübersicht (" + reportType + ")");
 		content.endText();
-		startY -= 20;
+		currentY -= 20;
 
 		Map<String, String> data = new LinkedHashMap<>();
 		switch (reportType) {
@@ -243,27 +245,30 @@ public class ExportService {// AI generated changed by the team
 			break;
 		}
 
-		addTableContent(content, doc, data, startY);
+		addTableContent(content, doc, data, currentY);
 	}
 
 	private void addUserDataTables(PDPageContentStream content, PDDocument doc, float startY) throws IOException {
+		
+		float currentY = startY;
 
 		content.setFont(PDType1Font.HELVETICA_BOLD, 12);
 		content.beginText();
-		content.newLineAtOffset(50, startY);
+		content.newLineAtOffset(50, currentY);
 		content.showText("Kategorien (Summe)");
 		content.endText();
 
 		content.setFont(PDType1Font.HELVETICA_BOLD, 10);
 		content.beginText();
-		content.newLineAtOffset(50, startY - 25);
+		content.newLineAtOffset(50, currentY - 25);
 		content.showText("Kategorie");
 		content.newLineAtOffset(150, 0);
 		content.showText("Betrag");
 		content.endText();
 
+		currentY -= 40;
 		content.setFont(PDType1Font.HELVETICA, 10);
-		float currentY = startY - 40;
+		
 		Map<InvoiceCategory, Double> categoryData = statisticsService.getSumByCategory();
 
 		for (Map.Entry<InvoiceCategory, Double> entry : categoryData.entrySet()) {
@@ -339,34 +344,36 @@ public class ExportService {// AI generated changed by the team
 
 	private void addTableContent(PDPageContentStream content, PDDocument doc, Map<String, String> data, float startY)
 			throws IOException {
+		float currentY = startY;
+		
 		// Tabellenkopf
 		content.setFont(PDType1Font.HELVETICA_BOLD, 10);
 		content.beginText();
-		content.newLineAtOffset(50, startY);
+		content.newLineAtOffset(50, currentY);
 		content.showText("Beschreibung");
 		content.newLineAtOffset(200, 0);
 		content.showText("Wert");
 		content.endText();
-		startY -= 15;
+		currentY -= 15;
 
 		// Tabelleninhalt
 		content.setFont(PDType1Font.HELVETICA, 10);
 		for (Map.Entry<String, String> entry : data.entrySet()) {
-			if (startY < 50) { // Seitenumbruch
+			if (currentY < 50) { // Seitenumbruch
 				content.close();
 				PDPage newPage = new PDPage(PDRectangle.A4);
 				doc.addPage(newPage);
 				content = new PDPageContentStream(doc, newPage);
-				startY = 750;
+				currentY = 750;
 			}
 
 			content.beginText();
-			content.newLineAtOffset(50, startY);
+			content.newLineAtOffset(50, currentY);
 			content.showText(entry.getKey());
 			content.newLineAtOffset(200, 0);
 			content.showText(entry.getValue());
 			content.endText();
-			startY -= 15;
+			currentY -= 15;
 		}
 	}
 
