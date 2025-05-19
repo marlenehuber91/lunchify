@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>at.jku.se</groupId>
 	<artifactId>lunchify</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.3</version>
 
 	<properties>
 		<maven.compiler.target>21</maven.compiler.target>
@@ -79,6 +79,11 @@
 				<configuration>
 					<mainClass>frontend.Main</mainClass>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.11.2</version>
 			</plugin>
 
 		</plugins>
@@ -249,10 +254,7 @@
 			<artifactId>jaxb-runtime</artifactId>
 			<version>4.0.2</version>
 		</dependency>
-
 	</dependencies>
-
-
 
 
 	<!-- PMD -->

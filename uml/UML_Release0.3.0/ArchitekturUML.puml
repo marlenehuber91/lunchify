@@ -1,0 +1,50 @@
+@startuml
+skinparam packageStyle rect
+skinparam defaultTextAlignment center
+
+'========================
+' Frontend Layer (JavaFX)
+'========================
+package "Frontend Layer (JavaFX)" {
+  class ControllerClasses
+}
+
+'========================
+' Business Logic Layer
+'========================
+package "Business Logic Layer" {
+  class ServiceClasses
+}
+
+'========================
+' Data Access Layer
+'========================
+package "Data Access Layer" {
+  class DatabaseConnection
+}
+
+'========================
+' Database Layer
+'========================
+package "Database" {
+  class PostgresDB
+}
+
+'========================
+' Models (Domain Entities)
+'========================
+package "Models" {
+  class ModelClasses
+}
+
+'========================
+' Inter-Layer Interactions
+'========================
+
+ControllerClasses --> ServiceClasses
+ServiceClasses --> DatabaseConnection
+DatabaseConnection --> "PostgresDB"
+ServiceClasses --> ModelClasses
+
+
+@enduml
