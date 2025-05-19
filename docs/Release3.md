@@ -6,7 +6,7 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 ## aktueller Stand
 ### Implementierung inkl. Demo
 - release-v0.2.0  13 User Stories umgesetzt, zusätzlich 17 weitere Issues (Tasks, Bug fixes etc.) umgesetzt, Probleme im Testbereich, Sprint 2 abgeschlossen, keine Issues verschoben
-- release-v0.3.0  
+- release-v0.3.0  11 User Stories umgesetzt, zusätzlich 31 weitere Issues (Tasks, Bug fixes etc.), keine Verschiebungen, nur noch 1 Feature für letzten Sprint übrig
 --> Demo Applikation
 
 ### Tests
@@ -30,12 +30,12 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 ## Sprint Retro
 - xxx h (xxx h gesamt) gebuchte Stunden 30.4.-20.5.
 
-- gröbere Probleme: 
-  1. Zeitliche Probleme (weniger Zeit aufgrund einer Klausur in einer andern LVA)
-  2. Mittlerweile viele Klassen, viel Code tlw. auch Codeverdoppelung -> effizienter wäre gewesen anfangs eine Klassenhierarchei (Abstrakte Klassen, Interfaces und Vererbungsstruktur durchzuplanen)
-- Learnings:
-  1. Vorbereitung: In den Osterferien haben wir bereits etwas vorgearbeitet -> Hat sich bewährt.  
-  2. Projektvorbereitung: Anfangs mehr Zeit in die Projektstruktur investieren. 
+1) gröbere Probleme:
+   -  Zeitliche Probleme (weniger Zeit aufgrund einer Klausur in einer andern LVA)
+   -  Mittlerweile viele Klassen, viel Code tlw. auch Codeverdoppelung -> effizienter wäre gewesen anfangs eine Klassenhierarchie (Abstrakte Klassen, Interfaces und Vererbungsstruktur durchzuplanen --> wobei schwierig im agilen Kontext)
+2) Learnings:
+   - Vorbereitung: In den Osterferien haben wir bereits etwas vorgearbeitet -> Hat sich bewährt.
+   - Projektvorbereitung: Anfangs mehr Zeit in die Projektstruktur investieren. 
 
 ## Einsatz von KI
 - Testplan, Formatierung/Links im .md
