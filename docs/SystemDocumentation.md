@@ -13,7 +13,6 @@
 - [Deployment](#deployment)
 - [Configuration](#configuration)
 - [Limitations](#limitations)
-- [Future Enhancements](#future-enhancements)
 
 ---
 
@@ -44,8 +43,6 @@ Lunchify follows the **MVC (Model-View-Controller)** pattern:
 - **Executable Format**: `.jar` file
 - **Startup**: GUI executable
 
-> ⚠️ **TO BE DEFINED**: Additional libraries and frameworks (e.g., for PDF/CSV export, charts, logging, dependency injection).
-
 ---
 
 ## Authentication & Authorization
@@ -67,7 +64,8 @@ Lunchify follows the **MVC (Model-View-Controller)** pattern:
     - User accounts (with roles)
     - Receipts and reimbursement records
     - Monthly configuration (e.g., refund limits)
-
+- Table **notifications** can be used for audits
+  
 ---
 
 ## Application Workflow
@@ -83,9 +81,11 @@ Lunchify follows the **MVC (Model-View-Controller)** pattern:
 ### Admin Flow:
 1. Log in as admin.
 2. View all receipts and statistics.
-3. Export data for payroll.
-4. Manage refund rules and users.
-5. Detect anomalies.
+3. Review automatically detected anomalies.
+4. Delete/Edit Reimbursements.
+5. Approve/Reject Reimbursements.
+6. Export data for payroll.
+7. Manage refund rules and users. 
 
 ---
 
@@ -97,8 +97,6 @@ Lunchify follows the **MVC (Model-View-Controller)** pattern:
     - Amount
 - Manual correction possible before submission.
 
-> ⚠️ **Note**: No license-based OCR solution used due to budget limitations.
-
 ---
 
 ## Reporting & Exports
@@ -108,16 +106,13 @@ Admins can:
     - Receipt count per month/user
     - Vendor type distribution
     - Total reimbursement amounts
-- Export data as:
-    - PDF / CSV
-    - JSON / XML for payroll system
-
-> ⚠️ **TO BE DEFINED**: Library/tech used for PDF/CSV generation and chart rendering.
+    - and export view as .pdf or .csv
+- Export data for payroll system (.json / .xml)
 
 ---
 
 ## Deployment
-
+⚠️ **TO BE DEFINED**
 - Distributed as a `.jar` file.
 - Can be launched via GUI (double-click or platform-specific application wrapper).
 - Manual updates only (no auto-updater).
@@ -125,8 +120,6 @@ Admins can:
 ---
 
 ## Configuration
-
-> ⚠️ **TO BE DEFINED**: Details on configuration storage (e.g., `config.properties`, GUI-based settings, environment variables).
 
 Configuration options (admin-only):
 - Reimbursement limits (restaurant, supermarket)
@@ -140,5 +133,3 @@ Configuration options (admin-only):
 - Currently only available in **German**.
 - No Dark Mode or mobile/web version.
 - Receipt edits are only allowed until the last day of the current month.
-
----
