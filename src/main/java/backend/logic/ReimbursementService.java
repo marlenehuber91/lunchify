@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import backend.Exceptions.InfrastructureException;
 import backend.interfaces.ConnectionProvider;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
@@ -72,10 +73,10 @@ public class ReimbursementService extends ReimbursementHistoryController {
 	public void setSelectedUser(User selectedUser) {
 		this.selectedUser = selectedUser;
 	}
-
+	@SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
 	public boolean addReimbursement(Invoice invoice, float amount) {
 		if (connectionProvider == null) {
-			throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
+			throw new InfrastructureException("ConnectionProvider ist nicht gesetzt!");
 		}
 
 		String sql = "INSERT INTO reimbursements (invoice_id, approved_amount, processed_date, status) VALUES (?, ?, ?, ?)";
@@ -363,8 +364,6 @@ public class ReimbursementService extends ReimbursementHistoryController {
 
 	public boolean updateReimbursementIfChanged(Reimbursement oldReimb, Reimbursement newReimb, User reimbUser, boolean selfmade) {
 		boolean updated = false;
-		System.out.println("User:" + user + "selectedUser: " + reimbUser);
-		System.out.println(selfmade);
 
 		try (Connection conn = connectionProvider.getConnection()) {
 
@@ -524,7 +523,7 @@ public class ReimbursementService extends ReimbursementHistoryController {
 								}
 							}
 						} catch (IOException e) {
-							System.err.println("Error saving invoice file: " + e.getMessage());
+							e.printStackTrace();
 							// Optionally continue without the file
 						} //end 100% AI generated
 

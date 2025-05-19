@@ -9,6 +9,7 @@ import backend.model.ReimbursementState;
 import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
+import backend.Exceptions.InfrastructureException;
 import backend.interfaces.ConnectionProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -167,7 +168,7 @@ class ReimbursementServiceTest { //all testcases are created with help of AI
         Invoice dummyInvoice = new Invoice(); // dummy Objekt, Details egal
 
         // Act & Assert
-        assertThrows(IllegalStateException.class, () -> {
+        assertThrows(InfrastructureException.class, () -> {
             service.addReimbursement(dummyInvoice, 10.0f);
         }, "Expected IllegalStateException when connectionProvider is null");
     }
