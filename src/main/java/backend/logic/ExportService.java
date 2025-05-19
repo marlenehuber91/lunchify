@@ -251,78 +251,79 @@ public class ExportService {// AI generated changed by the team
 	private void addUserDataTables(PDPageContentStream content, PDDocument doc, float startY) throws IOException {
 		
 		float currentY = startY;
+		PDPageContentStream currContent = content;
 
-		content.setFont(PDType1Font.HELVETICA_BOLD, 12);
-		content.beginText();
-		content.newLineAtOffset(50, currentY);
-		content.showText("Kategorien (Summe)");
-		content.endText();
+		currContent.setFont(PDType1Font.HELVETICA_BOLD, 12);
+		currContent.beginText();
+		currContent.newLineAtOffset(50, currentY);
+		currContent.showText("Kategorien (Summe)");
+		currContent.endText();
 
-		content.setFont(PDType1Font.HELVETICA_BOLD, 10);
-		content.beginText();
-		content.newLineAtOffset(50, currentY - 25);
-		content.showText("Kategorie");
-		content.newLineAtOffset(150, 0);
-		content.showText("Betrag");
-		content.endText();
+		currContent.setFont(PDType1Font.HELVETICA_BOLD, 10);
+		currContent.beginText();
+		currContent.newLineAtOffset(50, currentY - 25);
+		currContent.showText("Kategorie");
+		currContent.newLineAtOffset(150, 0);
+		currContent.showText("Betrag");
+		currContent.endText();
 
 		currentY -= 40;
-		content.setFont(PDType1Font.HELVETICA, 10);
+		currContent.setFont(PDType1Font.HELVETICA, 10);
 		
 		Map<InvoiceCategory, Double> categoryData = statisticsService.getSumByCategory();
 
 		for (Map.Entry<InvoiceCategory, Double> entry : categoryData.entrySet()) {
 			if (currentY < 100) {
-				content.close();
+				currContent.close();
 				PDPage newPage = new PDPage(PDRectangle.A4);
 				doc.addPage(newPage);
-				content = new PDPageContentStream(doc, newPage);
+				currContent = new PDPageContentStream(doc, newPage);
 				currentY = 750;
 			}
 
-			content.beginText();
-			content.newLineAtOffset(50, currentY);
-			content.showText(entry.getKey().name()); // Enum zu String konvertieren
-			content.newLineAtOffset(150, 0);
-			content.showText(String.format("%.2f €", entry.getValue()));
-			content.endText();
+			currContent.beginText();
+			currContent.newLineAtOffset(50, currentY);
+			currContent.showText(entry.getKey().name()); // Enum zu String konvertieren
+			currContent.newLineAtOffset(150, 0);
+			currContent.showText(String.format("%.2f €", entry.getValue()));
+			currContent.endText();
 			currentY -= 20;
 		}
 
 		float statusStartY = currentY - 30;
-		content.setFont(PDType1Font.HELVETICA_BOLD, 12);
-		content.beginText();
-		content.newLineAtOffset(50, statusStartY);
-		content.showText("Statusverteilung");
-		content.endText();
+		currContent.setFont(PDType1Font.HELVETICA_BOLD, 12);
+		currContent.beginText();
+		currContent.newLineAtOffset(50, statusStartY);
+		currContent.showText("Statusverteilung");
+		currContent.endText();
 
-		content.setFont(PDType1Font.HELVETICA_BOLD, 10);
-		content.beginText();
-		content.newLineAtOffset(50, statusStartY - 25);
-		content.showText("Status");
-		content.newLineAtOffset(150, 0);
-		content.showText("Anzahl");
-		content.endText();
+		currContent.setFont(PDType1Font.HELVETICA_BOLD, 10);
+		currContent.beginText();
+		currContent.newLineAtOffset(50, statusStartY - 25);
+		currContent.showText("Status");
+		currContent.newLineAtOffset(150, 0);
+		currContent.showText("Anzahl");
+		currContent.endText();
 
-		content.setFont(PDType1Font.HELVETICA, 10);
+		currContent.setFont(PDType1Font.HELVETICA, 10);
 		currentY = statusStartY - 40;
 		Map<String, Integer> statusData = getStatusData();
 
 		for (Map.Entry<String, Integer> entry : statusData.entrySet()) {
 			if (currentY < 100) {
-				content.close();
+				currContent.close();
 				PDPage newPage = new PDPage(PDRectangle.A4);
 				doc.addPage(newPage);
-				content = new PDPageContentStream(doc, newPage);
+				currContent = new PDPageContentStream(doc, newPage);
 				currentY = 750;
 			}
 
-			content.beginText();
-			content.newLineAtOffset(50, currentY);
-			content.showText(entry.getKey());
-			content.newLineAtOffset(150, 0);
-			content.showText(String.valueOf(entry.getValue()));
-			content.endText();
+			currContent.beginText();
+			currContent.newLineAtOffset(50, currentY);
+			currContent.showText(entry.getKey());
+			currContent.newLineAtOffset(150, 0);
+			currContent.showText(String.valueOf(entry.getValue()));
+			currContent.endText();
 			currentY -= 20;
 		}
 	}
@@ -345,34 +346,35 @@ public class ExportService {// AI generated changed by the team
 	private void addTableContent(PDPageContentStream content, PDDocument doc, Map<String, String> data, float startY)
 			throws IOException {
 		float currentY = startY;
+		PDPageContentStream currContent = content;
 		
 		// Tabellenkopf
-		content.setFont(PDType1Font.HELVETICA_BOLD, 10);
-		content.beginText();
-		content.newLineAtOffset(50, currentY);
-		content.showText("Beschreibung");
-		content.newLineAtOffset(200, 0);
-		content.showText("Wert");
-		content.endText();
+		currContent.setFont(PDType1Font.HELVETICA_BOLD, 10);
+		currContent.beginText();
+		currContent.newLineAtOffset(50, currentY);
+		currContent.showText("Beschreibung");
+		currContent.newLineAtOffset(200, 0);
+		currContent.showText("Wert");
+		currContent.endText();
 		currentY -= 15;
 
 		// Tabelleninhalt
-		content.setFont(PDType1Font.HELVETICA, 10);
+		currContent.setFont(PDType1Font.HELVETICA, 10);
 		for (Map.Entry<String, String> entry : data.entrySet()) {
 			if (currentY < 50) { // Seitenumbruch
-				content.close();
+				currContent.close();
 				PDPage newPage = new PDPage(PDRectangle.A4);
 				doc.addPage(newPage);
-				content = new PDPageContentStream(doc, newPage);
+				currContent = new PDPageContentStream(doc, newPage);
 				currentY = 750;
 			}
 
-			content.beginText();
-			content.newLineAtOffset(50, currentY);
-			content.showText(entry.getKey());
-			content.newLineAtOffset(200, 0);
-			content.showText(entry.getValue());
-			content.endText();
+			currContent.beginText();
+			currContent.newLineAtOffset(50, currentY);
+			currContent.showText(entry.getKey());
+			currContent.newLineAtOffset(200, 0);
+			currContent.showText(entry.getValue());
+			currContent.endText();
 			currentY -= 15;
 		}
 	}
