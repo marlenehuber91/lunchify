@@ -9,7 +9,7 @@ import backend.model.ReimbursementState;
 import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
-import backend.Exceptions.InfrastructureException;
+import backend.exceptions.InfrastructureException;
 import backend.interfaces.ConnectionProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

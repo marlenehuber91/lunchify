@@ -1,6 +1,6 @@
 package lunchifyTests;
 
-import backend.Exceptions.AuthenticationException;
+import backend.exceptions.AuthenticationException;
 import backend.logic.UserService;
 import backend.model.User;
 import backend.model.UserRole;

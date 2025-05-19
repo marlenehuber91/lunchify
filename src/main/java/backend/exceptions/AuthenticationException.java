@@ -1,4 +1,4 @@
-package backend.Exceptions;
+package backend.exceptions;
 
 public class AuthenticationException extends Exception {
 

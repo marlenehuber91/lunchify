@@ -3,9 +3,11 @@ package backend.logic;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import backend.exceptions.AuthenticationException;
 import backend.interfaces.ConnectionProvider;
 import org.mindrot.jbcrypt.BCrypt;
-import backend.Exceptions.AuthenticationException;
+
 import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
