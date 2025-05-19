@@ -5,6 +5,8 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.util.Objects;
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class User {
@@ -110,4 +112,18 @@ public class User {
     public String hashPassword() {
         return BCrypt.hashpw(this.password, BCrypt.gensalt());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id; // Nur die ID entscheidet über Gleichheit
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
 }

@@ -546,4 +546,53 @@ public class ReimbursementService extends ReimbursementHistoryController {
         }
     }
 
+	public List<Reimbursement> getAllReimbursements(int month, int year) {
+		List<Reimbursement> reimbursements = new ArrayList<>();
+		String query = """
+        SELECT r.id AS r_id, r.approved_amount, r.processed_date, r.status,
+   			i.id AS invoice_id, i.user_id, u.id AS user_id, u.name AS user_name
+         FROM reimbursements r
+         JOIN invoices i ON r.invoice_id = i.id
+         JOIN users u ON i.user_id = u.id
+         WHERE r.status = 'APPROVED'
+         AND EXTRACT(MONTH FROM r.processed_date) = ?\s
+         AND EXTRACT(YEAR FROM r.processed_date) = ?                                                     
+    """;
+
+		try (Connection conn = connectionProvider.getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(query)) {
+
+			stmt.setInt(1, month);
+			stmt.setInt(2, year);
+
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					User user = new User();
+					user.setId(rs.getInt("user_id"));
+					user.setName(rs.getString("user_name"));
+
+					Invoice invoice = new Invoice();
+					invoice.setId(rs.getInt("invoice_id"));
+					invoice.setUser(user);
+
+					Reimbursement reimb = new Reimbursement();
+					reimb.setId(rs.getInt("r_id"));
+					reimb.setApprovedAmount(rs.getFloat("approved_amount"));
+					reimb.setProcessedDate(rs.getDate("processed_date"));
+					reimb.setStatus(ReimbursementState.valueOf(rs.getString("status")));
+					reimb.setInvoice(invoice);
+
+					reimbursements.add(reimb);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return reimbursements;
+	}
+
+
+
+
+
 }
