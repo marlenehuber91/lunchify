@@ -624,7 +624,7 @@ public class ReimbursementHistoryController {
 		}
 	}
 	@FXML
-	private void handlePayrollData() {
+    public void handlePayrollData() {
 		// Dialog für Monat/Jahr Auswahl
 		Dialog<Pair<Integer, Integer>> dialog = new Dialog<>();
 		dialog.setTitle("Lohnverrechnungsdaten");

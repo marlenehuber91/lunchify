@@ -2,11 +2,19 @@ package lunchifyTests;
 
 import backend.logic.ExportService;
 import backend.model.Reimbursement;
+import backend.model.User;
+import backend.model.UserRole;
+import backend.model.UserState;
+import javafx.scene.shape.Path;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class ExportServiceTest {
@@ -30,6 +38,7 @@ public class ExportServiceTest {
 
         assertDoesNotThrow(() -> exportService.exportToXml(data, tempFile));
     }
+
     /*
      * no further testing for pdf, csv, xml and json export, because the export involves Charts
      * which is JavaFX specific

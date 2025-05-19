@@ -1,5 +1,6 @@
 package lunchifyTests;
 
+import backend.logic.ExportService;
 import backend.logic.ReimbursementService;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
@@ -9,12 +10,15 @@ import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
 import backend.interfaces.ConnectionProvider;
+import frontend.controller.ReimbursementHistoryController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -26,13 +30,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.startsWith;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReimbursementServiceTest {
@@ -40,7 +39,6 @@ class ReimbursementServiceTest {
     @Mock private Connection mockConnection;
     @Mock private PreparedStatement mockStatement;
     @Mock private ResultSet mockResultSet;
-
     @Mock private ReimbursementService mockReimbursementService;
 
     private ReimbursementService service;
@@ -243,4 +241,5 @@ class ReimbursementServiceTest {
         ReimbursementService mockService = mock(ReimbursementService.class);
         // ...
     }
+
 }
