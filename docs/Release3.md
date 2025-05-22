@@ -11,6 +11,12 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 
 ### Tests
 - Testabdeckung
+  - 106 "Backend"-Tests
+  - 64 "UI"-Tests
+  - bei Klassen die ohne Mocking getestet werden können relativ hohe Testabdeckung > 80 %
+  - bei Klassen die nur mit Mocking getestet werden können niedriger --> 20-50 %
+  - viele Klassen holen sich Listen aus der Datenbank, zusammengesetzt aus mehreren Objekten --> Filtermethoden könnten nur durch mocken von einer Vielzahl an Elementen getestet werden
+  
 - welche Sonderfälle werden geprüft: 
   - Sonderfall 1 (OCRServiceTests): Hochladen einer Rechnung, die weder Restaurant noch Supermarkt ist 
   - Sonderfall 2 (UserServiceTests): Test auf inaktive/suspendierte User die einen Login versuchen
