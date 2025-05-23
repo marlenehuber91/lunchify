@@ -27,24 +27,6 @@ public class UserDropDownController {
     }
 
     @FXML
-    public void openUserDropDown(MouseEvent event) {
-        userDropDown.show();
-    }
-
-    //TODO: decide, if these 2 Methods are needed
-
-    @FXML
-    public void changePassword(ActionEvent event) {
-        //TODO implement logic
-    }
-
-    @FXML
-    public void changeRole(ActionEvent event) {
-        //TODO implement logic
-    }
-
-
-    @FXML
     public void handleLogout(ActionEvent event) {
         SessionManager.logout();
 
