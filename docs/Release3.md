@@ -30,9 +30,9 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
   - Beispiel 2: InvoiceService sysout -> Debugging lines mussten entfernt werden
   
 ### Projektdokus
-  - Systemdoku (inkl. Architekturdiagramm)
-  - JavaDoc - how to use? [JavadocFile](maven-javadoc-plugin-stale-data.txt)
-  - Benutzerdoku (.jar failing)
+  - [Systemdoku](SystemDocumentation.md) (inkl. Architekturdiagramm)
+  - [JavaDoc](maven-javadoc-plugin-stale-data.txt) - how to use?
+  - [Benutzerdoku](UserDocumentation.md) (.jar failing)
 ---
 
 ## Sprint Retro
