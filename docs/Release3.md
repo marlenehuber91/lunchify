@@ -20,6 +20,8 @@ Marlene Huber, Johanna Ferstl, Silvia Mahringer
 - welche Sonderfälle werden geprüft: 
   - Sonderfall 1 (OCRServiceTests): Hochladen einer Rechnung, die weder Restaurant noch Supermarkt ist 
   - Sonderfall 2 (UserServiceTests): Test auf inaktive/suspendierte User die einen Login versuchen
+ 
+- [Testplan](Testplan.md)
 
 ### Analyse der Codequalität
 - PMD
