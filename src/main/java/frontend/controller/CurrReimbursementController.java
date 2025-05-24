@@ -285,7 +285,7 @@ public class CurrReimbursementController {
 
 		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
 
-		if (categorySumMap == null || categorySumMap.isEmpty() || pieChartData == null || pieChartData.isEmpty()) {
+		if (categorySumMap == null || categorySumMap.isEmpty()) {
 			noDataLabel.setText("In den letzten 12 \n" + "wurde keine Rückerstattung \n" + "eingereicht");
 			noDataLabel.setVisible(true);
 	        sumLabel.setVisible(false);
