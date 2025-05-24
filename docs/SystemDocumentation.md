@@ -31,6 +31,35 @@ Lunchify follows the **MVC (Model-View-Controller)** pattern:
 - **Controller**: Handles input and updates both the model and the view.  
  ![UML](../uml/UML_Release0.3.0/Architektur_UML.png)
 
+### Structure 
+
+src  
+├── main  
+│   ├── java  
+│   │   ├── backend  
+│   │   │   ├── configs  
+│   │   │   ├── exceptions  
+│   │   │   ├── interfaces  
+│   │   │   ├── logic  
+│   │   │   ├── model  
+│   │   ├── database  
+│   │   ├── frontend  
+│   │   │   ├── controller  
+│   │   │   ├── views  
+│   ├── resources  
+│   │   ├── frontend  
+│   │   │   ├── images  
+│   │   │   ├── views  
+│   │   ├── tessdata  
+├── test  
+│   ├── java   
+│   │   ├── backend  
+│   │   │   ├── logic  
+│   │   ├── databaseTests  
+│   │   ├── lunchifyTests  
+│   │   ├── uiTest  
+│   ├── resources  
+  
 ---
 
 ## Technology Stack
