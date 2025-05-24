@@ -445,7 +445,7 @@ public class AnomalyDetectionController  {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            stage.setTitle("Search");
+            stage.setTitle("Auffällige User");
             stage.setScene(new Scene(root));
             stage.show();
 

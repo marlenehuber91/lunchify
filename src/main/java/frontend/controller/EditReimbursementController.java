@@ -124,20 +124,23 @@ public class EditReimbursementController extends BaseUploadController{
 
     @FXML
     private void handleBackToCurrReimb() {
+    	String windowTitle;
     	try {
 			Parent root = null;
             if ("anomaly".equals(origin)) {
 				origin = null;
+				windowTitle = "Anomalie";
 				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/AnomalyDetection.fxml"));
 				root = fxmlLoader.load();
 			} else {
+				windowTitle = "aktuelle Rechnungen";
 				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/currReimbursements.fxml"));
 				root = fxmlLoader.load();
 			}
 
             Stage stage = (Stage) uploadPane.getScene().getWindow();
 
-            stage.setTitle("aktuelle Rechnungen");
+            stage.setTitle(windowTitle);
             stage.setScene(new Scene(root));
             stage.show();
         } catch(NullPointerException e) {
