@@ -103,6 +103,8 @@ public class ReimbursementHistoryController {
 	private Rectangle resetFilterButton;
 	@FXML
 	private Label userFilterLabel;
+	@FXML
+	private Button payrollDataButton;
 	
 	
 	/**
@@ -136,6 +138,8 @@ public class ReimbursementHistoryController {
 			deleteColumn.setVisible(false);
 			approveColumn.setVisible(false);
 			rejectColumn.setVisible(false);
+			
+			payrollDataButton.setVisible(false);
 		}
 
 		populateBoxes();
