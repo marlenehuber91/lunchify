@@ -1,31 +1,63 @@
-Gr4: Marlene Huber, Johanna Ferstl, Silvia Mahringer
-  
-# Lunchify
+# Einleitung
 
-**Lunchify** is a Java-based desktop application developed for internal use at a Linz-based software company. The application enables employees to submit receipts for lunch expenses and request daily reimbursements efficiently. Employees can upload receipts (JPEG, PNG), classify them, and receive automated reimbursements according to predefined rules. Administrators can manage users, monitor submission statistics, and export monthly data for payroll processing.
+**Lunchify** ist eine Desktop-Anwendung mit Datenbankanbindung, geschrieben in Java. Die Anwendung wurde als Pojekt für eine Linzer Firma für internen Gebrauch geschrieben. Mitarbeiter können ihre täglichen Essens-Rechnungen hochladen und bekommen einen bestimmten Betrag retourniert. Administratoren kümmern sich um die Freigabe oder Ablehnung der Rückerstattungsanträge, geben die Daten an die Lohnverrechnung weiter und pflegen die Stammdaten.
 
-Lunchify features secure login with role-based access for employees and administrators, OCR-based receipt analysis, automatic refund calculation, and anomaly detection. The app is built using Java 21 and JavaFX, follows the MVC design pattern, and persists data in a PostgreSQL database.
+# Umgesetzte Anforderungen
+Es wurden in 3 Sprints alle Anforderungen lt. [Anforderungskatalog](../docs/2025-SS-Anforderungen Lunchify.pdf) umgesetzt.
 
 ## Key Features
-
 - **User Authentication**: Email and password-based login with role distinction.
-- **Receipt Submission**: Upload and classify lunch receipts, with auto-recognition via OCR.
-- **Reimbursement Rules**: Automatic calculation of fixed daily refunds based on receipt type and amount.
-- **History and Corrections**: View past submissions, edit or delete until the month's end.
-- **Admin Dashboard**: Visual and tabular overviews, data exports (CSV, PDF, JSON/XML), and anomaly detection.
-- **Payroll Integration**: Structured data export for monthly salary refunds.
-- **Customization**: Admins can adjust reimbursement rates and manage users.
+- **Rechnung hochladen**: Upload and Klassifizierung von Rechnungen, automatisiert durch OCR.
+- **Berechnung Rückerstattungsbeträge**: Automatische Berechnung von Rückerstattungsbeträgen nach Klassifizierung und Rechnungsbetrag.
+- **Übermittlungsbestätigung**: PopUp Nachricht und Benachrichtigung, wenn ein Antrag erfolgreich eingereicht wurde plus Benachrichtigungen, wenn Änderungen durchgeführt wurden.
+- **Verlauf und Korrektur**: Benutzer können eigene Rechnungen anzeigen und innerhalb des Monats ändern oder löschen, Administratoren für alle User. Administratoren können Rechnungen auch freigeben oder ablehnen.
+- **Admin Dashboard, Suchen und Filtern**: Es gibt visuelle und Tabellarische Übersichten, Export der Daten .pdf ist möglich. Administratoren können zusätlich .csv Dateien erstellen.
+- **Gehaltsabrechnung**: Administratoren können für die Gehaltsabrechnung nötige Daten als .xml oder .json exportieren.
+- **Konfiguration**: Administratoren können Benutzer hinzufügen/ändern und den Rückerstattungsbetrag ändern.
+- **Anomalieerkennung**: Die Software erkennt nach gewissen Regeln potentiell missbräuchlichen Gebrauch.
 
-Lunchify is developed in an agile process to continuously incorporate stakeholder feedback and ensure practical, secure, and user-friendly functionality.
+Die Verantwortlichkeiten im Team wurden fair und nach Bedarf geteilt, größere, komplexere UserStories wurden im PairProgramming bewältigt.
+Die Zeit wurde mittels [clockify](https://app.clockify.me/tracker) aufgezeichnet.
+Stundenausmaß: xxx
 
+# Überblick über die Applikation aus Benutzersicht  
+[Benutzerdokumentation](../main/docs/UserDocumentation.md)
 
-## Documentations
-- User [Benutzerdokumentation](../main/docs/UserDocumentation.md)
-- System [SystemDocumentation](../main/docs/SystemDocumentation.md)
+# Überblick über die Applikation aus Entwicklersicht  
+System [SystemDocumentation](../main/docs/SystemDocumentation.md)
 
-## Clockify 
-Time is tracked: [clockify](https://app.clockify.me/tracker)
+## Entwurf
 
+### Überblick über die Applikation
+* [UML Diagramm](uml/UML_Release0.3.0) mit Erläuterungen
+* Verwendete Design Muster (z.B. Model-View-Controller)
+
+### Wichtige Design Entscheidungen
+* Beschreibung der 3-5 wichtigsten Design Entscheidungen nach folgenden Schema
+    * Entscheidung:
+    * Begründung: 
+    * Alternativen, die in Betracht gezogen wurden:
+    * Annahmen: 
+    * Konsequenzen:
+
+## Implementierung
+Beschreibung wichtiger Aspekte der Implementierung (eventuell mit ausgewählten 
+Codestücken), Projektstruktur, Abhängigkeiten, verwendete Bibliotheken.
+
+## Code Qualität
+Beschreibung der Verwendung von PMD, Beschreibung der Findings und welche davon 
+behoben wurden.
+
+## Testen
+Überblick über erstellte JUnit Tests (eventuell mit ausgewählten Tests), Testabdeckung
+Beschreibung der Akzeptanztests für 3 ausgewählte Requirements.
+
+# JavaDoc für wichtige Klassen, Interfaces und Methoden
+
+# Installationsanleitung
+Beschreibung wie man die Applikation installiert und startet.
+
+-------------------------------------------------------------------------------------------------------
 ## Prototyping
 ### our Prototype
 Figma: [PrototypeFigma](https://www.figma.com/team_invite/redeem/lGgdMsUEp53sQxzIHljWXv)
