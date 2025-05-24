@@ -107,6 +107,7 @@ public class LoginPageController {
 
             Parent root = loader.load();
             Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.setTitle("Dashboard");
             stage.setScene(new Scene(root));
             stage.show();
 

@@ -60,7 +60,7 @@ public class AdminDashboardController {
 
             // Neue Szene erstellen
             
-            stage.setTitle("Upload Window");
+            stage.setTitle("Rechnung einreichen");
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
@@ -76,7 +76,7 @@ public class AdminDashboardController {
 
             Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
 
-            stage.setTitle("Modify Reimbursement");
+            stage.setTitle("Rückerstattungsbeträge ändern");
             stage.setScene(new Scene(root));
             stage.show();
         }
@@ -124,7 +124,7 @@ public class AdminDashboardController {
 
             Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
 
-            stage.setTitle("Modify Users");
+            stage.setTitle("Benutzerverwaltung");
             stage.setScene(new Scene(root));
             stage.show();
 
@@ -141,7 +141,7 @@ public class AdminDashboardController {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            stage.setTitle("Search");
+            stage.setTitle("Suche");
             stage.setScene(new Scene(root));
             stage.show();
 
@@ -159,7 +159,7 @@ public class AdminDashboardController {
 
              Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-             stage.setTitle("Search");
+             stage.setTitle("Statistik");
              stage.setScene(new Scene(root));
              stage.show();
 
@@ -175,7 +175,7 @@ public class AdminDashboardController {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            stage.setTitle("Search");
+            stage.setTitle("Mitteilungen");
             stage.setScene(new Scene(root));
             stage.show();
 
@@ -192,6 +192,7 @@ public class AdminDashboardController {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
+            stage.setTitle("Anomalien"); 
             stage.setScene(new Scene(root));
             stage.show();
 
