@@ -167,7 +167,7 @@ public class AnomalyDetectionController  {
                         controller.setOrigin("anomaly");
                         controller.setReimbursement(reimbursement);
 
-                        Stage stage = new Stage();
+                        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                         stage.setScene(new Scene(root));
                         stage.setTitle("Bearbeiten");
                         stage.show();
