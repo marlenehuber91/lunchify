@@ -133,13 +133,12 @@ public class ReimbursementHistoryController {
 		if (user.getRole()!= UserRole.ADMIN) {
 			userFilterBox.setVisible(false);
 			userFilterLabel.setVisible(false);
+			payrollDataButton.setVisible(false);
 
 			editColumn.setVisible(false);
 			deleteColumn.setVisible(false);
 			approveColumn.setVisible(false);
 			rejectColumn.setVisible(false);
-			
-			payrollDataButton.setVisible(false);
 		}
 
 		populateBoxes();
@@ -274,7 +273,8 @@ public class ReimbursementHistoryController {
 				} else {
 					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
 					selectedUser = selectedReimbursement.getInvoice().getUser();
-					if (selectedReimbursement != null && selectedReimbursement.isReimbursementEditable() && user.getRole() == UserRole.ADMIN) {
+					if (selectedReimbursement != null && selectedReimbursement.isReimbursementEditable()
+							&& user.getRole() == UserRole.ADMIN && user.getId() != selectedUser.getId()) {
 						setGraphic(imageView);
 						setOnMouseClicked(event -> {
 							try {
@@ -322,7 +322,8 @@ public class ReimbursementHistoryController {
 				} else {
 					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
 					selectedUser = selectedReimbursement.getInvoice().getUser();
-					if (selectedReimbursement != null && selectedReimbursement.isReimbursementEditable()) {
+					if (selectedReimbursement != null && selectedReimbursement.isReimbursementEditable()
+							&& user.getId() != selectedUser.getId()) {
 						setGraphic(imageView);
 						setOnMouseClicked(event -> {
 							showDeleteConfirmationDialog(selectedReimbursement, selectedReimbursement.getInvoice().getUser());
@@ -357,7 +358,8 @@ public class ReimbursementHistoryController {
 				} else {
 					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
 					selectedUser = selectedReimbursement.getInvoice().getUser();
-					if (selectedReimbursement != null && selectedReimbursement.isReimbursementAcceptable()) {
+					if (selectedReimbursement != null && selectedReimbursement.isReimbursementAcceptable()
+							&& user.getId() != selectedUser.getId()) {
 						setGraphic(imageView);
 						setOnMouseClicked(event -> {
 							showApproveConfirmationDialog(selectedReimbursement);
@@ -392,7 +394,8 @@ public class ReimbursementHistoryController {
 				} else {
 					Reimbursement selectedReimbursement = getTableView().getItems().get(getIndex());
 					selectedUser = selectedReimbursement.getInvoice().getUser();
-					if (selectedReimbursement != null && selectedReimbursement.isReimbursementRejectable()) {
+					if (selectedReimbursement != null && selectedReimbursement.isReimbursementRejectable()
+							&& user.getId() != selectedUser.getId()) {
 						setGraphic(imageView);
 						setOnMouseClicked(event -> {
 							showRejectConfirmationDialog(selectedReimbursement);
