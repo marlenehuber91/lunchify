@@ -18,6 +18,7 @@ import backend.model.Reimbursement;
 import backend.model.ReimbursementState;
 import backend.model.User;
 import backend.model.UserRole;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -45,7 +46,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
+import javafx.util.Duration;
 
 
 public class StatisticsController {
@@ -334,116 +335,125 @@ public class StatisticsController {
 	
 	// created by AI
 	private void loadStatusBarChart(List<Reimbursement> reimbursements) {
-		Map<String, Integer> statusCount = new LinkedHashMap<>(Map.of("Offen", 0, "Genehmigt", 0, "Abgelehnt", 0, "Zur Kontrolle", 0));
+		safeChartUpdate(() -> {
 
-		for (Reimbursement r : reimbursements) {
-			String status = switch (r.getStatus()) {
-			case PENDING -> "Offen";
-			case APPROVED -> "Genehmigt";
-			case REJECTED -> "Abgelehnt";
-			case FLAGGED -> "Zur Kontrolle";
-			default -> throw new IllegalArgumentException("Unexpected value: " + r.getStatus());
-			};
-			statusCount.merge(status, 1, Integer::sum);
-		}
+			Map<String, Integer> statusCount = new LinkedHashMap<>(Map.of("Offen", 0, "Genehmigt", 0, "Abgelehnt", 0, "Zur Kontrolle", 0));
 
-		statusBarChart.getData().clear();
+			for (Reimbursement r : reimbursements) {
+				String status = switch (r.getStatus()) {
+					case PENDING -> "Offen";
+					case APPROVED -> "Genehmigt";
+					case REJECTED -> "Abgelehnt";
+					case FLAGGED -> "Zur Kontrolle";
+					default -> throw new IllegalArgumentException("Unexpected value: " + r.getStatus());
+				};
+				statusCount.merge(status, 1, Integer::sum);
+			}
 
-		int maxValue = statusCount.values().stream().max(Integer::compareTo).orElse(0);
-		int upperBound = Math.max(maxValue + 1, 10);
+			statusBarChart.getData().clear();
 
-		for (var entry : statusCount.entrySet()) {
-			XYChart.Series<String, Number> series = new XYChart.Series<>();
-			series.setName(entry.getKey());
-			XYChart.Data<String, Number> data = new XYChart.Data<>(entry.getKey(), entry.getValue());
-			series.getData().add(data);
-			statusBarChart.getData().add(series);
+			int maxValue = statusCount.values().stream().max(Integer::compareTo).orElse(0);
+			int upperBound = Math.max(maxValue + 1, 10);
 
-			data.nodeProperty().addListener((obs, oldNode, newNode) -> {
-				if (newNode != null) {
-					Tooltip.install(newNode, new Tooltip(entry.getValue() + " " + entry.getKey()));
+			for (var entry : statusCount.entrySet()) {
+				XYChart.Series<String, Number> series = new XYChart.Series<>();
+				series.setName(entry.getKey());
+				XYChart.Data<String, Number> data = new XYChart.Data<>(entry.getKey(), entry.getValue());
+				series.getData().add(data);
+				statusBarChart.getData().add(series);
+
+				data.nodeProperty().addListener((obs, oldNode, newNode) -> {
+					if (newNode != null) {
+						Tooltip.install(newNode, new Tooltip(entry.getValue() + " " + entry.getKey()));
+					}
+				});
+			}
+
+			NumberAxis yAxis = (NumberAxis) statusBarChart.getYAxis();
+			yAxis.setLowerBound(0); // Setze den minimalen Wert
+			yAxis.setUpperBound(upperBound);
+			yAxis.setTickUnit(1); // Setzt den Schrittwert auf 1
+			yAxis.setMinorTickVisible(false);
+			yAxis.setAutoRanging(false);
+			yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis) {
+				@Override
+				public String toString(Number object) {
+					return String.format("%d", object.intValue());
 				}
 			});
-		}
 
-		NumberAxis yAxis = (NumberAxis) statusBarChart.getYAxis();
-		yAxis.setLowerBound(0); // Setze den minimalen Wert
-		yAxis.setUpperBound(upperBound);
-		yAxis.setTickUnit(1); // Setzt den Schrittwert auf 1
-		yAxis.setMinorTickVisible(false);
-		yAxis.setAutoRanging(false);
-		yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis) {
-			@Override
-			public String toString(Number object) {
-				return String.format("%d", object.intValue());
-			}
+			statusBarChart.getXAxis().setTickLabelsVisible(false);
+			statusBarChart.getXAxis().setTickMarkVisible(false);
+			statusBarChart.getXAxis().setOpacity(0);
 		});
-
-		statusBarChart.getXAxis().setTickLabelsVisible(false);
-		statusBarChart.getXAxis().setTickMarkVisible(false);
-		statusBarChart.getXAxis().setOpacity(0);
 	}
 
 	private void loadAvgMonthChart() {
-		Map<String, Integer> counts = adminStatisticsService.getInvoiceCountLastYear();
-		
-		XYChart.Series<String, Number> series = new XYChart.Series<>();
-		series.setName("Rechnungen pro Monat");
-		
-		int sum = 0;
+		safeChartUpdate(() -> {
+			Map<String, Integer> counts = adminStatisticsService.getInvoiceCountLastYear();
 
-		for (Map.Entry<String, Integer> entry : counts.entrySet()) {
-			series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
-			sum += entry.getValue();
-		}
-	
-		detailLabel.setText("Gesamt eingereicht Rechnungen für\ndie letzten 12 Monate : " + sum);
-		detailLabel.setVisible(true);
-		adminBarChart.getData().add(series);
+			XYChart.Series<String, Number> series = new XYChart.Series<>();
+			series.setName("Rechnungen pro Monat");
+
+			int sum = 0;
+
+			for (Map.Entry<String, Integer> entry : counts.entrySet()) {
+				series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+				sum += entry.getValue();
+			}
+
+			detailLabel.setText("Gesamt eingereicht Rechnungen für\ndie letzten 12 Monate : " + sum);
+			detailLabel.setVisible(true);
+			adminBarChart.getData().add(series);
+		});
 	}
 
 	private void loadAvgEmp() {
-		Map<String, Double> counts = adminStatisticsService.getAverageInvoicesPerUserLastYear();
-		XYChart.Series<String, Number> series = new XYChart.Series<>();
-		
-		NumberAxis yAxis = (NumberAxis) adminBarChart.getYAxis();
-		yAxis.setAutoRanging(true);
-		
-		series.setName("Durchschnitt pro Nutzer");
+		safeChartUpdate(() -> {
+			Map<String, Double> counts = adminStatisticsService.getAverageInvoicesPerUserLastYear();
+			XYChart.Series<String, Number> series = new XYChart.Series<>();
 
-		for (Entry<String, Double> entry : counts.entrySet()) {
-			series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
-		}
-		
-		double total = counts.values().stream().mapToDouble(Double::doubleValue).sum();
-		double average = counts.size() > 0 ? total/counts.size() : 0;
-		
-		detailLabel.setText(String.format("Durschnittliche Anzahl Rechnungen \npro Nutzer (12 Monate):  %.2f",  average));
-		detailLabel.setVisible(true);
-		
-		adminBarChart.getData().add(series);
+			NumberAxis yAxis = (NumberAxis) adminBarChart.getYAxis();
+			yAxis.setAutoRanging(true);
+
+			series.setName("Durchschnitt pro Nutzer");
+
+			for (Entry<String, Double> entry : counts.entrySet()) {
+				series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+			}
+
+			double total = counts.values().stream().mapToDouble(Double::doubleValue).sum();
+			double average = counts.size() > 0 ? total / counts.size() : 0;
+
+			detailLabel.setText(String.format("Durschnittliche Anzahl Rechnungen \npro Nutzer (12 Monate):  %.2f", average));
+			detailLabel.setVisible(true);
+
+			adminBarChart.getData().add(series);
+		});
 	}
 
 	private void loadMonthlyReimbursementSumChart() {
-		Map<String, Double> sums = adminStatisticsService.getReimbursementSumPerMonthLastYear();
-		XYChart.Series<String, Number> series = new XYChart.Series<>();
-		series.setName("Erstattungen pro Monat (€)");
-		
-		NumberAxis yAxis = (NumberAxis) adminBarChart.getYAxis();
-		yAxis.setAutoRanging(true);
-		
-		double totalSum = 0;
+		safeChartUpdate(() -> {
+			Map<String, Double> sums = adminStatisticsService.getReimbursementSumPerMonthLastYear();
+			XYChart.Series<String, Number> series = new XYChart.Series<>();
+			series.setName("Erstattungen pro Monat (€)");
 
-		for (Map.Entry<String, Double> entry : sums.entrySet()) {
-			XYChart.Data<String, Number> data = new XYChart.Data<>(entry.getKey(), entry.getValue());
-			series.getData().add(data);
-			totalSum += entry.getValue();
-		}
-		
-		detailLabel.setText(String.format("Gesamtsumme (12 Monate): %.2f € ", totalSum));
-		detailLabel.setVisible(true);
-		
-		adminBarChart.getData().add(series);
+			NumberAxis yAxis = (NumberAxis) adminBarChart.getYAxis();
+			yAxis.setAutoRanging(true);
+
+			double totalSum = 0;
+
+			for (Map.Entry<String, Double> entry : sums.entrySet()) {
+				XYChart.Data<String, Number> data = new XYChart.Data<>(entry.getKey(), entry.getValue());
+				series.getData().add(data);
+				totalSum += entry.getValue();
+			}
+
+			detailLabel.setText(String.format("Gesamtsumme (12 Monate): %.2f € ", totalSum));
+			detailLabel.setVisible(true);
+
+			adminBarChart.getData().add(series);
+		});
 	}
 
 	private String formatCategoryName(InvoiceCategory category) {
@@ -544,5 +554,17 @@ public class StatisticsController {
             ? adminStatisticsService.getReimbursementsFromLast12Months()
             : adminStatisticsService.getReimbursements();
     }
+
+	private void safeChartUpdate(Runnable chartLoader) { //Ai generated
+		Platform.runLater(() -> {
+			chartLoader.run();  // Originale Chart-Logik ausführen
+			PauseTransition pause = new PauseTransition(Duration.millis(50));
+			pause.setOnFinished(e -> {
+				adminBarChart.applyCss();  // CSS erzwingen
+				adminBarChart.layout();    // Neuzeichnen erzwingen
+			});
+			pause.play();
+		});
+	}
 	
 }

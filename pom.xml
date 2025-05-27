@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>at.jku.se</groupId>
 	<artifactId>lunchify</artifactId>
-	<version>0.0.3</version>
+	<version>1.0.0</version>
 
 	<properties>
 		<maven.compiler.target>21</maven.compiler.target>
@@ -28,19 +28,36 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.4.0</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>frontend.Main</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.6.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>frontend.SuperMain</mainClass>
+								</transformer>
+							</transformers>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -85,7 +102,6 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.11.2</version>
 			</plugin>
-
 		</plugins>
 
 		<!-- for PMD -->
@@ -100,6 +116,18 @@
 		</pluginManagement>
 	</build>
 	<dependencies>
+		<!-- Plugin for shade jar (Stackoverflow) -->
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>21</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>21</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
@@ -185,6 +213,18 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- PDF handling -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>3.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox-tools</artifactId>
+			<version>3.0.5</version>
+		</dependency>
+
 
 		<!-- testing -->
 		<dependency>
@@ -227,16 +267,6 @@
 			<artifactId>mockito-core</artifactId>
 			<version>5.17.0</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox</artifactId>
-			<version>3.0.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox-tools</artifactId>
-			<version>3.0.5</version>
 		</dependency>
 
 
