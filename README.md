@@ -3,7 +3,7 @@
 **Lunchify** ist eine Desktop-Anwendung mit Datenbankanbindung, geschrieben in Java. Die Anwendung wurde als Pojekt für eine Linzer Firma für internen Gebrauch geschrieben. Mitarbeiter können ihre täglichen Essens-Rechnungen hochladen und bekommen einen bestimmten Betrag retourniert. Administratoren kümmern sich um die Freigabe oder Ablehnung der Rückerstattungsanträge, geben die Daten an die Lohnverrechnung weiter und pflegen die Stammdaten.
 
 # Umgesetzte Anforderungen
-Es wurden in 3 Sprints alle Anforderungen lt. [Anforderungskatalog](../docs/2025-SS-Anforderungen Lunchify.pdf) umgesetzt.
+Es wurden in 3 Sprints alle Anforderungen lt. [Anforderungskatalog](/docs/2025-SS-Anforderungen-Lunchify.pdf) umgesetzt.
 
 ## Key Features
 - **User Authentication**: Email and password-based login with role distinction.
