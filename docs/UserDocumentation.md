@@ -84,6 +84,11 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 
 ---
 
+### Benachrichtigungen
+- ein roter Punkt neben der Glocke links oben zeigt, dass du eine neue Benachrichtigung erhalten hast. Dies ist der Fall wenn eine deiner Rechungen genehmigt, abgelehnt oder geändert wurde.
+
+---
+
 ### Logout
 
 - bei Klick auf den Avatar kannst du Logout wählen
@@ -93,7 +98,7 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 
 ## Funktionen für Administrator:innen
 
-- Du hast als Admin alle Funktionen, die auch ein Mitarbeiter hat - siehe oben. Zusätzliche Funktionen für dich:
+- Du hast als Admin alle Funktionen, die auch ein Mitarbeiter hat - siehe oben.   Zusätzliche Funktionen für dich:
 
 ![Dashboard](/docs/Screenshots/AdminDashboard.png)
 
@@ -101,11 +106,25 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 
 ### Rechnungen freigeben oder ablehnen
 
-- unter **alle Rechnungen** kannst du Rechnungen freigeben oder ablehnen, löschen oder ändern
-- wenn diese unter der Anomalieerkennung laufen, können sie hier **nicht** freigegeben werden
-- ACHTUNG: einmal freigebene Rechnungen können nicht mehr geändert werden
+Unter **alle Rechnungen** kannst du Rechnungen freigeben oder ablehnen, löschen oder ändern.
+- offene Rechnungen können bis zum Monatsende freigegeben, editiert, gelöscht oder abgelehnt werden
+- davor abgelehnte Rechnungen können bis zum Monatsende freigegeben, editiert, gelöscht oder werden
+- bereits freigegebene Rechnungen können nicht mehr geändert werden
+- Rechnungen "in Prüfung": diese aufen unter der Anomalieerkennung, können sie hier **nicht** freigegeben werden. --> Wechsel zu [Anomalieerkennung](#Anomalieerkennung-und-Auswirkungen)
+- ACHTUNG: einmal freigebene Rechnungen können nicht mehr geändert werden.
 
 ![alleRechnungen](/docs/Screenshots/AdminAlleRechnungen.png)
+
+### Export für Gehaltsabrechnung
+
+- Klicke auf **"alle Rechnungen"**
+- klicke auf **"Lohnverrechnung"** siehe Screenshot rot eingekreist
+
+### Export für Auswertungen
+
+- Klicke auf **"alle Rechnungen"**
+- filtere nach Wunsch
+- klicke auf **"Exportieren"** siehe Screenshot rot eingekreist
 
 ---
 
@@ -131,6 +150,7 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
     - Verteilung Restaurant/Supermarkt
     - Gesamtsumme der Rückvergütungen
 ![Statistik](/docs/Screenshots/AdminStatistik.png)
+- die Ansicht kann als .pdf oder .csv heruntergeladen werden
 
 ---
 
@@ -138,14 +158,6 @@ Beim Start der Anwendung erscheint der Login-Bildschirm:
 
 - Klicke auf **"Suche"**
 - Suche nach bestimmten Kriterien wie zB Benutzer oder Monat
-
----
-
-### Export für Gehaltsabrechnung
-
-- Klicke auf **"alle Rechnungen"**
-- filtere nach Wunsch
-- klicke auf **"Export"**
 
 ---
 
