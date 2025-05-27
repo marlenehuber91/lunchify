@@ -42,7 +42,6 @@
 									<mainClass>frontend.SuperMain</mainClass>
 								</transformer>
 							</transformers>
-							<!-- Wichtig: Filter für Signaturdateien, um Konflikte zu vermeiden -->
 							<filters>
 								<filter>
 									<artifact>*:*</artifact>
@@ -53,27 +52,12 @@
 									</excludes>
 								</filter>
 							</filters>
-							<!-- Füge alle Abhängigkeiten ins JAR ein -->
 							<createDependencyReducedPom>false</createDependencyReducedPom>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 
-			<!--<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.4.0</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>frontend.Main</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -229,6 +213,18 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- PDF handling -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>3.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox-tools</artifactId>
+			<version>3.0.5</version>
+		</dependency>
+
 
 		<!-- testing -->
 		<dependency>
@@ -271,16 +267,6 @@
 			<artifactId>mockito-core</artifactId>
 			<version>5.17.0</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox</artifactId>
-			<version>3.0.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox-tools</artifactId>
-			<version>3.0.5</version>
 		</dependency>
 
 
