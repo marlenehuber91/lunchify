@@ -154,33 +154,45 @@ public class AnomalyDetectionController  {
             {
                 imageView.setFitHeight(16);
                 imageView.setFitWidth(16);
-                setGraphic(imageView);
-                setOnMouseClicked(event -> {
-                    Anomaly anomaly = getTableView().getItems().get(getIndex());
-                    try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/views/EditReimbursement.fxml"));
-                        Parent root = loader.load();
-
-                        // Controller holen und Anomaly setzen
-                        EditReimbursementController controller = loader.getController();
-                        Reimbursement reimbursement = getReimbursementByInvoiceId(anomaly.getInvoiceId());
-                        controller.setOrigin("anomaly");
-                        controller.setReimbursement(reimbursement);
-
-                        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                        stage.setScene(new Scene(root));
-                        stage.setTitle("Bearbeiten");
-                        stage.show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : imageView);
+
+                if (empty) {
+                    setGraphic(null);
+                    setOnMouseClicked(null);
+                    return;
+                }
+
+                Anomaly anomaly = getTableView().getItems().get(getIndex());
+                boolean isOwnInvoice = anomaly.getUserId() == SessionManager.getCurrentUser().getId();
+
+                if (!isOwnInvoice) {
+                    setGraphic(imageView);
+                    setOnMouseClicked(event -> {
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/views/EditReimbursement.fxml"));
+                            Parent root = loader.load();
+
+                            EditReimbursementController controller = loader.getController();
+                            Reimbursement reimbursement = getReimbursementByInvoiceId(anomaly.getInvoiceId());
+                            controller.setOrigin("anomaly");
+                            controller.setReimbursement(reimbursement);
+
+                            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                            stage.setScene(new Scene(root));
+                            stage.setTitle("Bearbeiten");
+                            stage.show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } else {
+                    setGraphic(null);
+                    setOnMouseClicked(null);
+                }
             }
         });
     }
@@ -193,17 +205,26 @@ public class AnomalyDetectionController  {
             {
                 imageView.setFitHeight(16);
                 imageView.setFitWidth(16);
-                setGraphic(imageView);
-                setOnMouseClicked(event -> {
-                    Anomaly anomaly = getTableView().getItems().get(getIndex());
-                    showDeleteAnomalyConfirmationDialog(anomaly);
-                });
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : imageView);
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
+
+                Anomaly anomaly = getTableView().getItems().get(getIndex());
+                boolean isOwnInvoice = anomaly.getUserId() == SessionManager.getCurrentUser().getId();
+
+                if (!isOwnInvoice) {
+                    setGraphic(imageView);
+                    setOnMouseClicked(event -> showDeleteAnomalyConfirmationDialog(anomaly));
+                } else {
+                    setGraphic(null);
+                    setOnMouseClicked(null); // Event-Handler entfernen
+                }
             }
         });
     }
@@ -215,28 +236,26 @@ public class AnomalyDetectionController  {
             {
                 imageView.setFitHeight(16);
                 imageView.setFitWidth(16);
-                setOnMouseClicked(event -> {
-                    Anomaly anomaly = getTableView().getItems().get(getIndex());
-                    showApproveAnomalyConfirmationDialog(anomaly);
-                });
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-
                 if (empty) {
                     setGraphic(null);
                     return;
                 }
 
                 Anomaly anomaly = getTableView().getItems().get(getIndex());
+                boolean isOwnInvoice = anomaly.getUserId() == SessionManager.getCurrentUser().getId();
                 Reimbursement reimbursement = reimbursementService.getReimbursementByInvoiceId(anomaly.getInvoiceId());
 
-                if (reimbursement != null && reimbursement.getStatus() == ReimbursementState.APPROVED) {
-                    setGraphic(null); // Verstecke den OK-Button
-                } else {
+                if (!isOwnInvoice && (reimbursement == null || reimbursement.getStatus() != ReimbursementState.APPROVED)) {
                     setGraphic(imageView);
+                    setOnMouseClicked(event -> showApproveAnomalyConfirmationDialog(anomaly));
+                } else {
+                    setGraphic(null);
+                    setOnMouseClicked(null);
                 }
             }
         });
@@ -250,28 +269,26 @@ public class AnomalyDetectionController  {
             {
                 imageView.setFitHeight(16);
                 imageView.setFitWidth(16);
-                setOnMouseClicked(event -> {
-                    Anomaly anomaly = getTableView().getItems().get(getIndex());
-                    showRejectAnomalyConfirmationDialog(anomaly);
-                });
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-
                 if (empty) {
                     setGraphic(null);
                     return;
                 }
 
                 Anomaly anomaly = getTableView().getItems().get(getIndex());
+                boolean isOwnInvoice = anomaly.getUserId() == SessionManager.getCurrentUser().getId();
                 Reimbursement reimbursement = reimbursementService.getReimbursementByInvoiceId(anomaly.getInvoiceId());
 
-                if (reimbursement != null && reimbursement.getStatus() == ReimbursementState.REJECTED) {
-                    setGraphic(null); // Verstecke den Reject-Button
-                } else {
+                if (!isOwnInvoice && (reimbursement == null || reimbursement.getStatus() != ReimbursementState.REJECTED)) {
                     setGraphic(imageView);
+                    setOnMouseClicked(event -> showRejectAnomalyConfirmationDialog(anomaly));
+                } else {
+                    setGraphic(null);
+                    setOnMouseClicked(null);
                 }
             }
         });
