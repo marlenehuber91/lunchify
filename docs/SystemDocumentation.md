@@ -89,7 +89,7 @@ src
 
 ## Database
 
-- The PostgreSQL database must be initialized using an SQL [script](//Database.md) **prior to first use**.
+- The PostgreSQL database must be initialized using an SQL [script](../Database.md) **prior to first use**.
 - Data includes:
     - User accounts (with roles)
     - Receipts and reimbursement records
