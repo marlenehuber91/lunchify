@@ -32,9 +32,10 @@ Das Projekt wurde nach agilem Projektmanagement abgearbeitet, angelehnt an Scrum
 ### Überblick über die Applikation
 * [UML Diagramm](uml/UML_Release0.3.0) mit Erläuterungen
 * Verwendete Design Muster (z.B. Model-View-Controller)
+> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
 
 ### Wichtige Design Entscheidungen
-<!-- TODO: Hier muss noch etwas ergänzt werden -->  
+> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
 * Beschreibung der 3-5 wichtigsten Design Entscheidungen nach folgenden Schema
     * Entscheidung:
     * Begründung: 
@@ -43,7 +44,7 @@ Das Projekt wurde nach agilem Projektmanagement abgearbeitet, angelehnt an Scrum
     * Konsequenzen:
 
 ## Implementierung 
-<!-- TODO: Hier muss noch etwas ergänzt werden -->  
+> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
 Beschreibung wichtiger Aspekte der Implementierung (eventuell mit ausgewählten 
 Codestücken), Projektstruktur, Abhängigkeiten, verwendete Bibliotheken.
 
@@ -51,19 +52,19 @@ Codestücken), Projektstruktur, Abhängigkeiten, verwendete Bibliotheken.
 Die Codequalität wurde bei jedem Merge sowie lokal  vor dem Push in den IDEs der Teammitglieder mit PMD geprüft. Die meisten errors bezogen sich auf Verstöße gegen Namenskonventionen oder die Verwendung von System.out.println() zur Fehlersuche. Alle durch PMD gemeldeten Probleme wurden behoben, indem Variablen- und Methodennamen angepasst und Debug-Ausgaben entfernt wurden.
 
 ## Testen
-<!-- TODO: Hier muss noch etwas ergänzt werden -->  
+> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.  
 Überblick über erstellte JUnit Tests (eventuell mit ausgewählten Tests), Testabdeckung
 Beschreibung der Akzeptanztests für 3 ausgewählte Requirements.  
 [Testplan](docs/Testplan.md)
 
 # JavaDoc für wichtige Klassen, Interfaces und Methoden
-<!-- TODO: Hier muss noch etwas ergänzt werden -->  
+> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
 
 # Installationsanleitung
-1. JavaFX Setup: JavaFX 21.0.2 herunterladen: https://jdk.java.net/javafx21/
-2. in Umgebungsvariablen den Pfad auf den lib-Ordner des JavaFX Folders setzen z.B: C:\Program Files\javafx-sdk-21.0.2\lib
-3. .jar Datei herunterladen und abspeichern
-4. .jar Datei starten
+1. JavaFX Setup: JavaFX 21.0.2 herunterladen: https://jdk.java.net/javafx21/.
+2. in Umgebungsvariablen den Pfad auf den lib-Ordner des JavaFX Folders setzen z.B: C:\Program Files\javafx-sdk-21.0.2\lib.
+3. Datei 'Lunchify.jar' herunterladen und abspeichern.
+4. 'Lunchify.jar' starten.
 
 -------------------------------------------------------------------------------------------------------
 ## Prototyping
