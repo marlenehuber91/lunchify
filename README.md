@@ -55,7 +55,9 @@ Beschreibung der Akzeptanztests für 3 ausgewählte Requirements.
 # JavaDoc für wichtige Klassen, Interfaces und Methoden
 
 # Installationsanleitung
-Beschreibung wie man die Applikation installiert und startet.
+//ODER LINK? @Silvia: Installation habe ich auch in der UserDoc angepasst, kann auch gerne verlinkt werden! 
+1. JavaFX Setup: laden Sie sich JavaFX 21.0.2 herunter: https://jdk.java.net/javafx21/
+2. Setzen Sie in den Umgebungsvariablen den Pfad auf den lib-Ordner des JavaFX Folders z.B: C:\Program Files\javafx-sdk-21.0.2\lib
 
 -------------------------------------------------------------------------------------------------------
 ## Prototyping
