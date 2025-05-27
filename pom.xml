@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>at.jku.se</groupId>
 	<artifactId>lunchify</artifactId>
-	<version>0.0.3</version>
+	<version>1.0.0</version>
 
 	<properties>
 		<maven.compiler.target>21</maven.compiler.target>
