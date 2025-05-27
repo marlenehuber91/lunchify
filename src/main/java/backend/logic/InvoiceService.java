@@ -129,7 +129,6 @@ public class InvoiceService {
 		Float ocrAmount = OCR.getAmount();
 		InvoiceCategory ocrCategory = OCR.getCategory();
 
-		//check for permanent flagged users
 		String checkPermFlag = "SELECT permanent_flag FROM FlaggedUsers WHERE user_id = ?";
 
 		try (Connection conn = connectionProvider.getConnection();
@@ -143,11 +142,10 @@ public class InvoiceService {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			// Optional: trotzdem fortsetzen oder lieber abbrechen?
 		}
 
 		//check for differences with ocr data if not already flagged because of permanent flag
-		if (!invoice.isFlagged()) { // Nur wenn noch nicht durch permanent_flag gesetzt
+		if (!invoice.isFlagged()) {
 			if (ocrDate == null || invoice.getDate() == null || !ocrDate.equals(invoice.getDate()) ||
 					invoice.getAmount() == 0.0f || Math.abs(ocrAmount - invoice.getAmount()) > 0.0001 ||
 					ocrCategory == null || invoice.getCategory() == null || !ocrCategory.equals(invoice.getCategory())) {
