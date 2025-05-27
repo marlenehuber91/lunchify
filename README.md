@@ -3,28 +3,29 @@
 **Lunchify** ist eine Desktop-Anwendung mit Datenbankanbindung, geschrieben in Java. Die Anwendung wurde als Pojekt für eine Linzer Firma für internen Gebrauch geschrieben. Mitarbeiter können ihre täglichen Essens-Rechnungen hochladen und bekommen einen bestimmten Betrag retourniert. Administratoren kümmern sich um die Freigabe oder Ablehnung der Rückerstattungsanträge, geben die Daten an die Lohnverrechnung weiter und pflegen die Stammdaten.
 
 # Umgesetzte Anforderungen
-Es wurden in 3 Sprints alle Anforderungen lt. [Anforderungskatalog](/docs/2025-SS-Anforderungen-Lunchify.pdf) umgesetzt.
+Es wurden in 3 Sprints alle Anforderungen lt. [Anforderungskatalog](/docs/2025-SS-Anforderungen-Lunchify.pdf) umgesetzt, weitere Anforderungen ergaben sich aus dem Sprint und wurden nach Backlog abgearbeitet.
 
 ## Key Features
-- **User Authentication**: Email and password-based login with role distinction.
-- **Rechnung hochladen**: Upload and Klassifizierung von Rechnungen, automatisiert durch OCR.
-- **Berechnung Rückerstattungsbeträge**: Automatische Berechnung von Rückerstattungsbeträgen nach Klassifizierung und Rechnungsbetrag.
+- **User Authentication**: Email und password-based login, Rollen Admin und Employee umgesetzt.
+- **Rechnung hochladen**: Upload and Klassifizierung von Rechnungen, automatisiert durch OCR, editierbar durch User.
+- **Berechnung Rückerstattungsbeträge**: Automatische Berechnung von Rückerstattungsbeträgen je nach Klassifizierung und Rechnungsbetrag.
 - **Übermittlungsbestätigung**: PopUp Nachricht und Benachrichtigung, wenn ein Antrag erfolgreich eingereicht wurde plus Benachrichtigungen, wenn Änderungen durchgeführt wurden.
-- **Verlauf und Korrektur**: Benutzer können eigene Rechnungen anzeigen und innerhalb des Monats ändern oder löschen, Administratoren für alle User. Administratoren können Rechnungen auch freigeben oder ablehnen.
-- **Admin Dashboard, Suchen und Filtern**: Es gibt visuelle und Tabellarische Übersichten, Export der Daten .pdf ist möglich. Administratoren können zusätlich .csv Dateien erstellen.
-- **Gehaltsabrechnung**: Administratoren können für die Gehaltsabrechnung nötige Daten als .xml oder .json exportieren.
-- **Konfiguration**: Administratoren können Benutzer hinzufügen/ändern und den Rückerstattungsbetrag ändern.
+- **Verlauf und Korrektur**: Benutzer können eigene Rechnungen anzeigen und innerhalb des Monats ändern oder löschen, Administratoren für alle User. Administratoren können Rechnungen auch freigeben oder ablehnen. Missbräuchliche Verwendung durch User ist abgesichert, eigene Rechnungen können nicht abgeändert werden, keine Abänderung von bereits freigegebenen Rechnungen, keine Freigabe von anomalie-geflaggten Rechnungen durch User selbst möglich, etc.
+- **Admin Dashboard, Suchen und Filtern**: Grafische und tabellarische Übersichten, Export der Daten als .pdf und .csv (zweiteres nur für Admins) möglich.
+- **Gehaltsabrechnung**: Admins können für die Gehaltsabrechnung nötige Daten als .xml oder .json exportieren.
+- **Konfiguration**: Admins können Benutzer hinzufügen/ändern und den Rückerstattungsbetrag ändern.
 - **Anomalieerkennung**: Die Software erkennt nach gewissen Regeln potentiell missbräuchlichen Gebrauch.
 
 Die Verantwortlichkeiten im Team wurden fair und nach Bedarf geteilt, größere, komplexere UserStories wurden im PairProgramming bewältigt.
 Die Zeit wurde mittels [clockify](https://app.clockify.me/tracker) aufgezeichnet.
-Stundenausmaß: xxx
+Stundenausmaß: xxx (Marlene %, Johanna %, Silvia %)  
+Das Projekt wurde nach agilem Projektmanagement abgearbeitet, angelehnt an Scrum fanden mindestens wöchentlich virtuelle Meetings statt. Der formelle Informationsaustausch wurde via issues in GitHub sichergestellt, der informellere Informationsaustausch in einem Discord-Channel.
 
 # Überblick über die Applikation aus Benutzersicht  
 [Benutzerdokumentation](../main/docs/UserDocumentation.md)
 
 # Überblick über die Applikation aus Entwicklersicht  
-System [SystemDocumentation](../main/docs/SystemDocumentation.md)
+[SystemDocumentation](../main/docs/SystemDocumentation.md)
 
 ## Entwurf
 
@@ -33,6 +34,7 @@ System [SystemDocumentation](../main/docs/SystemDocumentation.md)
 * Verwendete Design Muster (z.B. Model-View-Controller)
 
 ### Wichtige Design Entscheidungen
+<!-- TODO: Hier muss noch etwas ergänzt werden -->  
 * Beschreibung der 3-5 wichtigsten Design Entscheidungen nach folgenden Schema
     * Entscheidung:
     * Begründung: 
@@ -40,24 +42,27 @@ System [SystemDocumentation](../main/docs/SystemDocumentation.md)
     * Annahmen: 
     * Konsequenzen:
 
-## Implementierung
+## Implementierung 
+<!-- TODO: Hier muss noch etwas ergänzt werden -->  
 Beschreibung wichtiger Aspekte der Implementierung (eventuell mit ausgewählten 
 Codestücken), Projektstruktur, Abhängigkeiten, verwendete Bibliotheken.
 
 ## Code Qualität
-Beschreibung der Verwendung von PMD, Beschreibung der Findings und welche davon 
-behoben wurden.
+Die Codequalität wurde bei jedem Merge sowie lokal  vor dem Push in den IDEs der Teammitglieder mit PMD geprüft. Die meisten errors bezogen sich auf Verstöße gegen Namenskonventionen oder die Verwendung von System.out.println() zur Fehlersuche. Alle durch PMD gemeldeten Probleme wurden behoben, indem Variablen- und Methodennamen angepasst und Debug-Ausgaben entfernt wurden.
 
 ## Testen
+<!-- TODO: Hier muss noch etwas ergänzt werden -->  
 Überblick über erstellte JUnit Tests (eventuell mit ausgewählten Tests), Testabdeckung
 Beschreibung der Akzeptanztests für 3 ausgewählte Requirements.
 
 # JavaDoc für wichtige Klassen, Interfaces und Methoden
+<!-- TODO: Hier muss noch etwas ergänzt werden -->  
 
 # Installationsanleitung
-//ODER LINK? @Silvia: Installation habe ich auch in der UserDoc angepasst, kann auch gerne verlinkt werden! 
-1. JavaFX Setup: laden Sie sich JavaFX 21.0.2 herunter: https://jdk.java.net/javafx21/
-2. Setzen Sie in den Umgebungsvariablen den Pfad auf den lib-Ordner des JavaFX Folders z.B: C:\Program Files\javafx-sdk-21.0.2\lib
+1. JavaFX Setup: JavaFX 21.0.2 herunterladen: https://jdk.java.net/javafx21/
+2. in Umgebungsvariablen den Pfad auf den lib-Ordner des JavaFX Folders setzen z.B: C:\Program Files\javafx-sdk-21.0.2\lib
+3. .jar Datei herunterladen und abspeichern
+4. .jar Datei starten
 
 -------------------------------------------------------------------------------------------------------
 ## Prototyping
