@@ -12,12 +12,7 @@ import java.util.List;
 import backend.exceptions.InfrastructureException;
 import backend.exceptions.ReimbursementException;
 import backend.interfaces.ConnectionProvider;
-import backend.model.Invoice;
-import backend.model.InvoiceCategory;
-import backend.model.Reimbursement;
-import backend.model.ReimbursementState;
-import backend.model.User;
-import backend.model.UserRole;
+import backend.model.*;
 import frontend.controller.ReimbursementHistoryController;
 
 public class ReimbursementService extends ReimbursementHistoryController {
@@ -382,7 +377,7 @@ public class ReimbursementService extends ReimbursementHistoryController {
 						newReimb.getInvoice().getFile(), isAdmin, oldReimb.getInvoice().getDate(), selfmade);
 			}
 
-	    } catch (SQLException e) {
+		} catch (SQLException e) {
 	        e.printStackTrace();
 	    }
 

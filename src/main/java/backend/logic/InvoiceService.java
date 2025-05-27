@@ -318,18 +318,26 @@ public class InvoiceService {
 	            }
 	        }
 
-			if (!oldInvoice.isFlagged() && updated) {
+			if (!oldInvoice.isFlagged() && updated && selfmade) {
 				try (PreparedStatement stmt = conn.prepareStatement("UPDATE invoices SET flagged = true WHERE id = ?")) {
 					stmt.setInt(1, oldInvoice.getId());
 					stmt.executeUpdate();
 				}
 
 				try (PreparedStatement stmt = conn.prepareStatement(
-						"UPDATE reimbursements SET state = ? WHERE invoice_id = ?")) {
-					stmt.setString(1, "FLAGGED"); // oder ReimbursementState.IN_REVIEW.name()
+						"UPDATE reimbursements SET status = ? WHERE invoice_id = ?")) {
+					stmt.setObject(1, "FLAGGED", java.sql.Types.OTHER);
 					stmt.setInt(2, oldInvoice.getId());
 					stmt.executeUpdate();
 				}
+				FlaggedUser flaggedUser = new FlaggedUser(invoiceUser.getId());
+				try {
+					FlaggedUserService.addOrUpdateFlaggedUser(flaggedUser);
+					AnomalyDetectionService.detectAnomaliesAndLog(oldInvoice);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+
 			}
 
 
