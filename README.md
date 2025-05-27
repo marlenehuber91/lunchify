@@ -52,10 +52,16 @@ Codestücken), Projektstruktur, Abhängigkeiten, verwendete Bibliotheken.
 Die Codequalität wurde bei jedem Merge sowie lokal  vor dem Push in den IDEs der Teammitglieder mit PMD geprüft. Die meisten errors bezogen sich auf Verstöße gegen Namenskonventionen oder die Verwendung von System.out.println() zur Fehlersuche. Alle durch PMD gemeldeten Probleme wurden behoben, indem Variablen- und Methodennamen angepasst und Debug-Ausgaben entfernt wurden.
 
 ## Testen
-> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.  
-Überblick über erstellte JUnit Tests (eventuell mit ausgewählten Tests), Testabdeckung
-Beschreibung der Akzeptanztests für 3 ausgewählte Requirements.  
-[Testplan](docs/Testplan.md)
+> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
+> Überblick über erstellte JUnit Tests (eventuell mit ausgewählten Tests), Testabdeckung
+Beschreibung der Akzeptanztests für 3 ausgewählte Requirements
+ 
+Das Testen stellte im Projekt eine besondere Herausforderung dar, da jedes Teammitglied mit einer eigenen lokalen Datenbank arbeitete. Beim Hochladen von Code auf GitHub wären Tests fehlgeschlagen, da dort keine lokale Datenbank vorhanden ist. Dieses Problem lösten wir durch den Einsatz von Mocking. Allerdings bringt Mocking auch Einschränkungen mit sich – insbesondere lässt sich der Aufruf eines Konstruktors nicht mocken. Da einige unserer Klassen bereits im Konstruktor auf die Datenbank zugreifen, war dies ein Problem.
+
+Unsere Tests gliedern sich in drei Bereiche:  
+- Unit-Tests zur Überprüfung einzelner Methoden und Klassen,
+- UI-Tests zur Validierung der Benutzeroberfläche,
+- ein [Testplan](docs/Testplan.md), der strukturierte manuelle Tests dokumentiert.
 
 # JavaDoc für wichtige Klassen, Interfaces und Methoden
 > ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
