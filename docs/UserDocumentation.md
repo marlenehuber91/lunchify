@@ -23,7 +23,7 @@
 3. lade die 'Lunchify.jar' herunter und speichere sie ab
 5. Starten die Anwendung durch Doppelklick auf die Datei `Lunchify.jar`.
 
-> ⚠️ Hinweis: Die Datenbankverbindung muss vorher korrekt eingerichtet sein. Dieser Vorgang ist in der [Systemdokumentation](/docs/Systemdocumentation.md) erklärt.
+> ⚠️ Hinweis: Die Datenbankverbindung muss vorher korrekt eingerichtet sein. Dieser Vorgang ist in der [Systemdokumentation](/docs/SystemDocumentation.md) erklärt.
 
 ---
 
