@@ -39,6 +39,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
@@ -194,7 +195,7 @@ public class ExportService {// AI generated changed by the team
 				addChart(content, doc, pieChart, 50, 725, 0.35f);
 				addChart(content, doc, barChart, 320, 725, 0.35f);
 
-				content.setFont(PDType1Font.HELVETICA_BOLD, 10);
+				content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 10);
 				content.beginText();
 				content.newLineAtOffset(120, 580);
 				content.showText("Kategorien");
@@ -249,13 +250,13 @@ public class ExportService {// AI generated changed by the team
 	}
 
 	private void addPdfHeader(PDPageContentStream content, String title) throws IOException {
-		content.setFont(PDType1Font.HELVETICA_BOLD, 16);
+		content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 16);
 		content.beginText();
 		content.newLineAtOffset(50, 800); // Höhere Startposition
 		content.showText(title);
 		content.endText();
 
-		content.setFont(PDType1Font.HELVETICA, 10);
+		content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 10);
 		content.beginText();
 		content.newLineAtOffset(50, 780);
 		content.showText("Erstellt am: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
@@ -290,7 +291,7 @@ public class ExportService {// AI generated changed by the team
 
 		float currentY = startY;
 		// Tabellenkopf
-		content.setFont(PDType1Font.HELVETICA_BOLD, 12);
+		content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 12);
 		content.beginText();
 		content.newLineAtOffset(50, currentY);
 		content.showText("Datenübersicht (" + reportType + ")");
@@ -330,13 +331,13 @@ public class ExportService {// AI generated changed by the team
 		float currentY = startY;
 		PDPageContentStream currContent = content;
 
-		currContent.setFont(PDType1Font.HELVETICA_BOLD, 12);
+		currContent.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 12);
 		currContent.beginText();
 		currContent.newLineAtOffset(50, currentY);
 		currContent.showText("Kategorien (Summe)");
 		currContent.endText();
 
-		currContent.setFont(PDType1Font.HELVETICA_BOLD, 10);
+		currContent.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 10);
 		currContent.beginText();
 		currContent.newLineAtOffset(50, currentY - 25);
 		currContent.showText("Kategorie");
@@ -345,7 +346,7 @@ public class ExportService {// AI generated changed by the team
 		currContent.endText();
 
 		currentY -= 40;
-		currContent.setFont(PDType1Font.HELVETICA, 10);
+		currContent.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 10);
 
 		Map<InvoiceCategory, Double> categoryData = statisticsService.getSumByCategory();
 
@@ -368,13 +369,13 @@ public class ExportService {// AI generated changed by the team
 		}
 
 		float statusStartY = currentY - 30;
-		currContent.setFont(PDType1Font.HELVETICA_BOLD, 12);
+		currContent.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 12);
 		currContent.beginText();
 		currContent.newLineAtOffset(50, statusStartY);
 		currContent.showText("Statusverteilung");
 		currContent.endText();
 
-		currContent.setFont(PDType1Font.HELVETICA_BOLD, 10);
+		currContent.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 10);
 		currContent.beginText();
 		currContent.newLineAtOffset(50, statusStartY - 25);
 		currContent.showText("Status");
@@ -382,7 +383,7 @@ public class ExportService {// AI generated changed by the team
 		currContent.showText("Anzahl");
 		currContent.endText();
 
-		currContent.setFont(PDType1Font.HELVETICA, 10);
+		currContent.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 10);
 		currentY = statusStartY - 40;
 		Map<String, Integer> statusData = getStatusData();
 
@@ -426,7 +427,7 @@ public class ExportService {// AI generated changed by the team
 		PDPageContentStream currContent = content;
 
 		// Tabellenkopf
-		currContent.setFont(PDType1Font.HELVETICA_BOLD, 10);
+		currContent.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 10);
 		currContent.beginText();
 		currContent.newLineAtOffset(50, currentY);
 		currContent.showText("Beschreibung");
@@ -436,7 +437,7 @@ public class ExportService {// AI generated changed by the team
 		currentY -= 15;
 
 		// Tabelleninhalt
-		currContent.setFont(PDType1Font.HELVETICA, 10);
+		currContent.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 10);
 		for (Map.Entry<String, String> entry : data.entrySet()) {
 			if (currentY < 50) { // Seitenumbruch
 				currContent.close();

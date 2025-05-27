@@ -1,5 +1,6 @@
 package frontend.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -8,6 +9,7 @@ import backend.logic.*;
 import backend.model.*;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -18,6 +20,10 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
 
 public class InvoiceUploadController extends BaseUploadController {
 
@@ -54,6 +60,13 @@ public class InvoiceUploadController extends BaseUploadController {
                             Platform.runLater(() -> {
                                 uploadedImageView.setImage(new Image(file.toURI().toString()));
                                 previewText.setText("Vorschau");
+                            });
+                        } else if (filePath.toLowerCase().endsWith(".pdf")) {
+                            BufferedImage pdfImage = convertPdfToImage(file);
+                            Image previewImage = SwingFXUtils.toFXImage(pdfImage, null);
+                            Platform.runLater(() -> {
+                                uploadedImageView.setImage(previewImage);
+                                previewText.setText("PDF-Vorschau (Seite 1)");
                             });
                         }
 
@@ -110,6 +123,12 @@ public class InvoiceUploadController extends BaseUploadController {
         }
     }
 
+    private BufferedImage convertPdfToImage(File pdfFile) throws IOException {
+        try (PDDocument document = Loader.loadPDF(pdfFile)) {
+            PDFRenderer renderer = new PDFRenderer(document);
+            return renderer.renderImageWithDPI(0, 150, ImageType.RGB); // 150 DPI für Vorschau
+        }
+    }
 
 
     @FXML
