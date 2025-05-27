@@ -17,12 +17,14 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import static org.apache.pdfbox.Loader.loadPDF;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.rendering.ImageType;
 
 public class OCRService {
-
     private final ITesseract tesseract;
     private final CategoryAnalyzer categoryAnalyzer = new CategoryAnalyzer();
-
 
     public OCRService() {
         tesseract = new Tesseract();
@@ -30,23 +32,45 @@ public class OCRService {
         tesseract.setLanguage("deu+eng");
     }
 
-
-    public String extractText(File imageFile) {
-        try {
-            BufferedImage image = ImageIO.read(imageFile);
-            if (image == null) {
-                return null;
-            }
-            return tesseract.doOCR(image);
-        } catch (IOException e) {
-        	e.getStackTrace();
-        } catch (TesseractException e) {
-        	e.getStackTrace();
+    // Hauptmethode für PDF- und Bild-OCR
+    public String extractText(File file) throws IOException, TesseractException {
+        if (isPDF(file)) {
+            return extractTextFromPDF(file);
+        } else {
+            return extractTextFromImage(file);
         }
-        return null;
     }
 
-    public Invoice extractData(File file) throws TesseractException {
+    // Prüft, ob die Datei ein PDF ist
+    private boolean isPDF(File file) {
+        return file.getName().toLowerCase().endsWith(".pdf");
+    }
+
+    // Verarbeitet PDF-Dateien (konvertiert jede Seite zu einem Bild)
+    private String extractTextFromPDF(File pdfFile) throws IOException, TesseractException {
+        StringBuilder result = new StringBuilder();
+        try (PDDocument document = loadPDF(pdfFile)) {
+            PDFRenderer pdfRenderer = new PDFRenderer(document);
+            for (int page = 0; page < document.getNumberOfPages(); page++) {
+                BufferedImage image = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB); // 300 DPI für bessere OCR
+                String pageText = tesseract.doOCR(image);
+                result.append(pageText).append("\n");
+            }
+        }
+        return result.toString();
+    }
+
+    // Verarbeitet Bilder (PNG/JPG) – unverändert aus deiner Originalklasse
+    private String extractTextFromImage(File imageFile) throws IOException, TesseractException {
+        BufferedImage image = ImageIO.read(imageFile);
+        if (image == null) {
+            throw new IOException("Could not read image file: " + imageFile.getName());
+        }
+        return tesseract.doOCR(image);
+    }
+
+    // Rest deiner Klasse bleibt unverändert (extractData, parseInvoiceFromText, etc.)
+    public Invoice extractData(File file) throws TesseractException, IOException {
         String text = extractText(file);
         Invoice invoice = parseInvoiceFromText(text);
         invoice.setText(text);
