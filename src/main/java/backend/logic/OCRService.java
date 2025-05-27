@@ -32,7 +32,7 @@ public class OCRService {
         tesseract.setLanguage("deu+eng");
     }
 
-    // Hauptmethode für PDF- und Bild-OCR
+
     public String extractText(File file) throws IOException, TesseractException {
         if (isPDF(file)) {
             return extractTextFromPDF(file);
@@ -41,12 +41,10 @@ public class OCRService {
         }
     }
 
-    // Prüft, ob die Datei ein PDF ist
     private boolean isPDF(File file) {
         return file.getName().toLowerCase().endsWith(".pdf");
     }
 
-    // Verarbeitet PDF-Dateien (konvertiert jede Seite zu einem Bild)
     private String extractTextFromPDF(File pdfFile) throws IOException, TesseractException {
         StringBuilder result = new StringBuilder();
         try (PDDocument document = loadPDF(pdfFile)) {
@@ -60,7 +58,6 @@ public class OCRService {
         return result.toString();
     }
 
-    // Verarbeitet Bilder (PNG/JPG) – unverändert aus deiner Originalklasse
     private String extractTextFromImage(File imageFile) throws IOException, TesseractException {
         BufferedImage image = ImageIO.read(imageFile);
         if (image == null) {
@@ -69,7 +66,6 @@ public class OCRService {
         return tesseract.doOCR(image);
     }
 
-    // Rest deiner Klasse bleibt unverändert (extractData, parseInvoiceFromText, etc.)
     public Invoice extractData(File file) throws TesseractException, IOException {
         String text = extractText(file);
         Invoice invoice = parseInvoiceFromText(text);
