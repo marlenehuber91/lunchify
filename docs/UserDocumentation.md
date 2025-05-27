@@ -140,6 +140,8 @@ Unter **alle Rechnungen** kannst du Rechnungen freigeben oder ablehnen, löschen
 
 ![Anomalie](/docs/Screenshots/AdminAnomalie.png)
 
+- Rechnungen von Usern, die als auffällig gekennzeichnet sind, werden ausnahmslos "zur Prüfung" unter Anomalien angeführt. Admins können User wieder manuell als nicht auffällig kennzeichnen. Dazu dient der Button **"aufällige User"**.
+
 ---
 
 ### Übersicht & Statistik
@@ -165,7 +167,7 @@ Unter **alle Rechnungen** kannst du Rechnungen freigeben oder ablehnen, löschen
 ### Benutzerverwaltung
 
 - Klicke auf **"Benutzer verwalten"**
-- Neue Benutzer:innen hinzufügen oder bestehende löschen
+- Neue Benutzer:innen hinzufügen oder aktive auf inaktiv setzen bzw. inaktive auf aktiv
 - Rollen zuweisen (Benutzer:in oder Administrator:in)
 
 ![Benutzerverwaltung](/docs/Screenshots/AdminUserAnlegen.png)
