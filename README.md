@@ -17,7 +17,7 @@ Es wurden in 3 Sprints alle Anforderungen lt. [Anforderungskatalog](/docs/2025-S
 - **Anomalieerkennung**: Die Software erkennt nach gewissen Regeln potentiell missbräuchlichen Gebrauch.
 
 Die Verantwortlichkeiten im Team wurden fair und nach Bedarf geteilt, größere, komplexere UserStories wurden im PairProgramming bewältigt.
-Die Zeit wurde mittels [clockify](https://app.clockify.me/tracker) aufgezeichnet.
+Die Zeit wurde mittels [clockify](https://app.clockify.me/tracker) aufgezeichnet.  
 Stundenausmaß: xxx (Marlene %, Johanna %, Silvia %)  
 Das Projekt wurde nach agilem Projektmanagement abgearbeitet, angelehnt an Scrum fanden mindestens wöchentlich virtuelle Meetings statt. Der formelle Informationsaustausch wurde via issues in GitHub sichergestellt, der informellere Informationsaustausch in einem Discord-Channel.
 
@@ -53,7 +53,8 @@ Die Codequalität wurde bei jedem Merge sowie lokal  vor dem Push in den IDEs de
 ## Testen
 <!-- TODO: Hier muss noch etwas ergänzt werden -->  
 Überblick über erstellte JUnit Tests (eventuell mit ausgewählten Tests), Testabdeckung
-Beschreibung der Akzeptanztests für 3 ausgewählte Requirements.
+Beschreibung der Akzeptanztests für 3 ausgewählte Requirements.  
+[Testplan](docs/Testplan.md)
 
 # JavaDoc für wichtige Klassen, Interfaces und Methoden
 <!-- TODO: Hier muss noch etwas ergänzt werden -->  
