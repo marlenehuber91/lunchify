@@ -6,6 +6,7 @@ import backend.model.FlaggedUser;
 import backend.exceptions.InfrastructureException;
 import backend.logic.FlaggedUserService;
 import backend.logic.SessionManager;
+import backend.model.Reimbursement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -72,7 +73,7 @@ public class FlaggedUserController {
         anomalyTable.setItems(observableList);
     }
 
-    private void addEditButtonToTable() {//AI generated
+    private void addEditButtonToTable() {
         Callback<TableColumn<FlaggedUser, Void>, TableCell<FlaggedUser, Void>> cellFactory = tableColumn -> new TableCell<>() {
 
             private final Button editButton = new Button();
@@ -86,7 +87,6 @@ public class FlaggedUserController {
                 editButton.setGraphic(icon);
                 editButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
 
-                // Klick-Handler
                 editButton.setOnAction(e -> {
                     FlaggedUser user = getTableView().getItems().get(getIndex());
                     handleRemovePermFlag(user);
@@ -99,13 +99,19 @@ public class FlaggedUserController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(editButton);
+                    FlaggedUser user = getTableView().getItems().get(getIndex());
+                    if (user.isPermanentFlag()) {
+                        setGraphic(editButton);
+                    } else {
+                        setGraphic(null);
+                    }
                 }
             }
         };
 
         removePermFlag.setCellFactory(cellFactory);
     }
+
 
 
     private void handleRemovePermFlag(FlaggedUser user) {
