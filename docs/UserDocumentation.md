@@ -18,10 +18,9 @@
 ---
 
 ## Installation und Start
-
-1. Stelle sicher, dass **Java 21** auf deinem System installiert ist.
-//TODO: braucht es das wirklich??
-2. Starte die Anwendung durch Doppelklick auf die Datei `Lunchify.jar`.
+1. JavaFX Setup: laden JavaFX 21.0.2 herunter: https://jdk.java.net/javafx21/
+2. Setzen in den Umgebungsvariablen den Pfad auf den lib-Ordner des JavaFX Folders z.B: C:\Program Files\javafx-sdk-21.0.2\lib
+3. Starten die Anwendung durch Doppelklick auf die Datei `Lunchify.jar`.
 
 > ⚠️ Hinweis: Die Datenbankverbindung muss vorher korrekt eingerichtet sein.
 
