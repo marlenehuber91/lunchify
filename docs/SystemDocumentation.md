@@ -80,10 +80,11 @@ src
 - All users must log in with email and password.
 - Passwords are hashed using **BCrypt** before storage.
 - The first admin must be created manually in the PostgreSQL database.
-- Admins can add/remove users within the application.
+- Admins can add users within the application.
+- Admins can set users inactive within the application. Inactive Users cannot login.
 - Role-based access:
     - **Users** can upload and manage receipts and their own reimbursement.
-    - **Admins** can view/export reports, configure the system, and manage users.
+    - **Admins** can appprove/reject reimbursements, view/export reports, configure the system, and manage users.
 
 ---
 
@@ -94,7 +95,7 @@ src
     - User accounts (with roles)
     - Receipts and reimbursement records
     - Monthly configuration (e.g., refund limits)
-- Table **notifications** can be used for audits
+- Table **notifications** can be used for audits.
   
 ---
 
@@ -142,7 +143,6 @@ Admins can:
 ---
 
 ## Deployment
-⚠️ **TO BE DEFINED**
 - Distributed as a `.jar` file.
 - Can be launched via GUI (double-click or platform-specific application wrapper).
 - Manual updates only (no auto-updater).
