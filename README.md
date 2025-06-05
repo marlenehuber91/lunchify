@@ -31,12 +31,8 @@ Das Projekt wurde nach agilem Projektmanagement abgearbeitet, angelehnt an Scrum
 
 ### Überblick über die Applikation
 * [UML Diagramm](uml/UML_Release0.3.0) mit Erläuterungen
-* Verwendete Design Muster (z.B. Model-View-Controller)
-> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
 
 ### Wichtige Design Entscheidungen
-> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.  
-
 Entscheidung: Einsatz von JavaFX für die Benutzeroberfläche  
 * Begründung: Moderne UI für Desktop, gute Java-Integration, unterstützt MVC.  
 * Alternativen: Swing, Android, Web mit React/Spring Boot.  
@@ -87,7 +83,7 @@ Unsere Tests gliedern sich in drei Bereiche:
 # Installationsanleitung
 1. JavaFX Setup: JavaFX 21.0.2 herunterladen: https://jdk.java.net/javafx21/.
 2. in Umgebungsvariablen den Pfad auf den lib-Ordner des JavaFX Folders setzen z.B: C:\Program Files\javafx-sdk-21.0.2\lib.
-3. Datei 'Lunchify.jar' herunterladen und abspeichern.
+3. Datei 'lunchify-1.0.0' herunterladen und abspeichern.
 4. 'Lunchify.jar' starten.
 
 -------------------------------------------------------------------------------------------------------
