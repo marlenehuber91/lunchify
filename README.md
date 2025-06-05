@@ -35,13 +35,31 @@ Das Projekt wurde nach agilem Projektmanagement abgearbeitet, angelehnt an Scrum
 > ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
 
 ### Wichtige Design Entscheidungen
-> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
-* Beschreibung der 3-5 wichtigsten Design Entscheidungen nach folgenden Schema
-    * Entscheidung:
-    * Begründung: 
-    * Alternativen, die in Betracht gezogen wurden:
-    * Annahmen: 
-    * Konsequenzen:
+> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.  
+
+Entscheidung: Einsatz von JavaFX für die Benutzeroberfläche  
+* Begründung: Moderne UI für Desktop, gute Java-Integration, unterstützt MVC.  
+* Alternativen: Swing, Android, Web mit React/Spring Boot.  
+* Annahmen: Zielplattform ist Desktop, Team kennt Java, gute Community für JavaFX.  
+* Konsequenzen: Gute Desktop-UX, aber nicht mobil einsetzbar ohne großen Mehraufwand.  
+  
+Entscheidung: JDBC mit lokaler PostgreSQL für Datenpersistenz  
+* Begründung: zuverlässige relationale DB, einfache Integration in Java  
+* Alternativen: online-DB PostgreSQL.  
+* Annahmen: SQL-Kompetenz vorhanden, strukturierte, persistente Daten notwendig.  
+* Konsequenzen: Direkte SQL-Kontrolle, manuelles DB-Handling.  
+  
+Entscheidung: Authentifizierung mit E-Mail und Passwort (BCrypt)  
+* Begründung: Vertraut und sicher, schützt vor Passwort-Leaks.  
+* Alternativen: Benutzername, andere Verschlüsselungsverfahren.  
+* Annahmen: Internes System mit sensiblen Daten.  
+* Konsequenzen: Benutzerverwaltung notwendig, sicheres Hashing erforderlich.  
+  
+Entscheidung: Änderungen von Rechnungen nur bis Monatsende
+* Begründung: Schutz der Abrechnungslogik, Manipulation vermeiden.  
+* Alternativen: Änderungen jederzeit, 5d nach Monatsende oder mit Admin-Freigabe.  
+* Annahmen: Monatliche Gehaltsabrechnung, feste Abgabefrist sinnvoll.  
+* Konsequenzen: Klare Bearbeitungsfrist, logische Einschränkung im UI nötig.  
 
 ## Implementierung 
 > ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
