@@ -2,6 +2,11 @@ package backend.logic;
 
 import backend.model.User;
 
+/**
+ * Manages the current user session in the application.
+ * Provides static methods to set, retrieve, and clear the logged-in user.
+ */
+
 public class SessionManager {
 
     private static User currentUser;

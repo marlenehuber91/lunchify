@@ -7,15 +7,32 @@ import java.util.List;
 
 public class SearchService {
 
+    /**
+     * Service class for searching users in a database.
+     * Uses a {@link ConnectionProvider} to obtain database connections.
+     */
     public SearchService() {
     }
 
+    /**
+     * Default constructor for the SearchService.
+     */
     private static ConnectionProvider connectionProvider;
 
+    /** secures DatabaseConnection */
     public static void setConnectionProvider(ConnectionProvider provider) {
         connectionProvider = provider;
     }
 
+    /**
+     * Performs a user search and returns a list of email addresses whose
+     * name or email starts with the given query (case-insensitive).
+     *
+     * @param query the search term (case-insensitive, prefix matching)
+     * @return a list of user email addresses (maximum 20 results)
+     * @throws SQLException if a database error occurs during the query
+     * @throws IllegalStateException if no {@link ConnectionProvider} has been set
+     */
     public List<String> searchUsers(String query) throws SQLException {
         if (connectionProvider == null) throw new IllegalStateException("ConnectionProvider ist nicht gesetzt!");
 

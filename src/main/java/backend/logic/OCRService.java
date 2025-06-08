@@ -22,17 +22,32 @@ import static org.apache.pdfbox.Loader.loadPDF;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.rendering.ImageType;
 
+/**
+ * Service class for performing Optical Character Recognition (OCR) on PDF and image files.
+ * Extracts raw text, invoice amount, invoice date, and invoice category.
+ */
 public class OCRService {
     private final ITesseract tesseract;
     private final CategoryAnalyzer categoryAnalyzer = new CategoryAnalyzer();
 
+
+    /**
+     * Initializes the Tesseract OCR engine with the specified data path and languages.
+     */
     public OCRService() {
         tesseract = new Tesseract();
         tesseract.setDatapath("src/main/resources/tessdata");
         tesseract.setLanguage("deu+eng");
     }
 
-
+    /**
+     * Extracts the text content from a PDF or image file using OCR.
+     *
+     * @param file the file to process
+     * @return the extracted text
+     * @throws IOException           if the file cannot be read
+     * @throws TesseractException   if OCR fails
+     */
     public String extractText(File file) throws IOException, TesseractException {
         if (isPDF(file)) {
             return extractTextFromPDF(file);
@@ -41,10 +56,24 @@ public class OCRService {
         }
     }
 
+    /**
+     * Checks whether the given file is a PDF.
+     *
+     * @param file the file to check
+     * @return true if it's a PDF, false otherwise
+     */
     private boolean isPDF(File file) {
         return file.getName().toLowerCase().endsWith(".pdf");
     }
 
+    /**
+     * Extracts text from a PDF file by rendering each page and running OCR on it.
+     *
+     * @param pdfFile the PDF file
+     * @return the extracted text
+     * @throws IOException         if the PDF cannot be read
+     * @throws TesseractException if OCR fails
+     */
     private String extractTextFromPDF(File pdfFile) throws IOException, TesseractException {
         StringBuilder result = new StringBuilder();
         try (PDDocument document = loadPDF(pdfFile)) {
@@ -58,6 +87,14 @@ public class OCRService {
         return result.toString();
     }
 
+    /**
+     * Extracts text from an image file (png, jpg, jpeg) using OCR.
+     *
+     * @param imageFile the image file
+     * @return the extracted text
+     * @throws IOException         if the image cannot be read
+     * @throws TesseractException if OCR fails
+     */
     private String extractTextFromImage(File imageFile) throws IOException, TesseractException {
         BufferedImage image = ImageIO.read(imageFile);
         if (image == null) {
@@ -66,6 +103,14 @@ public class OCRService {
         return tesseract.doOCR(image);
     }
 
+    /**
+     * Extracts invoice data (text, amount, date, category) from a file.
+     *
+     * @param file the file to process
+     * @return the extracted invoice object
+     * @throws IOException         if file reading fails
+     * @throws TesseractException if OCR fails
+     */
     public Invoice extractData(File file) throws TesseractException, IOException {
         String text = extractText(file);
         Invoice invoice = parseInvoiceFromText(text);
@@ -73,6 +118,12 @@ public class OCRService {
         return invoice;
     }
 
+    /**
+     * Parses invoice information (amount, date, category) from OCR text.
+     *
+     * @param text the raw OCR text
+     * @return an Invoice object containing the parsed data
+     */
     private Invoice parseInvoiceFromText(String text) { //Amount detection coded with AI assistance (not AI only)
         Invoice invoice = new Invoice();
 
@@ -130,7 +181,7 @@ public class OCRService {
                 LocalDate parsedDate = LocalDate.parse(dateString, formatter);
                 invoice.setDate(parsedDate);
             } catch (DateTimeParseException e) {
-                System.err.println("Warnung: Ungültiges Datum erkannt: " + dateString);
+                e.printStackTrace();
             }
         }
 
@@ -141,6 +192,12 @@ public class OCRService {
         return invoice;
     }
 
+    /**
+     * Extracts the last amount (e.g. 12.99 or 3,50) found in a line of text.
+     *
+     * @param line the text line to scan
+     * @return the parsed amount or null if none found
+     */
     private Float extractAmountFromLine(String line) {
         Pattern pattern = Pattern.compile("(\\d+[.,]\\d{2})");
         Matcher matcher = pattern.matcher(line);
@@ -154,6 +211,10 @@ public class OCRService {
         return lastValue;
     }
 
+
+    /**
+     * Helper class to determine invoice categories based on keyword matching.
+     */
     private static class CategoryAnalyzer {
         private static final Set<String> SUPERMARKT_KEYWORDS = Set.of(
                 "billa", "spar", "hofer", "aldi", "rewe", "edeka", "lidl", "penny", "kaufland", "tegut", "migros", "coop"
