@@ -171,9 +171,15 @@ Unsere Tests gliedern sich in drei Bereiche:
 
 # Installationsanleitung
 1. JavaFX Setup: JavaFX 21.0.2 herunterladen: https://jdk.java.net/javafx21/.
-2. in Umgebungsvariablen den Pfad auf den lib-Ordner des JavaFX Folders setzen z.B: C:\Program Files\javafx-sdk-21.0.2\lib.
-3. Datei 'lunchify-1.0.0' herunterladen und abspeichern.
-4. 'Lunchify.jar' starten.
+2. In Umgebungsvariablen den Pfad auf den lib-Ordner des JavaFX Folders setzen z.B: C:\Program Files\javafx-sdk-21.0.2\lib.
+3. Laden Sie die OCR (Tesseract) herunter. Wählen Sie dazu die ZIP Datei aus folgendem GitHub Release: https://github.com/nguyenq/tess4j/releases/tag/tess4j-5.15.0
+4. - Laden Sie die OCR Trainingsdaten herunter. Wählen Sie dazu die ZIP Datei aus folgendem GitHub Release: ⚠️(GITHUB LINK ZU RELEASE 1.0.0 einfügen)
+   - Kopieren sie den Ornder tessdata, diesen finden Sie in der ZIP Datei, folgen Sie dafür diesem Pfad: src/main/resources.
+5. Erstellen Sie einen Ordner Lunchify auf Ihrem lokalen PC
+6. Kopieren Sie den zuvor kopierten Ordner "tessdata" hinein. Verändern Sie keinesfalls den Namen des Ordners tessdata oder seinen Inhalt. 
+7. Gehen Sie nun nochmals in das GitHub Release und laden Sie sich das Executabel lunchify-1.0.0.jar herunter: ⚠️LINK ZU RELEASE 1.0.0 einfügen
+8. Speichern Sie lunchify-1.0.0 in dem Ordner Lunchify. Das Jar und der Ordner tessdata befinden sich nun auf selber Ebene.
+9. Starten Sie lunchify-1.0.0 aus dem Ordner Lunchify heraus. 
 
 -------------------------------------------------------------------------------------------------------
 ## Prototyping
