@@ -10,6 +10,7 @@ import net.sourceforge.tess4j.ITesseract;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -29,16 +30,58 @@ import org.apache.pdfbox.rendering.ImageType;
 public class OCRService {
     private final ITesseract tesseract;
     private final CategoryAnalyzer categoryAnalyzer = new CategoryAnalyzer();
-    String tessDataPath = System.getProperty("tessdata.path", "tessdata");
-
 
     /**
      * Initializes the Tesseract OCR engine with the specified data path and languages.
      */
     public OCRService() {
         tesseract = new Tesseract();
+        String tessDataPath = findTessDataPath();
         tesseract.setDatapath(tessDataPath);
         tesseract.setLanguage("deu+eng");
+    }
+
+    /**
+     * Attempts to locate the tessdata directory by checking multiple possible locations.
+     * The search order is:
+     * 1. System property "tessdata.path"
+     * 2. "tessdata" folder in the working directory (for JAR execution)
+     * 3. "src/main/resources/tessdata" folder (for IDE execution)
+     * 4. Classpath resources (as last resort)
+     *
+     * @return the absolute path to the tessdata directory
+     * @throws RuntimeException if the tessdata directory cannot be found in any location
+     */
+    private String findTessDataPath() {
+        // 1. check sys property
+        String path = System.getProperty("tessdata.path");
+        if (path != null && new File(path).exists()) {
+            return path;
+        }
+
+        // 2. check working directory (for JAR execution)
+        File localTessFolder = new File("tessdata");
+        if (localTessFolder.exists()) {
+            return localTessFolder.getAbsolutePath();
+        }
+
+        // 3. check resources folder (for IDE execution)
+        File devTessFolder = new File("src/main/resources/tessdata");
+        if (devTessFolder.exists()) {
+            return devTessFolder.getAbsolutePath();
+        }
+
+        // 4. check classpath resources (as last resort)
+        URL tessDataUrl = OCRService.class.getClassLoader().getResource("tessdata");
+        if (tessDataUrl != null) {
+            return new File(tessDataUrl.getPath()).getParent();
+        }
+
+        throw new RuntimeException("tessdata folder not found in any known location. " +
+                "Bitte stellen Sie sicher, dass der tessdata-Ordner entweder:\n" +
+                "1. Im Arbeitsverzeichnis als 'tessdata' existiert,\n" +
+                "2. In 'src/main/resources/tessdata' für die Entwicklung, oder\n" +
+                "3. Der Pfad über die System Property 'tessdata.path' gesetzt ist.");
     }
 
     /**
