@@ -187,16 +187,4 @@ Unter **alle Rechnungen** kannst du Rechnungen freigeben oder ablehnen, löschen
 - Diese Änderungen gelten ab dem nächsten Antrag.
 
 ![Konfiguration](/docs/Screenshots/AdminRueckerstattungAendern.png)
-
----
-
-
-
-## Fehlermeldungen und Hinweise
-
-- **"Login fehlgeschlagen"** → E-Mail oder Passwort falsch
-- **"Keine Datenbankverbindung"** → Prüfe deine Internetverbindung und Datenbankeinstellungen
-- **"Dateiformat nicht unterstützt"** → Nur `.jpg`, `.png`, `.pdf` erlaubt
-<!-- TODO hier müssen wir noch ergänzen -->
-
 ---
