@@ -59,6 +59,7 @@ Entscheidung: Änderungen von Rechnungen nur bis Monatsende
 
 # Implementierung 
 ## Projektstruktur
+
 Die Projektstruktur orientiert sich an einer typischen mehrschichtigen Architektur mit den folgenden Hauptpaketen:
 * backend.logic: Enthält die Geschäftslogik und stellt die Verbindung zwischen Datenbank und UI dar.
 * backend.model: Enthält die Datenmodelle. 
@@ -71,7 +72,7 @@ Die Projektstruktur orientiert sich an einer typischen mehrschichtigen Architekt
 
 * Die Quellcode-Dateien sind in einem Maven-Standardverzeichnis src/main/java organisiert.
 
-Verwendete Bibliotheken und Frameworks
+### Verwendete Bibliotheken und Frameworks
 * Tess4J: Für die Texterkennung in Bildern und PDFs.
 * JavaFX: Für die Benutzeroberfläche.
 * ControlsFX: Zusätzliche JavaFX-Komponenten.
@@ -88,7 +89,7 @@ Verwendete Bibliotheken und Frameworks
 * Jackson: Für JSON Verarbeitung. 
 * Jakarta XML Bind (JAXB): Für XML-Bindung.
 
-Maven-Plugins
+### Maven-Plugins
 * Maven Compiler Plugin: Kompilierung der Java-Quellcode-Dateien.
 * Maven Shade-Plugin: Erstellung eines Fat-JARs.
 * Maven Surefire-Plugin: Steuerung der Testausführung.
@@ -97,8 +98,8 @@ Maven-Plugins
 * Maven Javadoc-Plugin: Generierung der JavaDoc-Dateien.
 * Maven Resources Plugin: Kopieren der Ressourcendateien.
 
-Wichtige Aspekte der Implementierung
-## OCRService
+## Wichtige Aspekte der Implementierung
+### OCRService
 Die Klasse OCRService ermöglicht das Extrahieren von Text aus Bildern und PDF-Dokumenten. Im Falle eines PDFs wird PDFBox verwendet, um Seiten als Bilder zu rendern, bevor Tesseract die Texterkennung übernimmt.
 
 Automatischer Bilderkennung mit Tesseract OCR (Code-Snippet)
@@ -127,13 +128,13 @@ private String extractTextFromPDF(File pdfFile) throws IOException, TesseractExc
     return result.toString();
 }
 ```
-## SessionManager
+### SessionManager
 Die Klasse kümmert sich darum, dass eine Sitzung immer eindeutig einem eingeloggten User zugeordnet wird.
 
-## UserService
+### UserService
 Kümmert sich um das Passwort-Hashing und eine sichere Authentifizierung.
 
-## InvoiceService
+### InvoiceService
 Bildet die Basis der Applikation indem sie das Hochladen von Bildern und PDFs verarbeitet. Die Klasse nutzt zudem den OCRService. 
 Hier werden Anomalien einer Rechnung automatisch erkannt und in der Datenbank gespeichert.
 
