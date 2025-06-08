@@ -4,17 +4,19 @@ import backend.interfaces.ConnectionProvider;
 import backend.model.Anomaly;
 import backend.model.FlaggedUser;
 import backend.model.Invoice;
-
 import database.DatabaseConnection;
-import javafx.scene.control.Alert;
-
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import static backend.logic.InvoiceService.getInvoiceById;
-import static java.sql.DriverManager.getConnection;
+
+/**
+ * Service class for managing and detecting anomalies in invoice data.
+ * <p>
+ * This class provides methods for extracting anomalies from the database,
+ * inserting new anomalies, checking suspicious users, and removing flags.
+ */
 
 public class AnomalyDetectionService  {
 
@@ -26,13 +28,16 @@ public class AnomalyDetectionService  {
             JOIN Users u ON a.user_id = u.id
             """;
 
-
+/** secures DatabaseConnection */
     public static ConnectionProvider connectionProvider = new ConnectionProvider() {
         @Override
         public Connection getConnection() {
             return DatabaseConnection.connect();
         }
     };
+
+    /** extracts anomalies from the database and returns them as a list
+     * @return a list of Anomaly objects*/
 
     public List<Anomaly> extractAnomalies() {
         List<Anomaly> anomalies = new ArrayList<>();
@@ -62,6 +67,9 @@ public class AnomalyDetectionService  {
         return anomalies;
     }
 
+    /** inserts a new anomaly into the database based on the given invoice
+     * @param flaggedInvoice - the invoice that was flagged as suspicious
+     */
     public static void detectAnomaliesAndLog(Invoice flaggedInvoice) {
         String sql = "INSERT INTO AnomalyDetection (invoice_id, user_id) VALUES (?, ?)";
         try (Connection conn = connectionProvider.getConnection();
@@ -76,6 +84,12 @@ public class AnomalyDetectionService  {
         }
     }
 
+    /** detects if a user is flagged as suspicious and returns a FlaggedUser object
+     * containing the user's ID and the number of flagged invoices.
+     * @param userId - the ID of the user whose flagged invoices should be detected.
+     * @return FlaggedUser - object of the user with the detected flagged invoices.
+     * @throws SQLException
+     */
     public static FlaggedUser detectFlaggedUser(Integer userId) throws SQLException {
         String sql = "SELECT * FROM flaggedUsers WHERE user_id = ?";
         FlaggedUser flaggedUser = new FlaggedUser(userId);
@@ -100,7 +114,10 @@ public class AnomalyDetectionService  {
         return flaggedUser;
     }
 
-
+    /** removes the flag from an invoice and updates the user's flagged invoices counter
+     * @param anomaly - the anomaly that was handled
+     * @throws SQLException
+     */
     public void handleAnomalyDone(Anomaly anomaly) {
         try {
             Invoice invoice = getInvoiceById(anomaly.getInvoiceId());
@@ -110,6 +127,11 @@ public class AnomalyDetectionService  {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Removes the flag from an invoice and updates the user's flagged invoices counter.
+     * @param invoice - the invoice that was found to no longer be suspicious.
+     */
     private void removeFlag(Invoice invoice) {
         String sqlInvoice = "UPDATE invoices SET flagged = false WHERE id = ?";
         String sqlAnomaly = "DELETE FROM AnomalyDetection WHERE invoice_id = ?";
@@ -128,6 +150,4 @@ public class AnomalyDetectionService  {
             e.printStackTrace();
         }
     }
-
-
 }

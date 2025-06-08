@@ -130,7 +130,7 @@ public class OCRService {
                 LocalDate parsedDate = LocalDate.parse(dateString, formatter);
                 invoice.setDate(parsedDate);
             } catch (DateTimeParseException e) {
-                System.err.println("Warnung: Ungültiges Datum erkannt: " + dateString);
+                e.printStackTrace();
             }
         }
 
