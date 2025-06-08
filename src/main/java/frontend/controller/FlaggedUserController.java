@@ -1,12 +1,9 @@
 package frontend.controller;
 
-// FlaggedUserController.java
-
 import backend.model.FlaggedUser;
 import backend.exceptions.InfrastructureException;
 import backend.logic.FlaggedUserService;
 import backend.logic.SessionManager;
-import backend.model.Reimbursement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

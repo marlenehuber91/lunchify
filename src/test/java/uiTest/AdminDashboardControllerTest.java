@@ -15,7 +15,6 @@ import backend.model.User;
 import backend.model.UserRole;
 import backend.model.UserState;
 import frontend.Main;
-import javafx.scene.control.MenuButton;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 

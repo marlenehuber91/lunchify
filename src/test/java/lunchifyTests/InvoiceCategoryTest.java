@@ -1,10 +1,7 @@
 package lunchifyTests;
 
 import static org.junit.Assert.*;
-
-import org.junit.Before;
 import org.junit.Test;
-
 import backend.model.InvoiceCategory;
 
 public class InvoiceCategoryTest { //created with AI, changed by the team

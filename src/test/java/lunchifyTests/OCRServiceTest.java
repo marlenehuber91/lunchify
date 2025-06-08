@@ -4,12 +4,9 @@ import backend.logic.OCRService;
 import backend.model.Invoice;
 import backend.model.InvoiceCategory;
 import net.sourceforge.tess4j.ITesseract;
-import net.sourceforge.tess4j.TesseractException;
 import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.time.LocalDate;

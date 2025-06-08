@@ -16,8 +16,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import static backend.logic.ReimbursementService.getReimbursementByInvoiceId;
-
 public class EditReimbursementController extends BaseUploadController{
 	
 	protected Reimbursement reimbursement;

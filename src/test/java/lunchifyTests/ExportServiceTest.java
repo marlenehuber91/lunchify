@@ -5,19 +5,13 @@ import backend.logic.StatisticsService;
 import backend.model.InvoiceCategory;
 import backend.model.Reimbursement;
 import backend.model.User;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.Map;
-
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
-import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

@@ -1,14 +1,9 @@
 package uiTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
-
-import java.util.stream.Collectors;
-
 import javafx.scene.Parent;
-import javafx.scene.control.Labeled;
 import javafx.scene.text.Text;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -17,7 +12,6 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
 
 import frontend.Main;
-import javafx.scene.Node;
 import javafx.stage.Stage;
 import org.testfx.util.NodeQueryUtils;
 

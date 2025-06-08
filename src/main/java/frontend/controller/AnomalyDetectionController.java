@@ -8,7 +8,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -21,15 +20,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.application.Platform;
 import javafx.scene.control.TableRow;
-import javafx.scene.Node;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-
 import static backend.logic.ReimbursementService.getReimbursementByInvoiceId;
-
 
 public class AnomalyDetectionController  {
 
