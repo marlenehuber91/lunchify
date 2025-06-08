@@ -29,6 +29,7 @@ import org.apache.pdfbox.rendering.ImageType;
 public class OCRService {
     private final ITesseract tesseract;
     private final CategoryAnalyzer categoryAnalyzer = new CategoryAnalyzer();
+    String tessDataPath = System.getProperty("tessdata.path", "tessdata");
 
 
     /**
@@ -36,7 +37,7 @@ public class OCRService {
      */
     public OCRService() {
         tesseract = new Tesseract();
-        tesseract.setDatapath("src/main/resources/tessdata");
+        tesseract.setDatapath(tessDataPath);
         tesseract.setLanguage("deu+eng");
     }
 
