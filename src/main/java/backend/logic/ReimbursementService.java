@@ -15,6 +15,30 @@ import backend.interfaces.ConnectionProvider;
 import backend.model.*;
 import frontend.controller.ReimbursementHistoryController;
 
+
+/**
+ * The ReimbursementService class provides core business logic
+ * for managing reimbursement operations within the Lunchify application.
+ *
+ * <p>This includes:
+ * <ul>
+ *   <li>Inserting and updating reimbursement records</li>
+ *   <li>Modifying category limits</li>
+ *   <li>Filtering and retrieving reimbursement histories</li>
+ *   <li>Approving or rejecting reimbursements</li>
+ *   <li>Integration with notification and user services</li>
+ * </ul>
+ * </p>
+ *
+ * <p>It interacts with the database using JDBC and assumes a PostgreSQL backend.
+ * A static {@link ConnectionProvider} must be set before operations are performed.
+ * </p>
+ *
+ * <p>Note: This class also extends {@link frontend.controller.ReimbursementHistoryController}
+ * to inherit common filtering logic and UI-relevant behaviors.
+ * </p>
+ */
+
 public class ReimbursementService extends ReimbursementHistoryController {
 	public static ConnectionProvider connectionProvider;
 	private User user; // is used but still marked as unused.. interesting - ignore in PMD!
@@ -26,16 +50,24 @@ public class ReimbursementService extends ReimbursementHistoryController {
 	boolean isAdmin;
 	private User selectedUser;
 
+	/** secures DatabaseConnection */
 	public static void setConnectionProvider(ConnectionProvider provider) {
 		connectionProvider = provider;
 	}
 
+	/**
+	 * default Constructor
+	 * </br> initially loads limits from DB, so that they are always upToDate
+	 */
 	public ReimbursementService() {
 		if (connectionProvider != null) {
 			loadLimitsFromDatabase();
 		}
 	}
-
+	/**
+	 * Constructor with User
+	 * </br> initially loads limits from DB, so that they are always upToDate
+	 */
 	public ReimbursementService(User user) {
 		this.user = user;
 		if (connectionProvider != null) {
@@ -44,14 +76,28 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		}
 	}
 
+	/**
+	 * getter Method for User
+	 * @return User which is selected in the process
+	 */
 	public User getSelectedUser() {
 		return this.selectedUser;
 	}
 
+	/**
+	 * getter Method for reimbursementAmount
+	 * @return float for this reimbursement
+	 */
 	public float getReimbursementAmount() {
 		return this.reimbursementAmount;
 	}
 
+	/**
+	 * Returns the reimbursement limit based on invoice category.
+	 *
+	 * @param category the invoice category
+	 * @return the applicable limit
+	 */
 	public float getLimit(InvoiceCategory category) {
 		if (category == InvoiceCategory.RESTAURANT) {
 			return restaurantLimit;
@@ -62,13 +108,32 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		}
 	}
 
+	/**
+	 * Sets the reimbursement amount manually.
+	 *
+	 * @param amount reimbursement amount
+	 */
 	public void setReimbursementAmount(float amount) {
 		this.reimbursementAmount = amount;
 	}
 
+	/**
+	 * Sets the selected user (for admin actions).
+	 *
+	 * @param selectedUser the user to select
+	 */
 	public void setSelectedUser(User selectedUser) {
 		this.selectedUser = selectedUser;
 	}
+
+	/**
+	 * Adds a new reimbursement entry for a given invoice.
+	 *
+	 * @param invoice the invoice to reimburse
+	 * @param amount approved reimbursement amount
+	 * @return true if successful, false otherwise
+	 * @throws InfrastructureException if no {@code ConnectionProvider} is set
+	 */
 	@SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
 	public boolean addReimbursement(Invoice invoice, float amount) {
 		if (connectionProvider == null) {
@@ -104,6 +169,12 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		return false; // Falls etwas schiefgeht
 	}
 
+	/**
+	 * Validates whether a given string can be interpreted as a float.
+	 *
+	 * @param text the input string
+	 * @return true if valid float, false otherwise
+	 */
 	public boolean isValidFloat(String text) { // created by AI (ChatGPT)
 		if (text == null) return false;
 		else {
@@ -111,10 +182,23 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		}
 	}
 
+	/**
+	 * Checks whether the given string is a valid float representing an amount.
+	 *
+	 * @param text the input amount string
+	 * @return true if valid, false otherwise
+	 */
 	public boolean isAmountValid(String text) {
 		return (text != null && isValidFloat(text));
 	}
 
+	/**
+	 * Updates the reimbursement limit for a given category.
+	 *
+	 * @param category the invoice category
+	 * @param newLimit the new limit
+	 * @return true if updated successfully, false otherwise
+	 */
 	public boolean modifyLimits(InvoiceCategory category, float newLimit) {
 		if (newLimit < 0)
 			throw new IllegalArgumentException("Limit should be a positive number.");
@@ -154,7 +238,10 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		return false;
 	}
 
-	//created with help from AI
+	/**
+	 * Loads reimbursement limits from the database for all categories.
+	 */
+	//created (with help) from AI
 	private void loadLimitsFromDatabase() {
 		try {
 			Connection conn = connectionProvider.getConnection();
@@ -191,6 +278,12 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		}
 	}
 
+	/**
+	 * Returns a List of Reimbursements having a certain condition
+	 * @param condition used in the Where-Statement in SELECT
+	 * @param userId could be used as int in WHERE
+	 * @return List of Reimbursements
+	 */
 	public List<Reimbursement> getReimbursements(String condition, int userId) {
 		List<Reimbursement> reimbursements = new ArrayList<>();
 
@@ -238,6 +331,11 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		return reimbursements;
 	}
 
+	/**
+	 * returns a List of Reimbursements of Current Month
+	 * @param userId the ID of a User
+	 * @return List of Reimbursements
+	 */
 	public List<Reimbursement> getCurrentReimbursements(int userId) {
 		return getReimbursements(
 				"i.user_id = " + userId + " AND EXTRACT( MONTH FROM i.date) = EXTRACT(MONTH FROM CURRENT_DATE) "
@@ -245,14 +343,31 @@ public class ReimbursementService extends ReimbursementHistoryController {
 				userId);
 	}
 
+	/**
+	 * returns a List of All Reimbursements of a certain user
+	 * @param userId the ID of a User
+	 * @return List of Reimbursements
+	 */
 	public List<Reimbursement> getAllReimbursements(int userId) {
 		return getReimbursements(("i.user_id = " + userId), userId);
 	}
-
+	/**
+	 * returns a List of All Reimbursements
+	 * @return List of Reimbursements
+	 */
 	public List<Reimbursement> getAllReimbursements(String condition) {
 		return getReimbursements(("1 = 1"), 0);
 	}
 
+	/**
+	 * returns a List of Reimbursements, used for filtering
+	 * @param selectedMonth the selected Month, String
+	 * @param selectedYear the selected Year, String
+	 * @param selectedCategory the selected Category, String
+	 * @param selectedStatus the selected Status, String
+	 * @param userId the current User, int
+	 * @return List of Reimbursements
+	 */
 	public List<Reimbursement> getFilteredReimbursements(String selectedMonth, String selectedYear,
 			String selectedCategory, String selectedStatus, int userId) {
 
@@ -282,6 +397,11 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		return getReimbursements(condition.toString(), userId);
 	}
 
+	/**
+	 * Calculates the sum of approved Amount of Reimbursements
+	 * @param reimb a List of Reimbursements
+	 * @return float sum of all Approved Amounts
+	 */
 	public float getTotalReimbursement(List<Reimbursement> reimb) {
 		float total = 0;
 		for (Reimbursement reimbursement : reimb) {
@@ -292,6 +412,12 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		return total;
 	}
 
+	/**
+	 * Calculates the sum Amount of Reimbursements with a certain state
+	 * @param reimb a List of Reimbursements
+	 * @param state a ReimbursementState, could be "Rejected" or "Pending"
+	 * @return float sum of all Amounts with a certain state
+	 */
 	// Overload
 	public float getTotalReimbursement(List<Reimbursement> reimb, ReimbursementState state) {
 		float total = 0;
@@ -303,6 +429,11 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		return total;
 	}
 
+	/**
+	 * Converts a Month to a number
+	 * @param month String Month
+	 * @return String "1" for "jänner", "2" for "februar" ...
+	 */
 	public String convertMonthToNumber(String month) {
 		switch (month.toLowerCase()) {
 		case "jänner":
@@ -335,11 +466,20 @@ public class ReimbursementService extends ReimbursementHistoryController {
 			throw new IllegalArgumentException("Ungültiger Monat: " + month);
 		}
 	}
-	
+
+	/**
+	 * Builds the filter condition
+	 * @param userId the userID
+	 * @return String with filter condition
+	 */
 	private String buildUserFilterCondition(int userId) {
 		return userId > 0 ? "i.user_id = " + userId : "1=1";
 	}
 
+	/**
+	 * Builds the info-Text for Reimbursement Service
+	 * @return String for "just one per day." or "maximum per day".
+	 */
 	public String getInfoText() {
 		StringBuilder info = new StringBuilder();
 		info.append("Pro Arbeitstag kann eine Rechnung eingereicht werden.").append(System.lineSeparator())
@@ -358,6 +498,14 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		return info.toString().trim();
 	}
 
+	/**
+	 * Checks, if a Reimbursment changed, and if yes, Updates its in Database
+	 * @param oldReimb the old Reimbursement
+	 * @param newReimb the new Reimbursement
+	 * @param reimbUser User, whose Reimbursement it is
+	 * @param selfmade true if User changed by himself, false if not (eg. Admin changed for him/her)
+	 * @return boolean - true if updated, false if not updated
+	 */
 	public boolean updateReimbursementIfChanged(Reimbursement oldReimb, Reimbursement newReimb, User reimbUser, boolean selfmade) {
 		boolean updated = false;
 
@@ -384,6 +532,13 @@ public class ReimbursementService extends ReimbursementHistoryController {
 	    return updated;
 	}
 
+	/**
+	 * Deletes Reimbursement on Database
+	 * @param toDeleteReimb the Reimbursement to delete
+	 * @param reimbUser the User whose Reimbursement is to delete
+	 * @param selfmade true if User changed by himself, false if not (eg. Admin changed for him/her)
+	 * @return boolean - true if deleted, false if not deleted
+	 */
 	public boolean deleteReimbursement(Reimbursement toDeleteReimb, User reimbUser, boolean selfmade) {
 		boolean deleted = false;
 
@@ -415,6 +570,13 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		return deleted;
 	}
 
+	/**
+	 * Sets a Reimbursement to State Approved
+	 * @param toApproveReimb the Reimbursement that should be set to approved
+	 * @param reimbUser the User whose Reimbursement that should be set to approved
+	 * @param selfmade true if User changed by himself, false if not (eg. Admin changed for him/her)
+	 * @return boolean - true if approved, false if not approved
+	 */
 	public boolean approveReimbursement(Reimbursement toApproveReimb, User reimbUser, boolean selfmade) {
 		boolean approved = false;
 
@@ -443,6 +605,13 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		return approved;
     }
 
+	/**
+	 * Sets a Reimbursement to State Rejected
+	 * @param toRejectReimb the Reimbursement that should be set to rejected
+	 * @param reimbUser the User whose Reimbursement that should be set to rejected
+	 * @param selfmade true if User changed by himself, false if not (eg. Admin changed for him/her)
+	 * @return boolean - true if rejected, false if not rejected
+	 */
 	public boolean rejectReimbursement(Reimbursement toRejectReimb, User reimbUser, boolean selfmade) {
 		boolean rejected = false;
 
@@ -471,6 +640,11 @@ public class ReimbursementService extends ReimbursementHistoryController {
 		return rejected;
 	}
 
+	/**
+	 * looks up a Reimbursement by an invoiceID
+	 * @param invoiceId int invoiceID
+	 * @return Reimbursment which invoiceID fits
+	 */
 	public static Reimbursement getReimbursementByInvoiceId(int invoiceId) {
 		String query = "SELECT r.id AS reimbursement_id, r.approved_amount AS approvedAmount, r.processed_date AS processedDate, r.status," +
 				"i.id AS invoice_id, i.date, i.amount, i.category, i.user_id, i.flagged, i.file " +
@@ -546,6 +720,12 @@ public class ReimbursementService extends ReimbursementHistoryController {
         }
     }
 
+	/**
+	 * gets all Reimbursements for a certain month and year
+	 * @param month int Month
+	 * @param year int year
+	 * @return a List of Reimbursements
+	 */
 	public List<Reimbursement> getAllReimbursements(int month, int year) {
 		List<Reimbursement> reimbursements = new ArrayList<>();
 		String query = """
