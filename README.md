@@ -57,9 +57,9 @@ Entscheidung: Änderungen von Rechnungen nur bis Monatsende
 * Annahmen: Monatliche Gehaltsabrechnung, feste Abgabefrist sinnvoll.  
 * Konsequenzen: Klare Bearbeitungsfrist, logische Einschränkung im UI nötig.  
 
-## Implementierung 
-Projektstruktur
-* Die Projektstruktur orientiert sich an einer typischen mehrschichtigen Architektur mit den folgenden Hauptpaketen:
+# Implementierung 
+## Projektstruktur
+Die Projektstruktur orientiert sich an einer typischen mehrschichtigen Architektur mit den folgenden Hauptpaketen:
 * backend.logic: Enthält die Geschäftslogik und stellt die Verbindung zwischen Datenbank und UI dar.
 * backend.model: Enthält die Datenmodelle. 
 * backend.interfaces: Definiert eine Schnittstelle für den Connection Provider.
@@ -98,7 +98,7 @@ Maven-Plugins
 * Maven Resources Plugin: Kopieren der Ressourcendateien.
 
 Wichtige Aspekte der Implementierung
-# OCRService
+## OCRService
 Die Klasse OCRService ermöglicht das Extrahieren von Text aus Bildern und PDF-Dokumenten. Im Falle eines PDFs wird PDFBox verwendet, um Seiten als Bilder zu rendern, bevor Tesseract die Texterkennung übernimmt.
 
 Automatischer Bilderkennung mit Tesseract OCR (Code-Snippet)
@@ -127,13 +127,13 @@ private String extractTextFromPDF(File pdfFile) throws IOException, TesseractExc
     return result.toString();
 }
 ```
-# SessionManager
+## SessionManager
 Die Klasse kümmert sich darum, dass eine Sitzung immer eindeutig einem eingeloggten User zugeordnet wird.
 
-# UserService
+## UserService
 Kümmert sich um das Passwort-Hashing und eine sichere Authentifizierung.
 
-# InvoiceService
+## InvoiceService
 Bildet die Basis der Applikation indem sie das Hochladen von Bildern und PDFs verarbeitet. Die Klasse nutzt zudem den OCRService. 
 Hier werden Anomalien einer Rechnung automatisch erkannt und in der Datenbank gespeichert.
 
