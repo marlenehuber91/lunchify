@@ -2,10 +2,7 @@ package backend.logic;
 
 import backend.interfaces.ConnectionProvider;
 import backend.model.FlaggedUser;
-import backend.model.Invoice;
-import backend.model.User;
 import database.DatabaseConnection;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,13 +10,33 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The FlaggedUserService class provides functionality to manage and query users who have been flagged
+ * for suspicious activity or violations in the system. It handles operations such as retrieving flagged
+ * users, adding or updating flag counts, and removing permanent flags.
+ *
+ * <p>This service interacts with the database to maintain and update flag information for users,
+ * including the number of flags and whether a permanent flag has been set.</p>
+ *
+ * <p>Key features include:
+ * <ul>
+ *   <li>Retrieving a list of all flagged users with their flag counts</li>
+ *   <li>Adding new flags or updating existing flag counts for users</li>
+ *   <li>Removing permanent flags (with restrictions)</li>
+ * </ul>
+ * </p>
+ */
 public class FlaggedUserService {
     public List<FlaggedUser> flaggedUsers;
 
+    /**
+     * Constructs a new FlaggedUserService with an empty list of flagged users.
+     */
     public FlaggedUserService() {
         this.flaggedUsers = new ArrayList<>();
     }
 
+    /** secures DatabaseConnection */
     public static ConnectionProvider connectionProvider = new ConnectionProvider() {
         @Override
         public Connection getConnection() {
@@ -27,6 +44,12 @@ public class FlaggedUserService {
         }
     };
 
+    /**
+     * Retrieves all flagged users from the database along with their flag information.
+     *
+     * @return a List of FlaggedUser objects containing user IDs, names, flag counts,
+     *         and permanent flag status
+     */
     public List<FlaggedUser> getFlaggedUsers() {
         List<FlaggedUser> flaggedUsers = new ArrayList<>();
 
@@ -57,8 +80,12 @@ public class FlaggedUserService {
         return flaggedUsers;
     }
 
-
-
+    /**
+     * Adds a new flag for a user or updates the existing flag count if the user is already flagged.
+     *
+     * @param user the FlaggedUser object containing the user ID and flag information to add/update
+     * @throws SQLException if a database access error occurs
+     */
     public static void addOrUpdateFlaggedUser(FlaggedUser user) throws SQLException {
         String selectSql = "SELECT no_flaggs FROM FlaggedUsers WHERE user_id = ?";
         String updateSql = "UPDATE FlaggedUsers SET no_flaggs = ?, permanent_flag = ? WHERE user_id = ?";
@@ -91,6 +118,13 @@ public class FlaggedUserService {
         }
     }
 
+    /**
+     * Removes a permanent flag from a user's record.
+     *
+     * @param userId the ID of the user to remove the permanent flag from
+     * @throws SQLException if a database access error occurs
+     * @throws IllegalArgumentException if attempting to remove a permanent flag from the current user
+     */
     public void removePermanentFlag(int userId) throws SQLException {
         int currentUserId = SessionManager.getCurrentUser().getId();
         if (userId == currentUserId) {

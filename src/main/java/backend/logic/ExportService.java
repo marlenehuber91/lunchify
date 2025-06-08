@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import database.DatabaseConnection;
 import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -23,7 +22,6 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.Chart;
 import javafx.scene.chart.PieChart;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.sql.Connection;
@@ -32,8 +30,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.stream.Collectors;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -43,6 +39,24 @@ import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
+/**
+ * The ExportService class provides functionality to export reimbursement data in the formats
+ * JSON, XML, PDF, and CSV. It supports different types of reports for both administrators
+ * and regular users, with options to customize the output based on report type and time range.
+ *
+ * <p>The service integrates with StatisticsService to generate statistical reports and charts,
+ * and can export data for individual users or aggregated data for accounting purposes.</p>
+ *
+ * <p>Supported export formats include:
+ * <ul>
+ *   <li>JSON - For reimbursement data and accounting reports</li>
+ *   <li>XML - For reimbursement data and accounting reports</li>
+ *   <li>PDF - For visual reports with charts and tables</li>
+ *   <li>CSV - For tabular data exports (admin only)</li>
+ * </ul>
+ * </p>
+ */
+
 public class ExportService {// AI generated changed by the team
 
 	private StatisticsService statisticsService;
@@ -50,15 +64,25 @@ public class ExportService {// AI generated changed by the team
 	private String reportType;
 	private String timeRange;
 
+	/**
+	 * Constructs a new ExportService with default settings.
+	 */
 	public ExportService() {
 
 	}
 
+	/**
+	 * Constructs a new ExportService with the specified statistics service and current user.
+	 *
+	 * @param statisticsService the statistics service to use for report generation
+	 * @param currentUser the user initiating the export operation
+	 */
 	public ExportService(StatisticsService statisticsService, User currentUser) {
 		this.statisticsService = statisticsService;
 		this.currentUser = currentUser;
 	}
 
+	/** secures DatabaseConnection */
     public static ConnectionProvider connectionProvider = new ConnectionProvider() {
         @Override
         public Connection getConnection() {
@@ -66,11 +90,24 @@ public class ExportService {// AI generated changed by the team
         }
     };
 
+	/**
+	 * Sets the report parameters for the export operation.
+	 *
+	 * @param reportType the type of report to generate (e.g., "Anzahl pro Monat", "Erstattungsbetrag")
+	 * @param timeRange the time range for the report (e.g., "2024, "May 2025")
+	 */
 	public void setReportParameters(String reportType, String timeRange) {
 		this.reportType = reportType;
 		this.timeRange = timeRange;
 	}
 
+	/**
+	 * Exports a list of reimbursements to a JSON file.
+	 *
+	 * @param data the list of reimbursements to export
+	 * @param file the target file to write the JSON data to
+	 * @throws Exception if an error occurs during JSON serialization or file writing
+	 */
 	public void exportToJson(List<Reimbursement> data, File file) throws Exception { // AI generated
         ObjectMapper mapper = new ObjectMapper();
         // Java 8 Date/Time-Unterstützung aktivieren
@@ -83,6 +120,13 @@ public class ExportService {// AI generated changed by the team
 
     }
 
+	/**
+	 * Exports a list of reimbursements to an XML file.
+	 *
+	 * @param data the list of reimbursements to export
+	 * @param file the target file to write the XML data to
+	 * @throws Exception if an error occurs during XML marshalling or file writing
+	 */
     public void exportToXml(List<Reimbursement> data, File file) throws Exception {
 		// Kontext muss alle beteiligten Klassen kennen
 		JAXBContext context = JAXBContext.newInstance(Wrapper.class, Reimbursement.class, Invoice.class, User.class);
@@ -92,6 +136,13 @@ public class ExportService {// AI generated changed by the team
 		marshaller.marshal(new Wrapper(data), file);
 	}
 
+	/**
+	 * Exports accounting data (payroll information) to a JSON file.
+	 *
+	 * @param userPayrollData a map of users to their total approved amounts
+	 * @param file the target file to write the JSON data to
+	 * @throws Exception if an error occurs during JSON serialization or file writing
+	 */
 	public void exportToJsonAccounting(Map<User, Double> userPayrollData, File file) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
@@ -99,7 +150,6 @@ public class ExportService {// AI generated changed by the team
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-		// Erstelle eine Liste von Accounting-Objekten für saubere JSON-Struktur
 		List<Map<String, Object>> accountingData = new ArrayList<>();
 
 		userPayrollData.forEach((user, amount) -> {
@@ -140,22 +190,34 @@ public class ExportService {// AI generated changed by the team
 		}
 	}
 
-
+	/**
+	 * Exports accounting data (payroll information) to an XML file.
+	 *
+	 * @param userPayrollData a map of users to their total approved amounts
+	 * @param file the target file to write the XML data to
+	 * @throws Exception if an error occurs during XML marshalling or file writing
+	 */
 	public void exportToXmlAccounting(Map<User, Double> userPayrollData, File file) throws Exception {
-		// Daten vorbereiten
 		AccountingWrapper wrapper = new AccountingWrapper();
 		userPayrollData.forEach((user, amount) -> {
 			wrapper.entries.add(new AccountingEntry(user, amount));
 		});
 
-		// XML marshallen
 		JAXBContext context = JAXBContext.newInstance(AccountingWrapper.class);
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		marshaller.marshal(wrapper, file);
 	}
 
-
+	/**
+	 * Generates an admin PDF report with charts and data tables.
+	 *
+	 * @param file the target PDF file
+	 * @param chart the chart to include in the report
+	 * @param reportTitle the title of the report
+	 * @param adminData the reimbursement data to include in the report
+	 * @throws IOException if an error occurs during PDF generation
+	 */
 	public void exportAdminToPdf(File file, Chart chart, String reportTitle, List<Reimbursement> adminData)
 			throws IOException {
 		statisticsService.setReimbursements(adminData);
@@ -179,6 +241,15 @@ public class ExportService {// AI generated changed by the team
 		}
 	}
 
+	/**
+	 * Generates a user PDF report with pie and bar charts.
+	 *
+	 * @param file the target PDF file
+	 * @param pieChart the pie chart to include
+	 * @param barChart the bar chart to include
+	 * @param filteredData the filtered reimbursement data for the current user
+	 * @throws IOException if an error occurs during PDF generation
+	 */
 	public void exportUserToPdf(File file, PieChart pieChart, BarChart<?, ?> barChart, List<Reimbursement> filteredData)
 			throws IOException {
 		statisticsService.setReimbursements(filteredData); // WICHTIG
@@ -211,7 +282,14 @@ public class ExportService {// AI generated changed by the team
 		}
 	}
 
-	// CSV Export (nur für Admin)
+	/**
+	 * Exports admin data to a CSV file based on the specified report type.
+	 *
+	 * @param file the target CSV file
+	 * @param reportType the type of report to generate
+	 * @param adminData the reimbursement data to export
+	 * @throws IOException if an error occurs during CSV file writing
+	 */
 	public void exportAdminToCsv(File file, String reportType, List<Reimbursement> adminData) throws IOException {
 		statisticsService.setReimbursements(adminData);
 		try (PrintWriter writer = new PrintWriter(file)) {
@@ -248,7 +326,13 @@ public class ExportService {// AI generated changed by the team
 			}
 		}
 	}
-
+	/**
+	 * Adds a formatted header section to a PDF document.
+	 *
+	 * @param content The PDPageContentStream to write to
+	 * @param title The title text to display in the header
+	 * @throws IOException If an I/O error occurs while writing to the PDF
+	 */
 	private void addPdfHeader(PDPageContentStream content, String title) throws IOException {
 		content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 16);
 		content.beginText();
@@ -275,6 +359,17 @@ public class ExportService {// AI generated changed by the team
 		content.stroke();
 	}
 
+	/**
+	 * Adds a chart image to the PDF document at specified position and scale.
+	 *
+	 * @param content The PDPageContentStream to write to
+	 * @param doc The PDDocument instance
+	 * @param chart The chart to be rendered (can be null)
+	 * @param x The x-coordinate position
+	 * @param y The y-coordinate position
+	 * @param scale The scaling factor (0.0-1.0)
+	 * @throws IOException If an I/O error occurs while writing to the PDF
+	 */
 	private void addChart(PDPageContentStream content, PDDocument doc, Chart chart, float x, float y, float scale)
 			throws IOException {
 		if (chart == null)
@@ -286,6 +381,15 @@ public class ExportService {// AI generated changed by the team
 				pdImage.getHeight() * scale);
 	}
 
+	/**
+	 * Adds an admin data table to the PDF document based on the report type.
+	 *
+	 * @param content The PDPageContentStream to write to
+	 * @param doc The PDDocument instance
+	 * @param reportType The type of report determining the data to display
+	 * @param startY The vertical starting position for the table
+	 * @throws IOException If an I/O error occurs while writing to the PDF
+	 */
 	private void addAdminDataTable(PDPageContentStream content, PDDocument doc, String reportType, float startY)
 			throws IOException {
 
@@ -326,6 +430,14 @@ public class ExportService {// AI generated changed by the team
 		addTableContent(content, doc, data, currentY);
 	}
 
+	/**
+	 * Adds user-specific data tables to the PDF document including category sums and status distribution.
+	 *
+	 * @param content The PDPageContentStream to write to
+	 * @param doc The PDDocument instance
+	 * @param startY The vertical starting position for the tables
+	 * @throws IOException If an I/O error occurs while writing to the PDF
+	 */
 	private void addUserDataTables(PDPageContentStream content, PDDocument doc, float startY) throws IOException {
 
 		float currentY = startY;
@@ -406,6 +518,11 @@ public class ExportService {// AI generated changed by the team
 		}
 	}
 
+	/**
+	 * Generates status distribution data for reimbursements.
+	 *
+	 * @return A map containing status descriptions and their counts
+	 */
 	private Map<String, Integer> getStatusData() {
 		Map<String, Integer> counts = new LinkedHashMap<>();
 		statisticsService.getReimbursements().forEach(r -> {
@@ -421,6 +538,15 @@ public class ExportService {// AI generated changed by the team
 		return counts;
 	}
 
+	/**
+	 * Adds tabular content to the PDF document with automatic pagination.
+	 *
+	 * @param content The PDPageContentStream to write to
+	 * @param doc The PDDocument instance
+	 * @param data The data to display in the table
+	 * @param startY The vertical starting position for the table
+	 * @throws IOException If an I/O error occurs while writing to the PDF
+	 */
 	private void addTableContent(PDPageContentStream content, PDDocument doc, Map<String, String> data, float startY)
 			throws IOException {
 		float currentY = startY;
@@ -470,7 +596,9 @@ public class ExportService {// AI generated changed by the team
 			this.items = items;
 		}
     }
-
+	/**
+	 * Data transfer object for exporting user reimbursement information.
+	 */
 	public static class ExportData {
 		private int userId;
 		private String userName;
