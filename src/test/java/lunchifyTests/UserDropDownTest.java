@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import backend.logic.SessionManager;
 import backend.logic.UserService;
 import backend.model.User;
-import backend.model.UserRole;
-import backend.model.UserState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

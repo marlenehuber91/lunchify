@@ -58,9 +58,97 @@ Entscheidung: Änderungen von Rechnungen nur bis Monatsende
 * Konsequenzen: Klare Bearbeitungsfrist, logische Einschränkung im UI nötig.  
 
 ## Implementierung 
-> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
-Beschreibung wichtiger Aspekte der Implementierung (eventuell mit ausgewählten 
-Codestücken), Projektstruktur, Abhängigkeiten, verwendete Bibliotheken.
+Projektstruktur
+* Die Projektstruktur orientiert sich an einer typischen mehrschichtigen Architektur mit den folgenden Hauptpaketen:
+* backend.logic: Enthält die Geschäftslogik und stellt die Verbindung zwischen Datenbank und UI dar.
+* backend.model: Enthält die Datenmodelle. 
+* backend.interfaces: Definiert eine Schnittstelle für den Connection Provider.
+* backend.configs: Initialisiert die Datenbankverbindung für verschiedene Services zentral.
+* backend.exceptions: Enthält benutzerdefinierte Exceptions.
+* database: Enthält die Verbindung zur Datenbank.
+* frontend: Enthält die Main Klassen und das Controller Package.
+* frontend.controller: Enthält alle UI-Komponenten sowie die zugehörige Frontend-Logik.
+
+* Die Quellcode-Dateien sind in einem Maven-Standardverzeichnis src/main/java organisiert.
+
+Verwendete Bibliotheken und Frameworks
+* Tess4J: Für die Texterkennung in Bildern und PDFs.
+* JavaFX: Für die Benutzeroberfläche.
+* ControlsFX: Zusätzliche JavaFX-Komponenten.
+* JFreeChart: Für Diagramme und Charts.
+* Log4j: Framework für das Logging. 
+* Mindrot JBCrypt: Für das Passwort-Hashing.
+* PostgreSQL Treiber: Datenbank.
+* Java Servlet API: Für das Session-Management.
+* Apache PDFBox: Zur Verarbeitung und Darstellung von PDF-Dateien.
+* JDBC: Für den Datenbankzugriff.
+* JUnit 5: Für Unit-Tests.
+* TestFX: Für UI Tests.
+* Mockito: Für Test-Mocking.
+* Jackson: Für JSON Verarbeitung. 
+* Jakarta XML Bind (JAXB): Für XML-Bindung.
+
+Maven-Plugins
+* Maven Compiler Plugin: Kompilierung der Java-Quellcode-Dateien.
+* Maven Shade-Plugin: Erstellung eines Fat-JARs.
+* Maven Surefire-Plugin: Steuerung der Testausführung.
+* Maven PMD-Plugin: Für die Codeanalyse.
+* JavaFX-Maven-Plugin: FÜr die JavaFX-Integration.
+* Maven Javadoc-Plugin: Generierung der JavaDoc-Dateien.
+* Maven Resources Plugin: Kopieren der Ressourcendateien.
+
+Wichtige Aspekte der Implementierung
+# OCRService
+Die Klasse OCRService ermöglicht das Extrahieren von Text aus Bildern und PDF-Dokumenten. Im Falle eines PDFs wird PDFBox verwendet, um Seiten als Bilder zu rendern, bevor Tesseract die Texterkennung übernimmt.
+
+Automatischer Bilderkennung mit Tesseract OCR (Code-Snippet)
+```java
+private String extractTextFromImage(File imageFile) throws IOException, TesseractException {
+    BufferedImage image = ImageIO.read(imageFile);
+    if (image == null) {
+        throw new IOException("Could not read image file: " + imageFile.getName());
+    }
+    return tesseract.doOCR(image);
+}
+```
+
+Automatische PDF Erkennung mit Tesseract OCR (Code-Snippet)
+```java
+private String extractTextFromPDF(File pdfFile) throws IOException, TesseractException {
+    StringBuilder result = new StringBuilder();
+    try (PDDocument document = loadPDF(pdfFile)) {
+        PDFRenderer pdfRenderer = new PDFRenderer(document);
+        for (int page = 0; page < document.getNumberOfPages(); page++) {
+            BufferedImage image = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB); // 300 DPI für bessere OCR
+            String pageText = tesseract.doOCR(image);
+            result.append(pageText).append("\n");
+        }
+    }
+    return result.toString();
+}
+```
+# SessionManager
+Die Klasse kümmert sich darum, dass eine Sitzung immer eindeutig einem eingeloggten User zugeordnet wird.
+
+# UserService
+Kümmert sich um das Passwort-Hashing und eine sichere Authentifizierung.
+
+# InvoiceService
+Bildet die Basis der Applikation indem sie das Hochladen von Bildern und PDFs verarbeitet. Die Klasse nutzt zudem den OCRService. 
+Hier werden Anomalien einer Rechnung automatisch erkannt und in der Datenbank gespeichert.
+
+Anomalieerkennung und Logging beim Hinzufügen einer Rechnung (Code-Snippet - unvollstöndiger Auszug aud der Methode addInvoice)
+```java
+	if (invoice.isFlagged()) {
+					detectAnomaliesAndLog(invoice);
+					FlaggedUser flaggedUser = detectFlaggedUser(invoice.getUserId());
+					flaggedUser.setNoFlaggs(flaggedUser.getNoFlaggs() + 1);
+					if (!flaggedUser.isPermanentFlag() && flaggedUser.getNoFlaggs() > 9) {
+						flaggedUser.setPermanentFlag(true);
+					}
+					addOrUpdateFlaggedUser(flaggedUser);
+				}
+```
 
 ## Code Qualität
 Die Codequalität wurde bei jedem Merge sowie lokal  vor dem Push in den IDEs der Teammitglieder mit PMD geprüft. Die meisten errors bezogen sich auf Verstöße gegen Namenskonventionen oder die Verwendung von System.out.println() zur Fehlersuche. Alle durch PMD gemeldeten Probleme wurden behoben, indem Variablen- und Methodennamen angepasst und Debug-Ausgaben entfernt wurden.

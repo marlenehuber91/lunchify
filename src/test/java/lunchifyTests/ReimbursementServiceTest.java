@@ -1,7 +1,5 @@
 package lunchifyTests;
 
-
-import backend.logic.ExportService;
 import backend.logic.NotificationService;
 import backend.logic.ReimbursementService;
 import backend.model.Invoice;
@@ -13,15 +11,11 @@ import backend.model.UserRole;
 import backend.model.UserState;
 import backend.exceptions.InfrastructureException;
 import backend.interfaces.ConnectionProvider;
-import frontend.controller.ReimbursementHistoryController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.File;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
