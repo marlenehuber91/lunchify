@@ -30,7 +30,7 @@ Das Projekt wurde nach agilem Projektmanagement abgearbeitet, angelehnt an Scrum
 ## Entwurf
 
 ### Überblick über die Applikation
-* [UML Diagramm](uml/UML_Release0.3.0) mit Erläuterungen
+* [UML Diagramm](uml/UML_Release0.3.0)
 
 ### Wichtige Design Entscheidungen
 Entscheidung: Einsatz von JavaFX für die Benutzeroberfläche  
