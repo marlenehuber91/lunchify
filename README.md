@@ -18,7 +18,7 @@ Es wurden in 3 Sprints alle Anforderungen lt. [Anforderungskatalog](/docs/2025-S
 
 Die Verantwortlichkeiten im Team wurden fair und nach Bedarf geteilt, größere, komplexere UserStories wurden im PairProgramming bewältigt.
 Die Zeit wurde mittels [clockify](https://app.clockify.me/tracker) aufgezeichnet.  
-Stundenausmaß: xxx (Marlene %, Johanna %, Silvia %)  
+Stundenausmaß: 391 h (Marlene 35%, Johanna 34%, Silvia 31%)  
 Das Projekt wurde nach agilem Projektmanagement abgearbeitet, angelehnt an Scrum fanden mindestens wöchentlich virtuelle Meetings statt. Der formelle Informationsaustausch wurde via issues in GitHub sichergestellt, der informellere Informationsaustausch in einem Discord-Channel.
 
 # Überblick über die Applikation aus Benutzersicht  
