@@ -26,16 +26,16 @@ public class AdminEditReimbursementController extends EditReimbursementControlle
 
     @Override
     public void handleBack() {
-        handleBackToReimbursementHistoryController(null);
+        handleBackToReimbursementHistoryController();
     }
 
     @FXML
-    private void handleBackToReimbursementHistoryController(ActionEvent event) {
+    private void handleBackToReimbursementHistoryController() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/ReimbursementHistory.fxml"));
             Parent root = fxmlLoader.load();
             
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) uploadPane.getScene().getWindow();
 
             stage.setTitle("alle Rechnungen");
             stage.setScene(new Scene(root));
