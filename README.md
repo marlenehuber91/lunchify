@@ -168,6 +168,8 @@ Unsere Tests gliedern sich in drei Bereiche:
 
 # JavaDoc für wichtige Klassen, Interfaces und Methoden
 > ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
+## JavaDoc Logic (Service Klassen)
+> [AnomalyDetectionService] (JavaDoc/backend/logic/AnomalyDetectionService.html)
 
 # Installationsanleitung
 1. JavaFX Setup: JavaFX 21.0.2 herunterladen: https://jdk.java.net/javafx21/.
