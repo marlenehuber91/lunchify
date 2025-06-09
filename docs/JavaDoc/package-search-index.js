@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"Alle Packages","u":"allpackages-index.html"},{"l":"backend.configs"},{"l":"backend.exceptions"},{"l":"backend.interfaces"},{"l":"backend.logic"},{"l":"backend.model"},{"l":"database"},{"l":"frontend"},{"l":"frontend.controller"}];updateSearchResults();
