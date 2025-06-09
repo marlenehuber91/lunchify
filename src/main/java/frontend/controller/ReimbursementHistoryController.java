@@ -2,6 +2,7 @@ package frontend.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,7 +42,7 @@ public class ReimbursementHistoryController {
 	String year;
 	String category;
 	String status;
-	String totalReimbursement;
+	double totalReimbursement;
 	ExportService exportService;
 	int currUserId;
 	private boolean selfmade;
@@ -438,13 +439,16 @@ public class ReimbursementHistoryController {
 	}
 
 	private void calculateTotalReimbursement () {
+		
 		if (statusFilterBox.getValue() == null  || statusFilterBox.getValue().equals("alle")) {
-		totalReimbursement = String.valueOf(reimbursementService.getTotalReimbursement(reimbursements));
+		totalReimbursement =reimbursementService.getTotalReimbursement(reimbursements);
 		} else {
 			ReimbursementState state = ReimbursementState.getState(statusFilterBox.getValue());
-			totalReimbursement = String.valueOf(reimbursementService.getTotalReimbursement(reimbursements, state));
+			totalReimbursement = reimbursementService.getTotalReimbursement(reimbursements, state);
 		}
-		totalReimbursementAmountLabel.setText("€ " + totalReimbursement);
+		
+		DecimalFormat df = new DecimalFormat("0.00");
+		totalReimbursementAmountLabel.setText("€ " + df.format(totalReimbursement));
 		totalReimbursementAmountLabel.setStyle("");
 	}
 
