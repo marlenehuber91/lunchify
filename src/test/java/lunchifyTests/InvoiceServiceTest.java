@@ -116,6 +116,7 @@ public class InvoiceServiceTest {
         assertTrue(invoiceService.isValidFloat("100"));
         assertFalse(invoiceService.isValidFloat("12,34"));
         assertFalse(invoiceService.isValidFloat("abc"));
+        assertFalse(invoiceService.isValidFloat("-1"));
     }
 
     @Test
