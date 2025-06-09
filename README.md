@@ -167,11 +167,19 @@ Unsere Tests gliedern sich in drei Bereiche:
 - ein [Testplan](docs/Testplan.md), der strukturierte manuelle Tests dokumentiert.
 
 # JavaDoc für wichtige Klassen, Interfaces und Methoden
-
-## JavaDoc Logic (Service Klassen)
-> ## 📄 JavaDoc – Wichtige Klassen
+> ## 📄 JavaDoc Service Klassen (Logik)
 - [AnomalyDetectionService](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/AnomalyDetectionService.html)
 - [ExportService](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/ExportService.html)
+- [FlaggedUserService](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/FlaggedUserService.html)
+- [InvoiceService](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/InvoiceService.html)
+- [LocalDateAdapter](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/LocalDateAdapter.html)
+- [NotificationService](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/NotificationService.html)
+- [OCRService](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/OCRService.html)
+- [ReimbursementService](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/ReimbursementService.html)
+- [SearchService](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/SearchService.html)
+- [SessionManager](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/SessionManager.html)
+- [StatisticsService](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/StatisticsService.html)
+- [UserService](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/UserService.html)
 
 # Installationsanleitung
 1. JavaFX Setup: JavaFX 21.0.2 herunterladen: https://jdk.java.net/javafx21/.
