@@ -167,7 +167,7 @@ Unsere Tests gliedern sich in drei Bereiche:
 - ein [Testplan](docs/Testplan.md), der strukturierte manuelle Tests dokumentiert.
 
 # JavaDoc für wichtige Klassen, Interfaces und Methoden
-> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
+
 
 # Installationsanleitung
 1. JavaFX Setup: JavaFX 21.0.2 herunterladen: https://jdk.java.net/javafx21/.

@@ -76,8 +76,8 @@ public class OCRService {
         if (tessDataUrl != null) {
             return new File(tessDataUrl.getPath()).getParent();
         }
-
-        throw new RuntimeException("tessdata folder not found in any known location. " +
+        //TODO choose another exception type?
+        throw new IllegalStateException("tessdata folder not found in any known location. " +
                 "Bitte stellen Sie sicher, dass der tessdata-Ordner entweder:\n" +
                 "1. Im Arbeitsverzeichnis als 'tessdata' existiert,\n" +
                 "2. In 'src/main/resources/tessdata' für die Entwicklung, oder\n" +
