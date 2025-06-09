@@ -171,7 +171,7 @@ Unsere Tests gliedern sich in drei Bereiche:
 ## JavaDoc Logic (Service Klassen)
 > ## 📄 JavaDoc – Wichtige Klassen
 - [AnomalyDetectionService](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/AnomalyDetectionService.html)
-- [ExportService](docs/JavaDoc/backend/logic/ExportService.html)
+- [ExportService](https://jku-win-se.github.io/teaching-2025.ss.prse.braeuer.team4/JavaDoc/backend/logic/ExportService.html)
 
 # Installationsanleitung
 1. JavaFX Setup: JavaFX 21.0.2 herunterladen: https://jdk.java.net/javafx21/.
