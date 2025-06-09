@@ -163,11 +163,11 @@ Unsere Tests gliedern sich in drei Bereiche:
 - ein [Testplan](docs/Testplan.md), der strukturierte manuelle Tests dokumentiert.
 
 Fokus auf Backend-Tests
-Der Schwerpunkt der Teststrategie liegt auf den Unit-Tests im Backend. Diese Tests decken zentrale Funktionalitäten des Systems ab, insbesondere:
+Der Schwerpunkt der Teststrategie liegt auf den Unit-Tests im Backend. Diese Tests decken zentrale Funktionalitäten des Systems ab, zum Beispiel:
 
 - Anlegen, Bearbeiten und Löschen von Rückerstattungen
 - Filterung und Aggregation von Rückerstattungsdaten
-- Validierung von Eingaben und fachlichen Regeln (z. B. Limitprüfungen)
+- Validierung von Eingaben und fachlichen Regeln
 - Fehlerbehandlung bei ungültigen oder unvollständigen Eingaben
 - Absicherung gegen fehlerhafte Zustände in der Datenbank oder fehlschlagende Verbindungen
 
@@ -207,10 +207,26 @@ Beispielhafte Testfälle:
         assertEquals(UserState.ACTIVE, user.getState());
     }
 ```
- - 
-> ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
-> Überblick über erstellte JUnit Tests (eventuell mit ausgewählten Tests), Testabdeckung
-Beschreibung der Akzeptanztests für 3 ausgewählte Requirements
+Die im Rahmen der User Stories definierten Akzeptanzkriterien wurden im Testprozess systematisch überprüft.
+
+Beispielhafte Akzeptanzkriterien für die Suche von User:
+
+ - Search for a user by name → System returns correct results.
+ - Search for user by email -> System returns correct result.
+ - Search for nonexisting user -> System displays error message
+ - Login as user and try to find the search button -> there should be no possibility on the user-dashboard
+
+Beispielhafte Akzeptanzkriterien für die Übersicht aller Rückerstattungsanträge:
+ - View past invoices → A correct list of past invoices is displayed.
+ - Filter by month → Only the selected month's data is shown.
+ - Check total reimbursement → Total sum is correctly calculated.
+
+Beispielhafte Akzeptanzkriterien für die automatische Erkennung von Rechnungsdetails:
+- Upload a clear invoice image → OCR extracts correct amount and category.
+- Upload a blurry invoice image → System prompts user to enter details manually.
+- Upload a supermarket invoice → System correctly classifies it as "Supermarkt".
+- Upload a restaurant invoice → System correctly classifies it as "Restaurant".
+- Modify automatically extracted details → System allows correction before submission.
  
 Das Testen stellte im Projekt eine besondere Herausforderung dar, da jedes Teammitglied mit einer eigenen lokalen Datenbank arbeitete. Beim Hochladen von Code auf GitHub wären Tests fehlgeschlagen, da dort keine lokale Datenbank vorhanden ist. Dieses Problem lösten wir durch den Einsatz von Mocking. Allerdings bringt Mocking auch Einschränkungen mit sich – insbesondere lässt sich der Aufruf eines Konstruktors nicht mocken. Da einige unserer Klassen bereits im Konstruktor auf die Datenbank zugreifen, war dies ein Problem.
 
