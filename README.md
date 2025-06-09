@@ -155,16 +155,65 @@ Anomalieerkennung und Logging beim Hinzufügen einer Rechnung (Code-Snippet - un
 Die Codequalität wurde bei jedem Merge sowie lokal vor dem Push in den IDEs der Teammitglieder mit PMD geprüft. Die meisten errors bezogen sich auf Verstöße gegen Namenskonventionen oder die Verwendung von System.out.println() zur Fehlersuche. Alle durch PMD gemeldeten Probleme wurden behoben, indem Variablen- und Methodennamen angepasst und Debug-Ausgaben entfernt wurden.
 
 ## Testen
+Im Rahmen der Qualitätssicherung wurde die Anwendung umfassend getestet. Dabei kamen verschiedene Testarten zum Einsatz, die sich in drei Hauptkategorien gliedern:
+
+Unsere Tests gliedern sich in drei Bereiche:  
+- Unit-Tests zur Überprüfung einzelner Methoden und Klassen,
+- UI-Tests zur Validierung der Benutzeroberfläche,
+- ein [Testplan](docs/Testplan.md), der strukturierte manuelle Tests dokumentiert.
+
+Fokus auf Backend-Tests
+Der Schwerpunkt der Teststrategie liegt auf den Unit-Tests im Backend. Diese Tests decken zentrale Funktionalitäten des Systems ab, insbesondere:
+
+- Anlegen, Bearbeiten und Löschen von Rückerstattungen
+- Filterung und Aggregation von Rückerstattungsdaten
+- Validierung von Eingaben und fachlichen Regeln (z. B. Limitprüfungen)
+- Fehlerbehandlung bei ungültigen oder unvollständigen Eingaben
+- Absicherung gegen fehlerhafte Zustände in der Datenbank oder fehlschlagende Verbindungen
+
+Dabei wurden gezielt auch Randfälle und potenzielle Fehlerquellen berücksichtigt – etwa ungültige Monatsnamen, null-Werte oder fehlschlagende SQL-Operationen. 
+
+Die Tests wurden nach dem Test-After-Ansatz entwickelt, d. h. nach der Implementierung der jeweiligen Funktionalität. Die Testmethoden basieren überwiegend auf JUnit 5 und verwenden Mockito für das Mocking von Datenbankverbindungen und Abfragen.
+
+Beispielhafte Testfälle:
+- Validierung von gültigen Rechnungsbeträgen
+```java
+@Test
+    public void testIsValidFloat() {
+        assertTrue(invoiceService.isValidFloat("123.45"));
+        assertTrue(invoiceService.isValidFloat("100"));
+        assertFalse(invoiceService.isValidFloat("12,34"));
+        assertFalse(invoiceService.isValidFloat("abc"));
+        assertFalse(invoiceService.isValidFloat("-1"));
+    }
+```
+- Authentifikation eines gültigen Nutzers unter Verwendung von Mockito
+```java
+ @Test
+    public void authenticateValidUser() throws Exception {
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getString("state")).thenReturn("ACTIVE");
+        when(mockResultSet.getString("password"))
+                .thenReturn(BCrypt.hashpw("sarah123", BCrypt.gensalt()));
+        when(mockResultSet.getString("role")).thenReturn("EMPLOYEE");
+        when(mockResultSet.getString("name")).thenReturn("Sarah Maier");
+        when(mockResultSet.getInt("id")).thenReturn(1);
+
+        User user = UserService.authenticate("sarah.maier@lunch.at", "sarah123");
+
+        assertNotNull(user);
+        assertEquals("Sarah Maier", user.getName());
+        assertEquals(UserRole.EMPLOYEE, user.getRole());
+        assertEquals(UserState.ACTIVE, user.getState());
+    }
+```
+ - 
 > ⚠️ **Achtung:** Dieses Kapitel ist noch unvollständig.
 > Überblick über erstellte JUnit Tests (eventuell mit ausgewählten Tests), Testabdeckung
 Beschreibung der Akzeptanztests für 3 ausgewählte Requirements
  
 Das Testen stellte im Projekt eine besondere Herausforderung dar, da jedes Teammitglied mit einer eigenen lokalen Datenbank arbeitete. Beim Hochladen von Code auf GitHub wären Tests fehlgeschlagen, da dort keine lokale Datenbank vorhanden ist. Dieses Problem lösten wir durch den Einsatz von Mocking. Allerdings bringt Mocking auch Einschränkungen mit sich – insbesondere lässt sich der Aufruf eines Konstruktors nicht mocken. Da einige unserer Klassen bereits im Konstruktor auf die Datenbank zugreifen, war dies ein Problem.
 
-Unsere Tests gliedern sich in drei Bereiche:  
-- Unit-Tests zur Überprüfung einzelner Methoden und Klassen,
-- UI-Tests zur Validierung der Benutzeroberfläche,
-- ein [Testplan](docs/Testplan.md), der strukturierte manuelle Tests dokumentiert.
 
 # JavaDoc für wichtige Klassen, Interfaces und Methoden
 > ## 📄 JavaDoc Service Klassen (Logik)
