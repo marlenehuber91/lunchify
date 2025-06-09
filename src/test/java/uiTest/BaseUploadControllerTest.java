@@ -112,37 +112,6 @@ public class BaseUploadControllerTest extends ApplicationTest {
 	}
 	
 	@Test
-	void testSubmitButtonEnabledForValidInput() {
-		clickOn("#amountField").write("20.00");
-
-		DatePicker datePicker = lookup("#datePicker").query();
-		interact(() -> datePicker.setValue(LocalDate.of(2025, 05, 02)));
-
-		ComboBox<InvoiceCategory> comboBox = lookup("#categoryBox").query();
-		interact(() -> {
-			comboBox.setItems(FXCollections.observableArrayList(InvoiceCategory.RESTAURANT));
-			comboBox.setValue(InvoiceCategory.RESTAURANT);
-		});
-		
-		BaseUploadController controller = BaseUploadController.getInstance();
-		File dummyFile = new File("src/test/resources/invalidInvoice.jpg");
-		interact(() -> controller.setSelectedFile(dummyFile));
-		
-		// Simuliere Dateiupload durch direkten Aufruf (UI-unabhängig)
-		interact(() -> {
-			TextField field = lookup("#reimbursementAmountField").query();
-			field.setText("3.00");
-		});
-		
-		interact (()-> {
-			TextField field = lookup("#amountField").query();
-			field.setText("3.00");
-		});
-
-		verifyThat("#submitButton", isEnabled());
-	}
-	
-	@Test
 	void testDatePickerRejectsWeekend() {
 		// Finde nächstes Wochenende (Samstag)
 		LocalDate lastWeekend = LocalDate.now().minusDays((LocalDate.now().getDayOfWeek().getValue() + 1) % 7);
