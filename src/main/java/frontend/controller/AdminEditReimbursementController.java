@@ -3,8 +3,10 @@ package frontend.controller;
 
 import backend.model.ReimbursementState;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
@@ -24,16 +26,16 @@ public class AdminEditReimbursementController extends EditReimbursementControlle
 
     @Override
     public void handleBack() {
-        handleBackToReimbursementHistoryController();
+        handleBackToReimbursementHistoryController(null);
     }
 
     @FXML
-    private void handleBackToReimbursementHistoryController() {
+    private void handleBackToReimbursementHistoryController(ActionEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/frontend/views/ReimbursementHistory.fxml"));
             Parent root = fxmlLoader.load();
-
-            Stage stage = (Stage) uploadPane.getScene().getWindow();
+            
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
             stage.setTitle("alle Rechnungen");
             stage.setScene(new Scene(root));
