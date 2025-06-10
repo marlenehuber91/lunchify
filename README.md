@@ -250,7 +250,7 @@ Das Testen stellte im Projekt eine besondere Herausforderung dar, da jedes Teamm
 1. JavaFX Setup: JavaFX 21.0.2 [hier](https://jdk.java.net/javafx21/) herunterladen.
 2. In Umgebungsvariablen den Pfad auf den lib-Ordner des JavaFX Folders setzen z.B: C:\Program Files\javafx-sdk-21.0.2\lib.
 3. OCR (Tesseract) herunterladen. Wähle dazu die ZIP Datei aus folgendem [GitHub Release](https://github.com/nguyenq/tess4j/releases/tag/tess4j-5.15.0)
-4. - ZIP-Datei aus diesem [GitHub Release](https://github.com/jku-win-se/teaching-2025.ss.prse.braeuer.team4/releases/tag/v.1.0.0) herunterladen.
+4. - Lunchify ZIP-Datei aus dem Release [Lunchify Release-v1.0.0](https://github.com/jku-win-se/teaching-2025.ss.prse.braeuer.team4/releases/tag/v.1.0.0) herunterladen.
    - Einen Ordner Lunchify anlegen. 
    - Ordner "tessdata" aus dieser ZIP-Datei (liegt in src/main/resources) kopieren.
    - Keinesfalls den Namen des Ordners tessdata oder seinen Inhalt verändern. 
