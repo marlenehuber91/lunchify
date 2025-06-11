@@ -7,7 +7,6 @@
 - [Anmeldung](#anmeldung)
 - [Funktionen für Mitarbeiter:innen](#funktionen-für-mitarbeiterinnen)
 - [Funktionen für Administrator:innen](#funktionen-für-administratorinnen)
-- [Fehlermeldungen und Hinweise](#fehlermeldungen-und-hinweise)
 
 ---
 
