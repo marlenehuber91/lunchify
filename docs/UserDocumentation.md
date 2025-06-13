@@ -17,16 +17,17 @@
 ---
 
 ## Installation und Start
-1. JavaFX Setup: JavaFX 21.0.2 herunterladen: https://jdk.java.net/javafx21/.
+1. JavaFX Setup: JavaFX 21.0.2 hier herunterladen.
 2. In Umgebungsvariablen den Pfad auf den lib-Ordner des JavaFX Folders setzen z.B: C:\Program Files\javafx-sdk-21.0.2\lib.
-3. OCR (Tesseract) herunterladen. Wähle dazu die ZIP Datei aus folgendem GitHub Release: https://github.com/nguyenq/tess4j/releases/tag/tess4j-5.15.0
-4. - OCR Trainingsdaten als ZIP-Datei aus GitHub Release ⚠️(GITHUB LINK ZU RELEASE 1.0.0 einfügen) herunterladen.
+3. OCR (Tesseract) herunterladen. Wähle dazu die ZIP Datei aus folgendem GitHub Release
+4. - Lunchify ZIP-Datei aus dem Release Lunchify Release-v1.0.0 herunterladen.
+   - Einen Ordner Lunchify anlegen.
    - Ordner "tessdata" aus dieser ZIP-Datei (liegt in src/main/resources) kopieren.
-5. Ordner "Lunchify" auf lokalem PC erstellen und Ordner "tessdata" hineinkopieren.
-6. Keinesfalls den Namen des Ordners tessdata oder seinen Inhalt verändern. 
-7. Executable lunchify-1.0.0.jar herunterladen ⚠️LINK ZU RELEASE 1.0.0 einfügen und im lokalen Ordner "Lunchify" ablegen.
-8. Das .jar und der Ordner tessdata befinden sich nun auf selber Ebene.
-9. lunchify-1.0.0.jar aus dem Ordner Lunchify heraus starten. 
+   - Keinesfalls den Namen des Ordners tessdata oder seinen Inhalt verändern.
+5. Executabel lunchify-1.0.0.jar hier herunterladen und ebenfalls im Ordner Lunchify ablegen.
+6. Das .jar und der Ordner tessdata befinden sich nun auf selber Ebene.
+7. lunchify-1.0.0.jar aus dem Ordner Lunchify heraus starten.
+
 
 > ⚠️ Hinweis: Die Datenbankverbindung muss vorher korrekt eingerichtet sein. Dieser Vorgang ist in der [Systemdokumentation](/docs/SystemDocumentation.md) erklärt.
 
