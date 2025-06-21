@@ -16,6 +16,16 @@
 
 ---
 
+## Datenbank 
+Vor der ersten Anmeldung muss eine Datenbank für die Anwendung erreichbar sein, die Daten sind hard-coded:
+```java
+    private static final String URL="jdbc:postgresql://localhost:5432/postgres";
+    private static final String USER="postgres";
+    private static final String PASSWORD="!!Lunch4";
+```
+Es muss somit sichergestellt sein dass die Datenbank "postgres" heißt, auf 5432 erreichbar ist und das UserPasswort !!Lunch4 ist.  
+Unter [Datenbankskript](Database.md) ist das Skript zu finden, das für den erst-Start ausgeführt werden muss, damit die Anwendung funktionieren kann.
+
 ## Installation und Start
 1. JavaFX Setup: JavaFX 21.0.2 hier herunterladen.
 2. In Umgebungsvariablen den Pfad auf den lib-Ordner des JavaFX Folders setzen z.B: C:\Program Files\javafx-sdk-21.0.2\lib.
