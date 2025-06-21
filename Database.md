@@ -1,29 +1,29 @@
-DROP TABLE AnomalyDetection;
-DROP TABLE FlaggedUsers;
-DROP TABLE Reimbursements;
-DROP TABLE Invoices;
-DROP TABLE Users;
-DROP TABLE ReimbursementAmount;
-DROP TABLE notifications;
-DROP TYPE ReimbursementState;
-DROP TYPE InvoiceCategory;
-DROP TYPE UserState;
-DROP TYPE UserRole;
+DROP TABLE AnomalyDetection;  
+DROP TABLE FlaggedUsers;  
+DROP TABLE Reimbursements;  
+DROP TABLE Invoices;  
+DROP TABLE Users;  
+DROP TABLE ReimbursementAmount;  
+DROP TABLE notifications;  
+DROP TYPE ReimbursementState;  
+DROP TYPE InvoiceCategory;  
+DROP TYPE UserState;  
+DROP TYPE UserRole;  
 
-CREATE TYPE UserRole AS ENUM ('EMPLOYEE', 'ADMIN');
-CREATE TYPE UserState AS ENUM ('ACTIVE', 'INACTIVE', 'SUSPENDED');
+CREATE TYPE UserRole AS ENUM ('EMPLOYEE', 'ADMIN');  
+CREATE TYPE UserState AS ENUM ('ACTIVE', 'INACTIVE', 'SUSPENDED');  
 
-CREATE TABLE Users (
-id SERIAL PRIMARY KEY,
-name VARCHAR(255) NOT NULL,
-email VARCHAR(255) UNIQUE NOT NULL,
-password TEXT NOT NULL,
-role UserRole NOT NULL DEFAULT 'EMPLOYEE',
-state UserState NOT NULL DEFAULT 'ACTIVE'
-);
+CREATE TABLE Users (  
+id SERIAL PRIMARY KEY,  
+name VARCHAR(255) NOT NULL,  
+email VARCHAR(255) UNIQUE NOT NULL,  
+password TEXT NOT NULL,  
+role UserRole NOT NULL DEFAULT 'EMPLOYEE',  
+state UserState NOT NULL DEFAULT 'ACTIVE'  
+);  
 
-CREATE TYPE ReimbursementState AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'FLAGGED');
-CREATE TYPE InvoiceCategory AS ENUM ('RESTAURANT', 'SUPERMARKET', 'UNDETECTABLE');
+CREATE TYPE ReimbursementState AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'FLAGGED');  
+CREATE TYPE InvoiceCategory AS ENUM ('RESTAURANT', 'SUPERMARKET', 'UNDETECTABLE');  
 
 CREATE TABLE Invoices (
 id SERIAL PRIMARY KEY,
@@ -34,7 +34,7 @@ user_id INT NOT NULL,
 file BYTEA,
 flagged BOOLEAN,
 FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
-);
+);  
 
 CREATE TABLE Reimbursements (
 id SERIAL PRIMARY KEY,
@@ -43,7 +43,7 @@ approved_amount FLOAT NOT NULL,
 processed_date DATE NOT NULL,
 status ReimbursementState NOT NULL DEFAULT 'PENDING',
 FOREIGN KEY (invoice_id) REFERENCES Invoices(id) ON DELETE CASCADE
-);
+);  
 
 CREATE TABLE AnomalyDetection (
     id SERIAL PRIMARY KEY,
@@ -52,13 +52,13 @@ CREATE TABLE AnomalyDetection (
     user_id INT NOT NULL,
     FOREIGN KEY (invoice_id) REFERENCES Invoices(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
-);
+);  
 
 CREATE TABLE ReimbursementAmount (
 id SERIAL PRIMARY KEY,
 category InvoiceCategory NOT NULL,
 amount FLOAT NOT NULL
-);
+);  
 
 CREATE TABLE notifications (
     id SERIAL PRIMARY KEY,
@@ -75,14 +75,14 @@ CREATE TABLE notifications (
     as_admin BOOLEAN,
     original_invoice_date DATE,
 	is_selfmade_change boolean
-);
+);  
 
 CREATE TABLE FlaggedUsers (
 	user_id INTEGER PRIMARY KEY,
 	no_flaggs INTEGER NOT NULL DEFAULT 1,
 	permanent_flag BOOLEAN NOT NULL DEFAULT FALSE,
 	FOREIGN KEY (user_id) REFERENCES users(id)
-); 
+);   
 
 
 
