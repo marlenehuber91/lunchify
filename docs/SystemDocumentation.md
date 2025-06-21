@@ -91,6 +91,12 @@ src
 ## Database
 
 - The PostgreSQL database must be initialized using an SQL [script](../Database.md) **prior to first use**.
+- hard-coded
+```java
+    private static final String URL="jdbc:postgresql://localhost:5432/postgres";
+    private static final String USER="postgres";
+    private static final String PASSWORD="!!Lunch4";
+```
 - Data includes:
     - User accounts (with roles)
     - Receipts and reimbursement records
