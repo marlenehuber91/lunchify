@@ -92,7 +92,7 @@ ADD CONSTRAINT fk_reimbursement_invoice FOREIGN KEY (invoice_id) REFERENCES Invo
 ALTER TABLE Invoices
 ADD CONSTRAINT fk_invoice_user FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE;
 
--- Insert Statements for table users
+-- Insert Statements for table users   
 INSERT INTO users (name, email, password, role, state) VALUES ('Ali Baba', 'ali.baba@lunch.at', '$2a$12$/8Ef1TarZReYVFyrzUWe1.LA8h1H2EDkbVUNW/Qn735QxnbljCRNW', 'EMPLOYEE', 'SUSPENDED');
 INSERT INTO users (name, email, password, role, state) VALUES ('Barbara Hummer', 'barbara.hummer@lunch.at', '$2a$12$9D.SowePxYOokt1/4t.40.PI/8rbVjHWK.EY31m/X7dx7VXZDz4ta', 'EMPLOYEE', 'INACTIVE');
 INSERT INTO users (name, email, password, role, state) VALUES ('Martin Lechner', 'martin.lechner@lunch.at', '$2a$12$Qzcsnm8KYIIwPrgUCa25L.l0/p9fUxWNc8s1C23NxI2h0daNDITt6', 'ADMIN', 'ACTIVE');
@@ -100,7 +100,7 @@ INSERT INTO users (name, email, password, role, state) VALUES ('Sarah Maier', 's
 INSERT INTO users (name, email, password, role, state) VALUES ('e (testEmployee)', 'e@lunch.at', '$2a$12$K.H4vlY15VhZ08TYvQHwb.AwE.K/WfQkoHGshF/ig6pqi0wMmqasW', 'EMPLOYEE', 'ACTIVE');
 INSERT INTO users (name, email, password, role, state) VALUES ('a (testAdmin)', 'a@lunch.at', '$2a$12$Xzzl7nc6PKRxVbpd4nRLleuwcSCgtcQIRvSKkRTKzVPm.Iy9bbpqG', 'ADMIN', 'ACTIVE');
 
---Insert Statements for initial ReimbursementAmount
+--Insert Statements for initial ReimbursementAmount   
 INSERT INTO ReimbursementAmount (category, amount)
 VALUES
 ('SUPERMARKET', 2.5),
