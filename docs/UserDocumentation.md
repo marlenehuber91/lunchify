@@ -38,9 +38,6 @@ Unter [Datenbankskript](Database.md) ist das Skript zu finden, das für den erst
 6. Das .jar und der Ordner tessdata befinden sich nun auf selber Ebene.
 7. lunchify-1.0.0.jar aus dem Ordner Lunchify heraus starten.
 
-
-> ⚠️ Hinweis: Die Datenbankverbindung muss vorher korrekt eingerichtet sein. Dieser Vorgang ist in der [Systemdokumentation](/docs/SystemDocumentation.md) erklärt.
-
 ---
 
 ## Anmeldung
