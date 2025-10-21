@@ -1,3 +1,29 @@
+# Lunchify Fork von Marlene Huber
+
+Lunchify war ein Gruppenprojekt im Rahmen eines Universitätskurses.
+Es diente primär dem Lernen und Experimentieren mit verschiedenen Technologien – daher ist der Code nicht in allen Teilen perfekt, spiegelt aber gut meinen Lernfortschritt und meine Herangehensweise wider
+
+Das Projekt wurde in einem Team aus drei Personen umgesetzt, wobei alle Teammitglieder gleichermaßen an den verschiedenen Komponenten mitarbeiteten. Der Code stammt somit gemeinschaftlich von drei Entwicklerinnen.
+
+Die folgenden Code-Teile wurden ausschließlich von mir entwickelt und können daher Aufschluss über meine individuelle Arbeitsweise geben. Meine Mitwirkung beschränkte sich jedoch nicht ausschließlich auf diese Bestandteile; die Nennung dient lediglich einer klaren Abgrenzung.
+
+Bei einzelnen Abschnitten wurde KI-Unterstützung eingesetzt. In diesen Fällen ist dies im Code eindeutig vermerkt (Kommentar //AI generated an entspechenden Stellen). 
+
+**Backend**
+- LoginService
+- OCRService
+- AnomalyDetectionService
+- SearchService
+- UserService
+- FlaggedUserService
+  
+**Frontend**
+- LoginPageController
+- FlaggedUserController
+- SearchController
+- AnomalyDetectionController
+
+
 # Einleitung
 
 **Lunchify** ist eine Desktop-Anwendung mit Datenbankanbindung, geschrieben in Java. Die Anwendung wurde als Projekt für eine Linzer Firma für internen Gebrauch entwickelt. Mitarbeiter können ihre täglichen Essens-Rechnungen hochladen und bekommen einen bestimmten Betrag über die Lohnverrechnung retourniert. Administratoren kümmern sich um die Freigabe oder Ablehnung der Rückerstattungsanträge, geben die Daten an die Lohnverrechnung weiter und pflegen die Stammdaten.
